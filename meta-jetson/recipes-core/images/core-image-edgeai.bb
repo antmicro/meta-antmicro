@@ -21,10 +21,25 @@ IMAGE_INSTALL_append = " \
     nano \
     opencv \
     openssh \
+    packagegroup-xfce-base \
     rsync \
     sudo \
     vim \
     x11vnc \
     xdotool \
-    packagegroup-xfce-base \
 "
+
+inherit extrausers
+EXTRA_USERS_PARAMS = " \
+    useradd -P antmicro antmicro; \
+    usermod -a -G dialout,input,shutdown,video,sudo antmicro; \
+    usermod -P root root; \
+"
+
+# Here we give sudo access to sudo members
+update_sudoers(){
+    sed -i 's/# %sudo/%sudo/' ${IMAGE_ROOTFS}/etc/sudoers
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "update_sudoers;"
+
