@@ -1,0 +1,33 @@
+From 32746da8f3ac282bebc6b24befdff844f62a3c2b Mon Sep 17 00:00:00 2001
+From: Maksymilian Czudziak <mczudziak@internships.antmicro.com>
+Date: Thu, 15 Jul 2021 07:01:44 +0000
+Subject: [PATCH] CMakeLists.txt patched by locations and stb line
+
+---
+ CMakeLists.txt | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0e1abf3..ca91f30 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -134,8 +134,8 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+   set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}" CACHE PATH "Install prefix" FORCE)
+ endif()
+ 
+-set(INSTALL_BIN_DIR      "${CMAKE_CURRENT_LIST_DIR}" CACHE PATH "Path where exe and dll will be installed")
+-set(INSTALL_LIB_DIR      "${CMAKE_CURRENT_LIST_DIR}" CACHE PATH "Path where lib will be installed")
++set(INSTALL_BIN_DIR      "bin" CACHE PATH "Path where exe and dll will be installed")
++set(INSTALL_LIB_DIR      "lib" CACHE PATH "Path where lib will be installed")
+ set(INSTALL_INCLUDE_DIR  "include/darknet"           CACHE PATH "Path where headers will be installed")
+ set(INSTALL_CMAKE_DIR    "share/darknet"             CACHE PATH "Path where cmake configs will be installed")
+ 
+@@ -225,7 +225,7 @@ if(ENABLE_OPENCV)
+     endif()
+   endif()
+ endif()
+-find_package(Stb REQUIRED)
++set(Stb_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/3rdparty/stb/include)
+ find_package(OpenMP)
+ 
+ if(APPLE AND NOT OPENMP_FOUND)

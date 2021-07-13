@@ -16,6 +16,7 @@ inherit core-image features_check
 
 IMAGE_INSTALL_append = " \
     cudnn \
+    darknet \
     glfw \
     htop \
     nano \
@@ -24,6 +25,7 @@ IMAGE_INSTALL_append = " \
     packagegroup-xfce-base \
     rsync \
     sudo \
+    tegra-tools \
     vim \
     x11vnc \
     xdotool \
