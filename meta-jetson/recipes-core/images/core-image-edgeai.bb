@@ -15,6 +15,7 @@ LICENSE = "Apache-2.0"
 inherit core-image features_check
 
 IMAGE_INSTALL_append = " \
+    maxpower \
     darknet-demo \
     cudnn \
     darknet \
