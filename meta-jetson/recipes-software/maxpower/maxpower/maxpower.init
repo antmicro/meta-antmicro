@@ -1,0 +1,19 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:    maxpower
+# Description: Maximum GPU performance setup
+### END INIT INFO
+
+case "$1" in
+    start)
+        /usr/sbin/nvpmodel -m 0 -f /etc/nvpmodel.conf
+        /usr/bin/jetson_clocks
+        ;;
+    stop)
+        ;;
+    *)
+        echo "Usage: $0 (start|stop)"
+        ;;
+esac
+
+exit 0
