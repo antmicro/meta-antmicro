@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=darknet-demo
+Exec=bash -c "/usr/bin/darknet-demo -i 0 -n /usr/share/darknet-demo/coco.names -c /usr/share/darknet-demo/yolov4.cfg -w /usr/share/darknet-demo/yolov4.weights -f > /usr/share/darknet-demo/initlog 2>&1"
