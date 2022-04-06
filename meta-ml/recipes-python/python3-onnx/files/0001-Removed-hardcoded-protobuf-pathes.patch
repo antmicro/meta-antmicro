@@ -1,0 +1,42 @@
+From 2907642ba7e8d91576ab17869d122fb9b7b5a2c3 Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Wed, 27 Apr 2022 13:29:22 +0200
+Subject: [PATCH] Removed hardcoded protobuf pathes
+
+---
+ CMakeLists.txt | 19 -------------------
+ 1 file changed, 19 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d9e4f0e7..6af2572e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -150,25 +150,6 @@ else()
+   # to resolve PREFIX.
+   if(Protobuf_PROTOC_EXECUTABLE)
+     set(ONNX_PROTOC_EXECUTABLE ${Protobuf_PROTOC_EXECUTABLE})
+-    get_filename_component(_PROTOBUF_INSTALL_PREFIX
+-                           ${Protobuf_PROTOC_EXECUTABLE} DIRECTORY)
+-    get_filename_component(_PROTOBUF_INSTALL_PREFIX
+-                           ${_PROTOBUF_INSTALL_PREFIX}/.. REALPATH)
+-    find_library(Protobuf_PROTOC_LIBRARY
+-                 NAMES protoc
+-                 PATHS ${_PROTOBUF_INSTALL_PREFIX}/lib
+-                 NO_DEFAULT_PATH)
+-    if(ONNX_USE_LITE_PROTO)
+-      find_library(Protobuf_LITE_LIBRARY
+-        NAMES protobuf-lite
+-        PATHS ${_PROTOBUF_INSTALL_PREFIX}/lib
+-        NO_DEFAULT_PATH)
+-    else()
+-      find_library(Protobuf_LIBRARY
+-        NAMES protobuf
+-        PATHS ${_PROTOBUF_INSTALL_PREFIX}/lib
+-        NO_DEFAULT_PATH)
+-    endif(ONNX_USE_LITE_PROTO)
+     find_path(Protobuf_INCLUDE_DIR google/protobuf/service.h
+               PATHS ${_PROTOBUF_INSTALL_PREFIX}/include
+               NO_DEFAULT_PATH)
+-- 
+2.35.1
+
