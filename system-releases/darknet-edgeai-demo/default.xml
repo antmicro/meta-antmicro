@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <remote fetch="https://github.com/antmicro/" name="antmicro"/>
+    <remote fetch="https://git.yoctoproject.org/git/" name="yoctoproject"/>
+    <remote fetch="https://github.com/openembedded/" name="meta-openembedded"/> 
+    <remote fetch="https://github.com/OE4T/" name="meta-tegra"/>
+
+    <project name="meta-antmicro.git" remote="antmicro" revision="master" path="sources/meta-antmicro">
+        <linkfile dest="build/conf/bblayers.conf" src="system-releases/darknet-edge-ai-demo/bblayers.conf"/>
+        <linkfile dest="build/conf/local.conf" src="system-releases/darknet-edge-ai-demo/local.conf"/>
+    </project>
+    
+    <project name="poky.git" remote="yoctoproject" revision="hardknott" path="sources/poky"/>
+    <project name="meta-openembedded.git" remote="meta-openembedded" revision="hardknott" path="sources/meta-openembedded"/>
+    <project name="meta-tegra.git" remote="meta-tegra" revision="hardknott" path="sources/meta-tegra" />
+</manifest>
