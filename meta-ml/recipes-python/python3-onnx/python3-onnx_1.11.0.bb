@@ -10,11 +10,18 @@ SRC_URI = " \
             file://0001-Removed-hardcoded-protobuf-pathes.patch \
             file://0001-Removed-inbuilt-cmake-package-building.patch \
             file://0001-CMake-build-directory-specified-by-enviroment-variab.patch \
+            file://0001-Removes-building-of-extensions.patch \
 "
 SRC_URI[sha256sum] = "eca224c7c2c8ee4072a0743e4898a84a9bdf8297b5e5910a2632e4c4182ffb2a"
 SRCREV = "cf6dfad9a770e4d6412ea88f1833c8e0118e163d"
 
 inherit cmake python3native
+
+DISTUTILS_INSTALL_ARGS ?= "--root=${D} \
+    --prefix=${prefix} \
+    --install-lib=${PYTHON_SITEPACKAGES_DIR} \
+    --install-data=${datadir} \
+    --skip-build"
 
 DEPENDS += " \
     python3-native \
@@ -35,9 +42,8 @@ RDEPENDS_${PN} += " \
 
 S = "${WORKDIR}/git"
 FILES_${PN} += " \
-    ${libdir}/libonnxifi*.so \
+    ${libdir}/* \
 "
-FILES_SOLIBSDEV = "${includedir}"
 
 OECMAKE_GENERATOR = "Unix Makefiles"
 EXTRA_OECMAKE += " \
@@ -50,23 +56,26 @@ EXTRA_OECMAKE += " \
     -DONNX_USE_PROTOBUF_SHARED_LIBS=ON \
     -DBUILD_ONNX_PYTHON:BOOL=ON \
 "
+
 do_compile_append() {
     cd ${S}
     export CMAKE_BUILD_DIR=${B}
-
+    
     STAGING_INCDIR=${STAGING_INCDIR} \
     STAGING_LIBDIR=${STAGING_LIBDIR} \
     ${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-native/${PYTHON_PN} setup.py \
     build || \
-    bbfatal_log "'${PYTHON_PN} setup.py buildk' execution failed."
+    bbfatal_log "'${PYTHON_PN} setup.py build' execution failed."
 }
 
 do_install() {
     cd ${S}
+    export CMAKE_BUILD_DIR=${B}
+
     install -d ${D}${PYTHON_SITEPACKAGES_DIR}
     STAGING_INCDIR=${STAGING_INCDIR} \
     STAGING_LIBDIR=${STAGING_LIBDIR} \
     PYTHONPATH=${D}${PYTHON_SITEPACKAGES_DIR} \
-    ${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-NATIVE/${PYTHON_PN} setup.py install {DISTUTILS_INSTALL_ARGS} || \
+    ${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-native/${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS} || \
     bbfatal_log "'${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS}' execution failed."
 }
