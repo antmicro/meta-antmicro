@@ -1,0 +1,25 @@
+From 819d72a89a2d4d4cd2a34fad82d4f3aed2e43e22 Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Wed, 6 Apr 2022 14:51:15 +0200
+Subject: [PATCH] Return version creation
+
+---
+ setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index 9101f5a1..39239f13 100644
+--- a/setup.py
++++ b/setup.py
+@@ -219,7 +219,7 @@ class create_version(ONNXCommand):
+ 
+ class build_py(setuptools.command.build_py.build_py):
+     def run(self):
+-#        self.run_command('create_version')
++        self.run_command('create_version')
+ #        self.run_command('cmake_build')
+ 
+         generated_python_files = \
+-- 
+2.35.1
+

@@ -11,17 +11,21 @@ SRC_URI = " \
             file://0001-Removed-inbuilt-cmake-package-building.patch \
             file://0001-CMake-build-directory-specified-by-enviroment-variab.patch \
             file://0001-Removes-building-of-extensions.patch \
+            file://0001-Scripts-building-uses-target-python-instead-of-nativ.patch \
+            file://0001-Return-version-creation.patch \
 "
 SRC_URI[sha256sum] = "eca224c7c2c8ee4072a0743e4898a84a9bdf8297b5e5910a2632e4c4182ffb2a"
 SRCREV = "cf6dfad9a770e4d6412ea88f1833c8e0118e163d"
 
 inherit cmake python3native
 
-DISTUTILS_INSTALL_ARGS ?= "--root=${D} \
+DISTUTILS_INSTALL_ARGS ?= " \
+    --root=${D} \
     --prefix=${prefix} \
     --install-lib=${PYTHON_SITEPACKAGES_DIR} \
     --install-data=${datadir} \
-    --skip-build"
+    --skip-build \
+"
 
 DEPENDS += " \
     python3-native \
@@ -35,23 +39,28 @@ DEPENDS += " \
 
 RDEPENDS_${PN} += " \
     python3-numpy \
-    protobuf \
     python3-protobuf \
     python3-typing-extensions \
+    python3-core \
 "
 
 S = "${WORKDIR}/git"
 FILES_${PN} += " \
     ${libdir}/* \
+    ${bindir}/* \
 "
 
 OECMAKE_GENERATOR = "Unix Makefiles"
+PYTHON_MAJOR_VERSION = "3"
+PYTHON_MINOR_VERSION = "9"
+PYTHON_DOT_VERSION = "${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
+
 EXTRA_OECMAKE += " \
     -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DONNX_NAMESPACE=onnx \
-    -DPYTHON_INCLUDE_DIR=${STAGING_DIR_TARGET}/usr/include/python3.9 \
-    -DPY_EXT_SUFFIX=.cpython-39-aarch64-linux-gnu.so \
+    -DPYTHON_INCLUDE_DIR=${STAGING_DIR_TARGET}/usr/include/python${PYTHON_DOT_VERSION} \
+    -DPY_EXT_SUFFIX=.cpython-${PYTHON_MAJOR_VERSION}${PYTHON_MINOR_VERSION}-${TARGET_ARCH}-${TARGET_OS}-gnu.so \
     -DONNX_CUSTOM_PROTOC_EXECUTABLE=${STAGING_DIR_NATIVE}${prefix}/bin/protoc \
     -DONNX_USE_PROTOBUF_SHARED_LIBS=ON \
     -DBUILD_ONNX_PYTHON:BOOL=ON \
@@ -78,4 +87,7 @@ do_install() {
     PYTHONPATH=${D}${PYTHON_SITEPACKAGES_DIR} \
     ${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-native/${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS} || \
     bbfatal_log "'${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS}' execution failed."
+
+    rm ${D}${PYTHON_SITEPACKAGES_DIR}/onnx/onnx_cpp2py_export*${BUILD_ARCH}*.so
+    cp ${B}/onnx_cpp2py_export*${TARGET_ARCH}*.so ${D}${PYTHON_SITEPACKAGES_DIR}/onnx
 }
