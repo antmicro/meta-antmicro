@@ -1,4 +1,4 @@
-DESCRIPTION = "Darknet deep learning framework implementing You Only Look Once object detection algorithm"
+DESCRIPTION = "Darknet - a C++ deep learning framework, containing YOLO object detection algorithms"
 
 LICENSE = "YOLO-License"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=4714f70f7f315d04508e3fd63d9b9232"
@@ -14,20 +14,14 @@ S = "${WORKDIR}/git"
 
 SECURITY_STRINGFORMAT = ""
 
-inherit cuda cmake pkgconfig
+inherit cmake pkgconfig
 
 DEPENDS += " \
-    cuda-cudart \
-    cudnn \
     opencv \
-    tegra-libraries \
 "
 
 RDEPENDS_${PN} += " \
-    cuda-cudart \
-    cudnn \
     opencv \
-    tegra-libraries \
 "
 
 FILES_${PN}-dev = "${includedir}/"
