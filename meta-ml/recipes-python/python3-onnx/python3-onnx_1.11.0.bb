@@ -8,11 +8,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 SRC_URI = " \
             git://github.com/onnx/onnx.git;protocol=https;branch=main; \
             file://0001-Removed-hardcoded-protobuf-pathes.patch \
-            file://0001-Removed-inbuilt-cmake-package-building.patch \
-            file://0001-CMake-build-directory-specified-by-enviroment-variab.patch \
-            file://0001-Removes-building-of-extensions.patch \
-            file://0001-Scripts-building-uses-target-python-instead-of-nativ.patch \
-            file://0001-Return-version-creation.patch \
+            file://0001-Removed-cmake-package-building.patch \
 "
 SRC_URI[sha256sum] = "eca224c7c2c8ee4072a0743e4898a84a9bdf8297b5e5910a2632e4c4182ffb2a"
 SRCREV = "cf6dfad9a770e4d6412ea88f1833c8e0118e163d"

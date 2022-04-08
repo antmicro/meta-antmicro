@@ -1,0 +1,76 @@
+From a5dc13634acbe0a4dba5169c640e23d7f00b869e Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Wed, 27 Apr 2022 13:25:16 +0200
+Subject: [PATCH] Removed cmake package building
+
+'CMAKE_BUILD_DIR' uses path from enviroment variable.
+Removes all cmake buildings.
+Console scripts are using non-native python.
+---
+ setup.py | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 6c434347..497a07d4 100644
+--- a/setup.py
++++ b/setup.py
+@@ -23,14 +23,11 @@ import multiprocessing
+ TOP_DIR = os.path.realpath(os.path.dirname(__file__))
+ SRC_DIR = os.path.join(TOP_DIR, 'onnx')
+ TP_DIR = os.path.join(TOP_DIR, 'third_party')
+-CMAKE_BUILD_DIR = os.path.join(TOP_DIR, '.setuptools-cmake-build')
++CMAKE_BUILD_DIR = os.getenv('CMAKE_BUILD_DIR')
+ PACKAGE_NAME = 'onnx'
+ 
+ WINDOWS = (os.name == 'nt')
+ 
+-CMAKE = find_executable('cmake3') or find_executable('cmake')
+-MAKE = find_executable('make')
+-
+ install_requires = []
+ setup_requires = []
+ tests_require = []
+@@ -74,11 +71,6 @@ with open(os.path.join(TOP_DIR, 'VERSION_NUMBER')) as version_file:
+         git_version=git_version
+     )
+ 
+-################################################################################
+-# Pre Check
+-################################################################################
+-
+-assert CMAKE, 'Could not find "cmake" executable!'
+ 
+ ################################################################################
+ # Utilities
+@@ -220,7 +212,6 @@ class cmake_build(setuptools.Command):
+ class build_py(setuptools.command.build_py.build_py):
+     def run(self):
+         self.run_command('create_version')
+-        self.run_command('cmake_build')
+ 
+         generated_python_files = \
+             glob.glob(os.path.join(CMAKE_BUILD_DIR, 'onnx', '*.py')) + \
+@@ -275,10 +266,8 @@ class mypy_type_check(ONNXCommand):
+ 
+ cmdclass = {
+     'create_version': create_version,
+-    'cmake_build': cmake_build,
+     'build_py': build_py,
+     'develop': develop,
+-    'build_ext': build_ext,
+     'typecheck': mypy_type_check,
+ }
+ 
+@@ -354,4 +343,9 @@ setuptools.setup(
+             'backend-test-tools = onnx.backend.test.cmd_tools:main',
+         ]
+     },
++    options = {
++        'build_scripts': {
++            'executable': '/usr/bin/python3'
++        },
++    },
+ )
+-- 
+2.35.1
+
