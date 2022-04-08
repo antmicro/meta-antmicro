@@ -1,5 +1,6 @@
 SUMMARY = "kenning"
 DESCRIPTION = "Kenning - a framework for implementing and testing deployment pipelines for deep learning applications on edge devices"
+HOMEPAGE = "https://github.com/antmicro/kenning"
 
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=5f65e8d2428eda0b797294f9c14f546d"
@@ -13,13 +14,20 @@ S = "${WORKDIR}/git"
 inherit setuptools3
 
 DEPENDS += " \
-    python3-jinja2 \
-    python3-pillow \
-    python3-numpy \
+    python3-jinja2-native \
+    python3-pillow-native \
+    python3-matplotlib-native \
+    python3-numpy-native \
+    python3-onnx \
+    python3-psutil-native \
+    python3-tqdm-native \
 "
-
 RDEPENDS_${PN} += " \
     python3-jinja2 \
     python3-pillow \
+    python3-matplotlib \
     python3-numpy \
+    python3-onnx \
+    python3-psutil \
+    python3-tqdm \
 "
