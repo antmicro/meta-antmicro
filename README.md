@@ -15,8 +15,8 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 ## Yocto BSP build dependencies
 
-All build dependencies for this project are wrapped in the [Dockerfile](Dockerfile).
-To build the image for development, install [Docker](https://www.docker.com/) and run:
+All build dependencies for this project are included in a dedicated [Dockerfile](Dockerfile).
+To build a development container image, install [Docker](https://www.docker.com/) and run:
 
 ```
 sudo docker build -t yoctobuilder .
@@ -26,7 +26,7 @@ This will create a Docker image that can be later used to create the BSP image.
 
 ## `meta-antmicro` sample use case
 
-The [system-releases directory](system-releases) provides Yocto build configuration files, as well as [Google repo tool](https://gerrit.googlesource.com/git-repo/) to quickly start testing and development of Yocto-based systems.
+The [system-releases directory](system-releases) provides the Yocto build configuration files, as well as the [Google repo tool](https://gerrit.googlesource.com/git-repo/) to quickly start testing and development of Yocto-based systems.
 
 For example, to build the system that will run the [darknet-imgui-visualization demo with camera feed](https://github.com/antmicro/darknet-imgui-visualization) for one of the Jetson platforms:
 
@@ -35,12 +35,12 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   docker run --rm -v <build-dir>:/data -u $(id -u):$(id -u) -it yoctobuilder
   ```
   *Note: This command runs Docker container that will be removed upon closing (`--rm`), mount the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and build the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.*
-* Fetch the sources using `repo` tool present in the Docker container:
+* Fetch the sources using the `repo` tool present in the Docker container:
   ```
   repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/darknet-edgeai-demo/manifest.xml
   repo sync -j`nproc`
   ```
-* Initialize build environment:
+* Initialize the build environment:
   ```
   source sources/poky/oe-init-build-env
   ```
@@ -49,7 +49,7 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="jetson-agx-xavier-devkit" bitbake darknet-edgeai-demo
   ```
   (other available targets are listed in [meta-tegra/conf/machine directory](https://github.com/OE4T/meta-tegra/tree/hardknott/conf/machine)).
-* After successful build, go to the `build/tmp/deploy/images/jetson-agx-xavier-devkit` directory and untar the built tegraflash package:
+* After a successful build, go to the `build/tmp/deploy/images/jetson-agx-xavier-devkit` directory and untar the built tegraflash package:
   ```
   cd build/tmp/deploy/images/jetson-agx-xavier-devkit
   mkdir flash-directory
@@ -66,4 +66,4 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   ```
   sudo ./doflash.sh
   ```
-* Upon successful flash, with the connected camera and screen, the object detection preview should appear.
+* After the device is successfully flashed, and a camera and screen are connected, you should see the object detection preview.
