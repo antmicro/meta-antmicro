@@ -3,12 +3,12 @@ SUMMARY = "Fast, OpenGL-based YOLO object detection visualization with Darknet a
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-SRCREV = "1cd566c5f53eab8cf59924d80079c4d0c283b454"
+SRCREV = "583bf953c83f6e350efbb75b64b44e125780d2d5"
 SRC_URI = " \
     https://github.com/antmicro/darknet-imgui-visualization;protocol=https;branch=master \
 "
 
-SRC_URI[sha256sum] = "dcaccec179fdcc83930c899bf11940bacba67a2611c0b223cb273a35388f6537"
+SRC_URI[sha256sum] = "aab13a46b5c8896e893a4a45c685a9f936b5bc8e88c36ad6bd57715fc0050fd3"
 S = "${WORKDIR}/git"
 
 inherit cuda cmake pkgconfig
