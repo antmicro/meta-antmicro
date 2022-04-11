@@ -32,3 +32,6 @@ do_configure_append() {
 
 export LAPACK = "${STAGING_LIBDIR}"
 export OPENBLAS = "${STAGING_LIBDIR}"
+
+export F77 = "${TARGET_PREFIX}gfortran"
+export F90 = "${TARGET_PREFIX}gfortran"
