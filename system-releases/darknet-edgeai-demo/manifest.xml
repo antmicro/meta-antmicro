@@ -6,8 +6,8 @@
     <remote fetch="https://github.com/OE4T/" name="meta-tegra"/>
 
     <project name="meta-antmicro.git" remote="antmicro" revision="master" path="sources/meta-antmicro">
-        <linkfile dest="build/conf/bblayers.conf" src="system-releases/darknet-edge-ai-demo/bblayers.conf"/>
-        <linkfile dest="build/conf/local.conf" src="system-releases/darknet-edge-ai-demo/local.conf"/>
+        <linkfile dest="build/conf/bblayers.conf" src="system-releases/darknet-edgeai-demo/bblayers.conf"/>
+        <linkfile dest="build/conf/local.conf" src="system-releases/darknet-edgeai-demo/local.conf"/>
     </project>
     
     <project name="poky.git" remote="yoctoproject" revision="hardknott" path="sources/poky"/>
