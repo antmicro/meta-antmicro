@@ -14,4 +14,4 @@ do_install() {
 }
 
 FILES_${PN} += " /home/root/.config/autostart/darknet-demo.desktop "
-RDEPENDS_${PN} = "darknet-demo maxpower"
+RDEPENDS_${PN} = "darknet-imgui-visualization maxpower"

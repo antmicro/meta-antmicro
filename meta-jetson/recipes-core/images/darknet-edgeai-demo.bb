@@ -15,9 +15,9 @@ LICENSE = "Apache-2.0"
 inherit core-image features_check
 
 IMAGE_INSTALL_append = " \
-    darknet-demo-service \
     cudnn \
     darknet \
+    darknet-demo-service \
     glfw \
     htop \
     nano \
