@@ -29,3 +29,6 @@ do_configure_append() {
     cd ${S}
     git submodule update --init
 }
+
+export LAPACK = "${STAGING_LIBDIR}"
+export OPENBLAS = "${STAGING_LIBDIR}"
