@@ -35,8 +35,11 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   docker run --rm -v <build-dir>:/data -u $(id -u):$(id -u) -it yoctobuilder
   ```
   *Note: This command runs Docker container that will be removed upon closing (`--rm`), mount the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and build the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.*
-* Fetch the sources using the `repo` tool present in the Docker container:
+* Configure git settings and fetch the sources using the `repo` tool present in the Docker container (optionally, you can fetch the sources from your system to avoid git configuration):
   ```
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+  cd /data
   repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/darknet-edgeai-demo/manifest.xml
   repo sync -j`nproc`
   ```
