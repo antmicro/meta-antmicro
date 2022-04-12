@@ -35,3 +35,7 @@ export OPENBLAS = "${STAGING_LIBDIR}"
 
 export F77 = "${TARGET_PREFIX}gfortran"
 export F90 = "${TARGET_PREFIX}gfortran"
+
+# Moving all the flags defined in LDSHARED to LDFLAGS
+LDFLAGS:prepend := "${@" ".join(d.getVar("LDSHARED", True).split()[1:])} "
+LDSHARED := "${@"".join(d.getVar("LDSHARED", True).split()[0])}"
