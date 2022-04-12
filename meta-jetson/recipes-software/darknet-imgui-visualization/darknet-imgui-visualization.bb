@@ -24,5 +24,9 @@ RDEPENDS_${PN} += " \
     glew \
 "
 
+FILES_${PN} += " \
+    ${datadir}/darknet-demo/* \
+"
+
 EXTRA_OECMAKE = "-DLIBDARKNET_PATH=${WORKDIR}/recipe-sysroot/usr/lib/libdarknet.so"
 TARGET_CXXFLAGS += " -I${WORKDIR}/recipe-sysroot/usr/include/darknet -pthread "
