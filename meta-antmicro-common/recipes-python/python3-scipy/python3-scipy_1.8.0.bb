@@ -19,6 +19,7 @@ DEPENDS += " \
     python3-pythran-native \
     openblas \
     lapack \
+    chrpath-native \
 "
 
 RDEPENDS_${PN} += " \
@@ -42,3 +43,9 @@ LDFLAGS:append = " \
 "
 
 INSANE_SKIP_${PN} += "already-stripped"
+
+do_install_append() {
+    cd ${D}${libdir}/${PYTHON_DIR}/site-packages/scipy
+    find . -type f -name "*.so" -exec chrpath -d "{}" \;
+    cd -
+}
