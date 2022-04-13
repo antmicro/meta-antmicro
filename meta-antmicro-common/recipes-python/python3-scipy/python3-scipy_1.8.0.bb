@@ -14,6 +14,7 @@ S = "${WORKDIR}/git"
 
 DEPENDS += " \
     python3-numpy-native \
+    python3-numpy \
     python3-pybind11-native \
     python3-pythran-native \
     openblas \
@@ -34,3 +35,8 @@ export F90 = "${TARGET_PREFIX}gfortran"
 # Moving all the flags defined in LDSHARED to LDFLAGS
 LDFLAGS:prepend := "${@" ".join(d.getVar("LDSHARED", True).split()[1:])} "
 LDSHARED := "${@"".join(d.getVar("LDSHARED", True).split()[0])}"
+
+LDFLAGS:append = " \
+    -L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages/numpy/core/lib \
+    -L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages/numpy/random/lib \
+"
