@@ -40,3 +40,5 @@ LDFLAGS:append = " \
     -L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages/numpy/core/lib \
     -L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages/numpy/random/lib \
 "
+
+INSANE_SKIP_${PN} += "already-stripped"
