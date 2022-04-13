@@ -1,9 +1,9 @@
 SUMMARY = "Scipy"
 DESCRIPTION = "SciPy is an open-source software for mathematics, science, and engineering. It includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more."
 
-SRC_URI = "gitsm://github.com/scipy/scipy;protocol=https;branch=maintenance/1.8.x"
-SRC_URI[sha256sum] = "dc730324d4ac084d9cd67ca66d61c2ad4389ba46af1defbfd01f4fc1a369b5fd"
-SRCREV = "b5d8bab88af61d61de09641243848df63380a67f"
+SRC_URI = "gitsm://github.com/scipy/scipy;protocol=https;branch=maintenance/1.7.x"
+SRC_URI[sha256sum] = "02a2e159eb6e279fd2417a06f17790f855274486e3947690da58898572f3b8a1"
+SRCREV = "59e6539cf80dc04b16b0f0ab52343381f0a7a2fa"
 
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=d31204a91ddce3a76a81d09c6bf72614;"
