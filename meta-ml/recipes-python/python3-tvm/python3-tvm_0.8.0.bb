@@ -64,6 +64,6 @@ do_install() {
     bbfatal_log "'${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS}' execution failed."
 }
 
+DISTUTILS_INSTALL_ARGS += "--prefix ${D}/usr"
 FILES_${PN} += "${libdir}/*"
-
 OECMAKE_GENERATOR = "Unix Makefiles"
