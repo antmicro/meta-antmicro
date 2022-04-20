@@ -64,6 +64,7 @@ do_install() {
     PYTHONPATH=${D}${PYTHON_SITEPACKAGES_DIR} \
     ${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-native/${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS} || \
     bbfatal_log "'${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS}' execution failed."
+    sed -i "s+.*/python3-native/python3+#\!/usr/bin/env python3+" ${D}/${bindir}/tvmc
 }
 
 DISTUTILS_INSTALL_ARGS += "--prefix ${D}/usr"
