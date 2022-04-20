@@ -65,6 +65,11 @@ do_install() {
     ${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-native/${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS} || \
     bbfatal_log "'${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS}' execution failed."
     sed -i "s+.*/python3-native/python3+#\!/usr/bin/env python3+" ${D}/${bindir}/tvmc
+    rm ${D}${PYTHON_SITEPACKAGES_DIR}/easy-install.pth
+    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/tvm ${D}${PYTHON_SITEPACKAGES_DIR}
+    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/EGG-INFO/* ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/
+    rm ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/EGG-INFO -r
+    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/ ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}-py3.9.egg-info
 }
 
 DISTUTILS_INSTALL_ARGS += "--prefix ${D}/usr"
