@@ -1,0 +1,24 @@
+From b8621b26320a715bebc5d2eb99591a430914f932 Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Wed, 20 Apr 2022 12:57:25 +0200
+Subject: [PATCH] Removes all requirements
+
+---
+ python/setup.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/python/setup.py b/python/setup.py
+index 5d21af6b5..59469bfb7 100644
+--- a/python/setup.py
++++ b/python/setup.py
+@@ -212,7 +212,6 @@ setup(
+     description="TVM: An End to End Tensor IR/DSL Stack for Deep Learning Systems",
+     zip_safe=False,
+     entry_points={"console_scripts": ["tvmc = tvm.driver.tvmc.main:main"]},
+-    install_requires=requirements["core"][1],
+     extras_require=extras_require,
+     packages=find_packages(),
+     package_dir={"tvm": "tvm"},
+-- 
+2.35.1
+

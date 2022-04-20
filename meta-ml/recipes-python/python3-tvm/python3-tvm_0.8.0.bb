@@ -10,7 +10,9 @@ SRC_URI[sha256sum] = "7cb6c6563417b64ad0b71abe8899109380c91c0ab8c40cfe3e2569b6fc
 SRCREV = "7b3a22e465dd6aca4729504a19beb4bc23312755"
 SRC_URI += " \
             file://0001-Adds-a-builddir-to-look-for-libraries.patch \
+            file://0001-Removes-all-requirements.patch \
 "
+
 S = "${WORKDIR}/git"
 
 inherit cmake python3native
