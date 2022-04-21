@@ -8,6 +8,7 @@ case "$1" in
     start)
         /usr/sbin/nvpmodel -m 0 -f /etc/nvpmodel.conf
         /usr/bin/jetson_clocks
+        /usr/bin/jetson_clocks --fan
         ;;
     stop)
         ;;
