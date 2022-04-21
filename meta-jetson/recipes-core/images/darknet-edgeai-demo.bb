@@ -24,6 +24,7 @@ IMAGE_INSTALL_append = " \
     opencv \
     openssh \
     packagegroup-xfce-base \
+    python3-pyvidctrl \
     rsync \
     sudo \
     tegra-tools \
