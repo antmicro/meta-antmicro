@@ -17,6 +17,14 @@ S = "${WORKDIR}/git"
 
 DEPENDS += " \
     python3-numpy-native \
+    python3-scipy-native \
+"
+
+RDEPENDS_${PN} += " \
+    python3-numpy \
+    python3-scipy \
+    python3-joblib \
+    python3-threadpoolctl \
 "
 
 do_compile_prepend() {
