@@ -13,21 +13,14 @@ S = "${WORKDIR}/git"
 
 inherit setuptools3
 
-DEPENDS += " \
-    python3-jinja2-native \
-    python3-pillow-native \
-    python3-matplotlib-native \
-    python3-numpy-native \
-    python3-onnx \
-    python3-psutil-native \
-    python3-tqdm-native \
-"
 RDEPENDS_${PN} += " \
     python3-jinja2 \
     python3-pillow \
     python3-matplotlib \
     python3-numpy \
     python3-onnx \
+    python3-scipy \
+    python3-sklearn \
     python3-psutil \
     python3-tqdm \
 "
