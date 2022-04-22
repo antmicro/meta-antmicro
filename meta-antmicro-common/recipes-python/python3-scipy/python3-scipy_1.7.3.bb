@@ -25,6 +25,7 @@ DEPENDS += " \
 RDEPENDS_${PN} += " \
     python3-numpy \
     lapack \
+    python3-profile \
 "
 
 export LAPACK = "${STAGING_LIBDIR}"
