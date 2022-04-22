@@ -24,14 +24,6 @@ EXTRA_OECMAKE += " \
 
 DEPENDS += " \
     python3-setuptools-native \
-    python3-attrs \
-    python3-cloudpickle \
-    python3-decorator \
-    python3-numpy \
-    python3-psutil \
-    python3-scipy \
-    python3-synr \
-    python3-tornado \
 "
 
 RDEPENDS_${PN} += " \
