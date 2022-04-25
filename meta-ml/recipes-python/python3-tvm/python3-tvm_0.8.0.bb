@@ -20,10 +20,16 @@ inherit cmake python3native
 EXTRA_OECMAKE += " \
     -DMACHINE_NAME=${TARGET_SYS} \
     -DUSE_LIBBACKTRACE=OFF \
+    -DUSE_LLVM=${STAGING_LIBDIR}/llvm11.1.0/llvm-config \
+    -DLLVM_INCLUDE_DIRS=${STAGING_INCDIR}/llvm11.1.0 \
+    -DLLVM_LIBS=${STAGING_LIBDIR}/llvm11.1.0/libLLVM-11.so \
+    -DTVM_LLVM_VERSION=111 \
+    -DTVM_INFO_LLVM_VERSION=11.1.0 \
 "
 
 DEPENDS += " \
     python3-setuptools-native \
+    llvm \
 "
 
 RDEPENDS_${PN} += " \
@@ -35,6 +41,7 @@ RDEPENDS_${PN} += " \
     python3-scipy \
     python3-synr \
     python3-tornado \
+    llvm \
 "
 
 do_compile_append() {
@@ -62,6 +69,9 @@ do_install() {
     mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/EGG-INFO/* ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/
     rm ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/EGG-INFO -r
     mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/ ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}-py3.9.egg-info
+    cd ${D}${PYTHON_SITEPACKAGES_DIR}/tvm
+    find . -type f -name "*.so" -exec chrpath -d "{}" \;
+    cd -
 }
 
 DISTUTILS_INSTALL_ARGS += "--prefix ${D}/usr"
