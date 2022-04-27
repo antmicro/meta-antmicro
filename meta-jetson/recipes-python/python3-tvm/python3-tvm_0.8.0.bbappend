@@ -16,14 +16,17 @@ EXTRA_OECMAKE += " \
     -DCUDA_CUDA_INCLUDE_DIRS=${STAGING_LOCALDIR}/cuda-10.2/include/ \
     -DCUDA_CUDNN_INCLUDE_DIRS=${STAGING_INCDIR} \
     -DCUDA_TOOLKIT_ROOT_DIR=${STAGING_LOCALDIR}/cuda-10.2/ \
+    -DUSE_TENSORRT_RUNTIME=ON \
 "
 
 DEPENDS += " \
     cudnn \
     cuda-nvrtc \
+    tensorrt \
 "
 
 RDEPENDS_${PN} += " \
     cudnn \
     cuda-nvrtc \
+    tensorrt \
 "
