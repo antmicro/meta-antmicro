@@ -12,6 +12,13 @@ inherit setuptools3
 
 S = "${WORKDIR}/git"
 
+# Lapack building requires fortran support.
+# Define next lines in your local.conf file:
+#
+# FORTRAN:forcevariable = ",fortran"
+# RUNTIMETARGET:append:pn-gcc-runtime = " libquadmath"
+# HOSTTOOLS += "gfortran"
+
 DEPENDS += " \
     python3-numpy-native \
     python3-numpy \
