@@ -24,6 +24,7 @@ EXTRA_OECMAKE += " \
     -DLLVM_INCLUDE_DIRS=${STAGING_INCDIR}/llvm11.1.0 \
     -DLLVM_LIBS=${STAGING_LIBDIR}/llvm11.1.0/libLLVM-11.so \
     -DTVM_LLVM_VERSION=111 \
+    -DUSE_TARGET_ONNX=ON \
 "
 
 DEPENDS += " \
@@ -40,6 +41,7 @@ RDEPENDS_${PN} += " \
     python3-scipy \
     python3-synr \
     python3-tornado \
+    python3-onnx \
     llvm \
 "
 
