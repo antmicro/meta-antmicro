@@ -10,7 +10,7 @@
         <linkfile dest="build/conf/local.conf" src="system-releases/darknet-edgeai-demo/local.conf"/>
     </project>
     
-    <project name="poky.git" remote="yoctoproject" revision="hardknott" path="sources/poky"/>
-    <project name="meta-openembedded.git" remote="meta-openembedded" revision="hardknott" path="sources/meta-openembedded"/>
-    <project name="meta-tegra.git" remote="meta-tegra" revision="hardknott" path="sources/meta-tegra" />
+    <project name="poky.git" remote="yoctoproject" revision="kirkstone" path="sources/poky"/>
+    <project name="meta-openembedded.git" remote="meta-openembedded" revision="kirkstone" path="sources/meta-openembedded"/>
+    <project name="meta-tegra.git" remote="meta-tegra" revision="kirkstone" path="sources/meta-tegra" />
 </manifest>
