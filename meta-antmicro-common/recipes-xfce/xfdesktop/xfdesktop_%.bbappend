@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 SRC_URI += " \
     file://antmicro-wallpaper.jpg \
     file://xfce4-desktop.xml \
@@ -6,7 +6,7 @@ SRC_URI += " \
 
 SAVED_DIR := "${THISDIR}"
 
-do_install_append() {
+do_install:append() {
     install -d ${D}${datadir}/backgrounds/antmicro/
     install ${SAVED_DIR}/xfdesktop/antmicro-wallpaper.jpg ${D}${datadir}/backgrounds/antmicro/antmicro-wallpaper.jpg
     install -d ${D}/home/root/.config/xfce4/xfconf/xfce-perchannel-xml

@@ -1,6 +1,6 @@
 DESCRIPTION = "Edge AI demos base image"
 
-IMAGE_FEATURES_append = " \
+IMAGE_FEATURES:append = " \
     package-management \
     ssh-server-openssh \
     tools-debug \
@@ -14,7 +14,7 @@ LICENSE = "Apache-2.0"
 
 inherit core-image features_check
 
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
     cudnn \
     darknet \
     darknet-demo-service \

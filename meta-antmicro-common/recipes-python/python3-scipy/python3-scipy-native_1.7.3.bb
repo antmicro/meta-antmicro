@@ -52,7 +52,7 @@ LDFLAGS:append = " \
 
 INSANE_SKIP_${PN} += "already-stripped"
 
-do_install_append() {
+do_install:append() {
     cd ${D}${libdir}/${PYTHON_DIR}/site-packages/scipy
     find . -type f -name "*.so" -exec chrpath -d "{}" \;
     cd -

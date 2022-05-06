@@ -45,7 +45,7 @@ RDEPENDS_${PN} += " \
     llvm \
 "
 
-do_compile_append() {
+do_compile:append() {
     cd ${S}/python
     STAGING_INCDIR=${STAGING_INCDIR} \
     STAGING_LIBDIR=${STAGING_LIBDIR} \

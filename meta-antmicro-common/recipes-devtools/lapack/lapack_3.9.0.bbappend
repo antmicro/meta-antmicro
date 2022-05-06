@@ -1,2 +1,2 @@
 BBCLASSEXTEND = "native"
-DEPENDS_remove_class-native = "libgfortran"
+DEPENDS:remove:class-native = "libgfortran"

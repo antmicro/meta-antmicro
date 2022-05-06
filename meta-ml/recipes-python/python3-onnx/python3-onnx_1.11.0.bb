@@ -62,7 +62,7 @@ EXTRA_OECMAKE += " \
     -DBUILD_ONNX_PYTHON:BOOL=ON \
 "
 
-do_compile_append() {
+do_compile:append() {
     cd ${S}
     export CMAKE_BUILD_DIR=${B}
     
