@@ -10,6 +10,6 @@ SRC_URI = " \
 
 S = "${WORKDIR}/git"
 
-RDEPENDS_${PN} = "v4l-utils"
+RDEPENDS:${PN} = "v4l-utils"
 
 inherit setuptools3

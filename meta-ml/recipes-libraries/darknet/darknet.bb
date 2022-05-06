@@ -20,13 +20,13 @@ DEPENDS += " \
     opencv \
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     opencv \
 "
 
-FILES_${PN}-dev = "${includedir}/"
+FILES:${PN}-dev = "${includedir}/"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${libdir}/libdarknet.so \
     ${bindir}/darknet \
 "

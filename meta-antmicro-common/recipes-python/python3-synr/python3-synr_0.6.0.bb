@@ -8,4 +8,4 @@ SRC_URI[md5sum] = "edb7a0da96dad86615566a4cc5575341"
 
 inherit pypi setuptools3
 
-RDEPENDS_{PN} += "python3-attr"
+RDEPENDS:{PN} += "python3-attr"

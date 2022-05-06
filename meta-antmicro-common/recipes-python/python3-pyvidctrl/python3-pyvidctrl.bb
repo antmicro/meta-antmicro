@@ -10,6 +10,6 @@ SRC_URI = " \
 
 S = "${WORKDIR}/git"
 
-RDEPENDS_${PN} = "python3-v4l2"
+RDEPENDS:${PN} = "python3-v4l2"
 
 inherit setuptools3

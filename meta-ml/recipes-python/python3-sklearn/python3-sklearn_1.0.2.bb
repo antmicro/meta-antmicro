@@ -16,7 +16,7 @@ DEPENDS += " \
     python3-scipy-native \
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     python3-numpy \
     python3-scipy \
     python3-joblib \

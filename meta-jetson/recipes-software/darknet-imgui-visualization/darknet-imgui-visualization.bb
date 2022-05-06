@@ -18,13 +18,13 @@ DEPENDS += " \
     glfw \
     glew \
 "
-RDEPENDS_${PN} += " \ 
+RDEPENDS:${PN} += " \ 
     darknet \
     glfw \
     glew \
 "
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${datadir}/darknet-demo/* \
 "
 

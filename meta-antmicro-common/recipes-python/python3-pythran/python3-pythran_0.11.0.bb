@@ -8,7 +8,7 @@ SRC_URI[sha256sum] = "0b2cba712e09f7630879dff69f268460bfe34a6d6000451b47d598558a
 
 BBCLASSEXTEND += "native"
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     python3-ply \
     python3-gast \
     python3-numpy \

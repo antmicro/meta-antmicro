@@ -24,7 +24,7 @@ DEPENDS += " \
     tensorrt-core \
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     cudnn \
     cuda-nvrtc \
     tensorrt-core \

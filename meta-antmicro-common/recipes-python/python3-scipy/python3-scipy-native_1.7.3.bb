@@ -29,7 +29,7 @@ DEPENDS += " \
     chrpath-native \
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     python3-numpy \
     lapack \
     python3-profile \
@@ -50,7 +50,7 @@ LDFLAGS:append = " \
     -L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages/numpy/random/lib \
 "
 
-INSANE_SKIP_${PN} += "already-stripped"
+INSANE_SKIP:${PN} += "already-stripped"
 
 do_install:append() {
     cd ${D}${libdir}/${PYTHON_DIR}/site-packages/scipy

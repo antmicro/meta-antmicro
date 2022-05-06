@@ -32,7 +32,7 @@ DEPENDS += " \
     llvm \
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     python3-attrs \
     python3-cloudpickle \
     python3-decorator \
@@ -76,5 +76,5 @@ do_install() {
 }
 
 DISTUTILS_INSTALL_ARGS += "--prefix ${D}/usr"
-FILES_${PN} += "${libdir}/*"
+FILES:${PN} += "${libdir}/*"
 OECMAKE_GENERATOR = "Unix Makefiles"

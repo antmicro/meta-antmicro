@@ -6,7 +6,7 @@ DEPENDS += " \
     tegra-libraries-cuda \
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     cuda-cudart \
     cudnn \
     tegra-libraries-cuda \

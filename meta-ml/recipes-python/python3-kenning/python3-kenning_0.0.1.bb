@@ -13,7 +13,7 @@ S = "${WORKDIR}/git"
 
 inherit setuptools3
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     python3-jinja2 \
     python3-pillow \
     python3-matplotlib \

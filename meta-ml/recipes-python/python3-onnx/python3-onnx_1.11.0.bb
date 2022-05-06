@@ -33,7 +33,7 @@ DEPENDS += " \
     python3-pybind11-native \
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     python3-numpy \
     python3-protobuf \
     python3-typing-extensions \
@@ -41,7 +41,7 @@ RDEPENDS_${PN} += " \
 "
 
 S = "${WORKDIR}/git"
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${libdir}/* \
     ${bindir}/* \
 "

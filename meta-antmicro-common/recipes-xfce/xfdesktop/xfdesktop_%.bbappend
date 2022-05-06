@@ -13,7 +13,7 @@ do_install:append() {
     install ${SAVED_DIR}/xfdesktop/xfce4-desktop.xml ${D}/home/root/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${datadir}/backgrounds/antmicro/antmicro-wallpaper.jpg \
     /home/root/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml \
 "
