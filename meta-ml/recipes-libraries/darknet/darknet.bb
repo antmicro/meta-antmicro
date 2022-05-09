@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=4714f70f7f315d04508e3fd63d9b9232"
 
 SRCREV = "1be96802a030ae2216c7e19b7523e1e2f0948aaf"
 SRC_URI = " \
-    git://github.com/AlexeyAB/darknet.git;protocol=https \
+    git://github.com/AlexeyAB/darknet.git;protocol=https;branch=master \
     file://0001-CMakeLists.txt-patched-by-locations-and-stb-line.patch \
 "
 
