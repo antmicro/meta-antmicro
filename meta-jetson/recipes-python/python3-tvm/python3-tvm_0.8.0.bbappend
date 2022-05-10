@@ -10,7 +10,7 @@ EXTRA_OECMAKE += " \
     -DCUDA_CUDA_LIBRARY=${STAGING_LOCALDIR}/cuda-${CUDA_VERSION}/stubs/libcuda.so \
     -DCUDA_CUDNN_LIBRARY=${STAGING_LIBDIR}/libcudnn.so \
     -DCUDA_CUDART_LIBRARY=${STAGING_LOCALDIR}/cuda-${CUDA_VERSION}/lib/libcudart.so \
-    -DCUDA_CUBLAS_LIBRARY=${STAGING_LIBDIR}/libcublas.so \
+    -DCUDA_CUBLAS_LIBRARY=${STAGING_LOCALDIR}/cuda-${CUDA_VERSION}/lib/libcublas.so \
     -DCUDA_NVRTC_LIBRARY=${STAGING_LOCALDIR}/cuda-${CUDA_VERSION}/lib/libnvrtc.so \
     -DCUDA_CUDA_INCLUDE_DIRS=${STAGING_LOCALDIR}/cuda-${CUDA_VERSION}/include/ \
     -DCUDA_CUDNN_INCLUDE_DIRS=${STAGING_INCDIR} \
@@ -21,11 +21,11 @@ EXTRA_OECMAKE += " \
 DEPENDS += " \
     cudnn \
     cuda-nvrtc \
-    tensorrt \
+    tensorrt-core \
 "
 
 RDEPENDS_${PN} += " \
     cudnn \
     cuda-nvrtc \
-    tensorrt \
+    tensorrt-core \
 "
