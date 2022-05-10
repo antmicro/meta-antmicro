@@ -20,10 +20,10 @@ inherit cmake python3native
 EXTRA_OECMAKE += " \
     -DMACHINE_NAME=${TARGET_SYS} \
     -DUSE_LIBBACKTRACE=OFF \
-    -DUSE_LLVM=${STAGING_LIBDIR}/llvm11.1.0/llvm-config \
-    -DLLVM_INCLUDE_DIRS=${STAGING_INCDIR}/llvm11.1.0 \
-    -DLLVM_LIBS=${STAGING_LIBDIR}/llvm11.1.0/libLLVM-11.so \
-    -DTVM_LLVM_VERSION=111 \
+    -DUSE_LLVM=${STAGING_LIBDIR}/llvm13.0.1/llvm-config \
+    -DLLVM_INCLUDE_DIRS=${STAGING_INCDIR}/llvm13.0.1 \
+    -DLLVM_LIBS=${STAGING_LIBDIR}/llvm13.0.1/libLLVM-13.so \
+    -DTVM_LLVM_VERSION=130 \
     -DUSE_TARGET_ONNX=ON \
 "
 
@@ -43,6 +43,7 @@ RDEPENDS:${PN} += " \
     python3-tornado \
     python3-onnx \
     llvm \
+    packagegroup-core-buildessential \
 "
 
 do_compile:append() {
