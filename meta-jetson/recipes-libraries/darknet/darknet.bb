@@ -14,14 +14,20 @@ S = "${WORKDIR}/git"
 
 SECURITY_STRINGFORMAT = ""
 
-inherit cmake pkgconfig
+inherit cmake pkgconfig cuda
 
 DEPENDS += " \
     opencv \
+    cuda-cudart \
+    cudnn \
+    tegra-libraries-cuda \
 "
 
 RDEPENDS:${PN} += " \
     opencv \
+    cuda-cudart \
+    cudnn \
+    tegra-libraries-cuda \
 "
 
 FILES:${PN}-dev = "${includedir}/"
