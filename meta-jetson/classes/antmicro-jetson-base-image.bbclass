@@ -1,7 +1,7 @@
-SUMMARY = "Meta Antmicro Jetson"
+SUMMARY = "Antmicro Base Jetson image"
 DESCRIPTION = "Class to build image with meta-antmicro/meta-jetson support"
 
-inherit meta-antmicro-base
+inherit antmicro-base-image
 
 IMAGE_INSTALL:append = " \
     cudnn \

@@ -1,4 +1,4 @@
-SUMMARY = "Meta Antmicro Base"
+SUMMARY = "Antmicro Base Image"
 DESCRIPTION = "Class to build meta-antmicro base image"
 
 IMAGE_FEATURES:append = " \
