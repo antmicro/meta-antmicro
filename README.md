@@ -12,6 +12,7 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 * `meta-jetson` - contains settings and recipes specific to Jetson platforms, such as Jetson Nano, Jetson AGX Xavier, or Jetson NX Xavier.
    It also adds CUDA capabilities to the existing software and libraries in the system that support GPU computing.
 * `meta-ml` - contains libraries and software used for machine learning, deep learning and computer vision.
+* `meta-microros` - contains packages required for adding micro-ROS support for the ROS 2 core image. 
 
 ## Yocto BSP build dependencies
 
