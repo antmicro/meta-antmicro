@@ -1,6 +1,6 @@
 SUMMARY = "Definitions for the ROS 2 msgs entities information used by micro-ROS to leverage its functionality to the same level as ROS 2, by means of a dedicated graph manager"
 LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 ROS_BRANCH ?= "branch=galactic"
 SRC_URI = "git://github.com/micro-ROS/micro_ros_msgs;${ROS_BRANCH};protocol=https"
