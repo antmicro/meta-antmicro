@@ -6,7 +6,7 @@ RDEPENDS:${PN} = "\
     bash \
 "
 
-FILESEXTRAPATHS:prepend = "${THISDIR}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}:"
 
 SRC_URI = "\
     file://startagent.sh \
