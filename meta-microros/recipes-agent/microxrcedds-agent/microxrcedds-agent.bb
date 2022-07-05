@@ -54,6 +54,7 @@ FILES:${PN} += " \
 
 FILES:${PN}-dev += " \
     ${libdir}/libmicroxrcedds_agent.so \
+    ${libdir}/libmicroxrcedds_agent.so.2.1 \
 "
 
 EXTRA_OECMAKE = " \
