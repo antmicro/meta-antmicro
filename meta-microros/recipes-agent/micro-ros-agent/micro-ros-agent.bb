@@ -62,7 +62,7 @@ S = "${WORKDIR}/git/micro_ros_agent"
 
 EXTRA_OECMAKE = " \
     -DMICROROSAGENT_SUPERBUILD:BOOL=OFF \
-    -DUROSAGENT_GENERATE_PROFILE:bool=OFF \
+    -DUROSAGENT_GENERATE_PROFILE:BOOL=OFF \
 "
 
 inherit ros_ament_cmake
