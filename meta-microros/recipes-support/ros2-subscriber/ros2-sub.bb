@@ -29,7 +29,7 @@ RDEPENDS_${PN} = " \
     micro-ros-agent \
 "
 
-S = "${WORKDIR}/ros2_sub_src"
+S = "${WORKDIR}/ros2_sub_src/src/ros2-sensor-subscriber/"
 
 FILES:${PN} += " \
     ${libdir}/* \
