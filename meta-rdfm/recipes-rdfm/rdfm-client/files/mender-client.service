@@ -1,0 +1,15 @@
+[Unit]
+Description=RDFM OTA update service
+After=systemd-resolved.service
+
+[Service]
+Type=dbus
+BusName=io.mender.AuthenticationManager
+User=root
+Group=root
+ExecStartPre=/bin/mkdir -p -m 0700 /data/mender
+ExecStart=/usr/bin/rdfm -daemon
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
