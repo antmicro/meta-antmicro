@@ -48,13 +48,8 @@ RDEPENDS_${PN} = " \
 
 S = "${WORKDIR}/git"
 
-FILES:${PN} += " \
-    ${libdir}/libmicroxrcedds_agent.so.2.1.1 \
-"
-
 FILES:${PN}-dev += " \
     ${libdir}/libmicroxrcedds_agent.so \
-    ${libdir}/libmicroxrcedds_agent.so.2.1 \
 "
 
 EXTRA_OECMAKE = " \
@@ -67,5 +62,4 @@ EXTRA_OECMAKE = " \
     -DUAGENT_ISOLATED_INSTALL:BOOL=OFF \
     -DUAGENT_USE_SYSTEM_LOGGER:BOOL=ON \
 "
-
 inherit ros_ament_cmake
