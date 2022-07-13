@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-      <remote fetch="https://git.yoctoproject.org/git/" name="yoctoproject"/>
-      <remote fetch="https://github.com/" name="github"/>
-      <remote fetch="${REPO_URL}/../" name="antmicro" /> 
-      
-      <project name="poky.git" remote="yoctoproject" revision="honister" path="sources/poky"/>
-      <project name="meta-antmicro" remote="antmicro" revision="master" path="sources/meta-antmicro">
-        <linkfile dest="build/conf/bblayers.conf" src="system-releases/micro-ros-demo-nologin/bblayers.conf"/>
-        <linkfile dest="build/conf/local.conf" src="system-releases/micro-ros-demo-nologin/local.conf"/>
-      </project>
-      <project name="renode-microros-demo" remote="antmicro" revision="master" path="sources/meta-antmicro/meta-microros/recipes-support/ros2-subscriber/files/ros2_sub_src/" />
-      <project name="openembedded/meta-openembedded.git" remote="github" revision="honister" path="sources/meta-openembedded"/>
-      <project name="Xilinx/meta-xilinx.git" remote="github" revision="honister" path="sources/meta-xilinx"/>
-      <project name="antmicro/linux-xlnx" remote="github" path="kernel_ws/" revision="zynq-zedboard-virtio" />
-      <project name="ros/meta-ros" remote="github" path="sources/meta-ros" revision="honister" />
+    <remote fetch="https://git.yoctoproject.org/git/" name="yoctoproject"/>
+    <remote fetch="https://github.com/" name="github"/>
+    <remote fetch="${REPO_URL}/../" name="antmicro" />
+
+    <project name="poky.git" remote="yoctoproject" revision="honister" path="sources/poky"/>
+    <project name="meta-antmicro" remote="antmicro" revision="master" path="sources/meta-antmicro">
+      <linkfile dest="build/conf/bblayers.conf" src="system-releases/micro-ros-demo-nologin/bblayers.conf"/>
+      <linkfile dest="build/conf/local.conf" src="system-releases/micro-ros-demo-nologin/local.conf"/>
+    </project>
+    <project name="renode-microros-demo" remote="antmicro" revision="master" path="sources/meta-antmicro/meta-microros/recipes-support/ros2-subscriber/files/ros2_sub_src/" />
+    <project name="openembedded/meta-openembedded.git" remote="github" revision="honister" path="sources/meta-openembedded"/>
+    <project name="Xilinx/meta-xilinx.git" remote="github" revision="honister" path="sources/meta-xilinx"/>
+    <project name="antmicro/linux-xlnx" remote="github" path="kernel_ws/" revision="zynq-zedboard-virtio" />
+    <project name="ros/meta-ros" remote="github" path="sources/meta-ros" revision="honister" />
 </manifest>
