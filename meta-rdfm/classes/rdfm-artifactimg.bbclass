@@ -10,7 +10,7 @@ MENDER_ARTIFACT_SIGNING_KEY ?= ""
 
 # --------------------------- END OF CONFIGURATION -----------------------------
 
-do_image:mender[depends] += "rdfm-artifact-native:do_populate_sysroot"
+do_image_rdfm[depends] += "rdfm-artifact-native:do_populate_sysroot"
 
 ARTIFACTIMG_FSTYPE ??= "${ARTIFACTIMG_FSTYPE_DEFAULT}"
 ARTIFACTIMG_FSTYPE_DEFAULT = "ext4"
@@ -26,6 +26,10 @@ MENDER_ARTIFACT_PROVIDES_GROUP ?= ""
 MENDER_ARTIFACT_DEPENDS ?= ""
 MENDER_ARTIFACT_DEPENDS_GROUPS ?= ""
 
+RDFM_CLEAR_PROVIDES ?= ""
+RDFM_NO_PROVIDES_LOCALLY ?= ""
+RDFM_ARTIFACT_PATH = "${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}"
+
 apply_arguments () {
     #
     # $1 -- the command line flag to apply to each element
@@ -40,11 +44,11 @@ apply_arguments () {
     cmd=$res
 }
 
-IMAGE_CMD:mender() {
+IMAGE_CMD:rdfm() {
     set -x
 
-    if [ -z "${MENDER_ARTIFACT_NAME}" ]; then
-        bbfatal "Need to define MENDER_ARTIFACT_NAME variable."
+    if [ -z "${RDFM_ARTIFACT_NAME}" ]; then
+        bbfatal "Need to define RDFM_ARTIFACT_NAME variable."
     fi
 
     rootfs_size=$(stat -Lc %s ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE})
@@ -62,6 +66,10 @@ IMAGE_CMD:mender() {
     for dev in ${MENDER_DEVICE_TYPES_COMPATIBLE}; do
         extra_args="$extra_args -t $dev"
     done
+
+    if [ -z "${RDFM_CLEAR_PROVIDES}" ]; then
+        extra_args="$extra_args --no-default-clears-provides"
+    fi
 
     if [ -n "${MENDER_ARTIFACT_SIGNING_KEY}" ]; then
         extra_args="$extra_args -k ${MENDER_ARTIFACT_SIGNING_KEY}"
@@ -107,14 +115,21 @@ IMAGE_CMD:mender() {
         extra_args="$extra_args $cmd"
     fi
 
+
     rdfm-artifact write rootfs-image \
-        -n ${MENDER_ARTIFACT_NAME} \
+        -n ${RDFM_ARTIFACT_NAME} \
         $extra_args \
         $image_flag ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE} \
         ${MENDER_ARTIFACT_EXTRA_ARGS} \
-        -o ${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.mender
+        -o ${RDFM_ARTIFACT_PATH}.rdfm
+
+    if [ -z "${RDFM_NO_PROVIDES_LOCALLY}" ]; then
+        rdfm-artifact modify \
+            --save-provides-to-file \
+            ${RDFM_ARTIFACT_PATH}.rdfm
+    fi
 }
 
-IMAGE_CMD:mender[vardepsexclude] += "IMAGE_ID"
+IMAGE_CMD:rdfm[vardepsexclude] += "IMAGE_ID"
 # We need to have the filesystem image generated already.
-IMAGE_TYPEDEP:mender:append = " ${ARTIFACTIMG_FSTYPE}"
+IMAGE_TYPEDEP:rdfm:append = " ${ARTIFACTIMG_FSTYPE}"
