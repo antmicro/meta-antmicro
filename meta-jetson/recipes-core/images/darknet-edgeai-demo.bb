@@ -10,7 +10,7 @@ IMAGE_FEATURES:append = " \
 
 REQUIRED_DISTRO_FEATURES = "x11"
 
-LICENSE = "Apache-2.0" 
+LICENSE = "Apache-2.0"
 
 inherit core-image features_check
 
