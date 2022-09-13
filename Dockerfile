@@ -18,6 +18,7 @@ RUN apt-get update \
     g++ \
     gawk \
     gcc \
+    gfortran \
     git \
     git-lfs \
     gzip \
@@ -27,6 +28,7 @@ RUN apt-get update \
     libfdt-dev \
     liblz4-dev \
     libncurses5-dev \
+    libopenblas-dev \
     libsdl1.2-dev \
     libssl-dev \
     libsystemd-dev \
