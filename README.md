@@ -8,11 +8,13 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 `meta-antmicro` Yocto layer consists of the following sublayers:
 
-* `meta-antmicro-common` - contains system settings and recipes that are target-independent and used in our demonstration systems introduced in [system-releases directory](system-releases).
-* `meta-jetson` - contains settings and recipes specific to Jetson platforms, such as Jetson Nano, Jetson AGX Xavier, or Jetson NX Xavier.
-   It also adds CUDA capabilities to the existing software and libraries in the system that support GPU computing.
-* `meta-ml` - contains libraries and software used for machine learning, deep learning and computer vision.
-* `meta-microros` - contains packages required for adding micro-ROS support for the ROS 2 core image. 
+* [meta-antmicro-common](meta-antmicro-common/README.md)
+* [meta-jetson](meta-jetson/README.md)
+* [meta-microros](meta-microros/README.md)
+* [meta-ml-tegra](meta-ml-tegra/README.md)
+* [meta-ml](meta-ml/README.md)
+* [meta-rdfm-tegra](meta-rdfm-tegra/README.md)
+* [meta-rdfm](meta-rdfm/README.md)
 
 ## Yocto BSP build dependencies
 
@@ -35,7 +37,7 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   ```
   docker run --rm -v <build-dir>:/data -u $(id -u):$(id -u) -it yoctobuilder
   ```
-  *Note: This command runs Docker container that will be removed upon closing (`--rm`), mount the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and build the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.*
+  **Note:** This command runs Docker container that will be removed upon closing (`--rm`), mount the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and build the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.
 * Configure git settings and fetch the sources using the `repo` tool present in the Docker container (optionally, you can fetch the sources from your system to avoid git configuration):
   ```
   git config --global user.email "you@example.com"
