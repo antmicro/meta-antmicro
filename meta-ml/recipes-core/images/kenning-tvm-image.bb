@@ -1,9 +1,9 @@
 SUMMARY = "Antmicro Base ML Image"
-DESCRIPTION = "Recipe to build image with Kenning, TVM and Jetson support"
+DESCRIPTION = "Recipe to build image containing Kenning and TVM BSPs"
 
 LICENSE = "Apache-2.0"
 
-inherit antmicro-jetson-base-image
+inherit antmicro-base-image
 
 IMAGE_INSTALL:append = " \
     python3-tvm \
