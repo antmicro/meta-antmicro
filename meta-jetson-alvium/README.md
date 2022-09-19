@@ -10,4 +10,4 @@ The `meta-jetson-alvium` Yocto layer contains settings and kernel patches to sup
 
 ## Layer dependencies
 
-The `meta-jetson-alvium` layer depends on `meta-jetson` layer.
+The `meta-jetson-alvium` layer depends on the `meta-jetson` layer.
