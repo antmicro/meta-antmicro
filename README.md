@@ -6,7 +6,7 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 ## `meta-antmicro` sublayers
 
-`meta-antmicro` Yocto layer consists of the following sublayers:
+The `meta-antmicro` Yocto layer consists of the following sublayers:
 
 * [meta-antmicro-common](meta-antmicro-common/README.md)
 * [meta-jetson-alvium](meta-jetson-alvium/README.md)
