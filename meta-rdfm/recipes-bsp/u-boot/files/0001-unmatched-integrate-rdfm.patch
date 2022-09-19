@@ -1,0 +1,28 @@
+From 6d7dafc54ff7cfcc9f9fbf63a1121b7d1df7f78f Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Mon, 19 Sep 2022 10:32:23 +0200
+Subject: [PATCH] unmatched-integrate-rdfm
+
+Defines u-boot environment to be on 'mmc' device.
+
+---
+ include/configs/sifive-unmatched.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/configs/sifive-unmatched.h b/include/configs/sifive-unmatched.h
+index 087764666b..197b5fac9e 100644
+--- a/include/configs/sifive-unmatched.h
++++ b/include/configs/sifive-unmatched.h
+@@ -11,6 +11,9 @@
+ 
+ #include <linux/sizes.h>
+ 
++#define CONFIG_BOOTCOUNT_LIMIT
++#define CONFIG_ENV_IS_IN_MMC
++
+ #ifdef CONFIG_SPL
+ 
+ #define CONFIG_SPL_MAX_SIZE		0x00100000
+-- 
+2.35.1
+
