@@ -6,10 +6,10 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 ## Description
 
-The `meta-ml-tegra` Yocto layer contains settings and recipes that extend capabilities of [meta-ml](../meta-ml) layer on CUDA devices.
+The `meta-ml-tegra` Yocto layer contains settings and recipes that extend capabilities of the [meta-ml](../meta-ml) layer on CUDA devices.
 
 ## Layer dependencies
 
-The `meta-ml-tegra` layer depends on next layers:
+The `meta-ml-tegra` layer depends on the following layers:
 * `meta-jetson`
 * `meta-ml`
