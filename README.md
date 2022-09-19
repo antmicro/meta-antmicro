@@ -38,7 +38,7 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   ```
   docker run --rm -v <build-dir>:/data -u $(id -u):$(id -u) -it yoctobuilder
   ```
-  **Note:** This command runs Docker container that will be removed upon closing (`--rm`), mount the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and build the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.
+  **Note:** This command runs a Docker container that will be removed upon closing (`--rm`), mounts the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and builds the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.
 * Configure git settings and fetch the sources using the `repo` tool present in the Docker container (optionally, you can fetch the sources from your system to avoid git configuration):
   ```
   git config --global user.email "you@example.com"
@@ -55,7 +55,7 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   ```
   PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="jetson-agx-xavier-devkit" bitbake darknet-edgeai-demo
   ```
-  (other available targets are listed in [meta-tegra/conf/machine directory](https://github.com/OE4T/meta-tegra/tree/hardknott/conf/machine)).
+  (other available targets are listed in the [meta-tegra/conf/machine directory](https://github.com/OE4T/meta-tegra/tree/hardknott/conf/machine)).
 * After a successful build, go to the `build/tmp/deploy/images/jetson-agx-xavier-devkit` directory and untar the built tegraflash package:
   ```
   cd build/tmp/deploy/images/jetson-agx-xavier-devkit
@@ -64,7 +64,7 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   tar xzvf ../darknet-edgeai-demo-jetson-agx-xavier-devkit.tegraflash.tar.gz
   ```
 * Put the device in recovery mode.
-* Make sure that device is available for flashing - run `lsusb | grep -i nvidia` and check if any line appears.
+* Make sure that the device is available for flashing - run `lsusb | grep -i nvidia` and check if any line appears.
   There should be something like:
   ```
   Bus 001 Device 006: ID 0955:7f21 NVIDIA Corp. APX
