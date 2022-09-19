@@ -8,13 +8,13 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 The `meta-microros` Yocto layer contains recipes for adding `micro-ROS` support for the `ROS 2` core image.
 
-Layer extends the functionality of [meta-ros2-galactic](https://github.com/ros/meta-ros/tree/master/meta-ros2-galactic) layer.
+This layer extends the functionality of the [meta-ros2-galactic](https://github.com/ros/meta-ros/tree/master/meta-ros2-galactic) layer.
 
-The [system releases directory](../system-releases) provides micro-ros system releases implementing [Renode micro-ROS demo](https://github.com/antmicro/renode-microros-demo).
+The [system releases directory](../system-releases) provides micro-ROS system releases implementing the [Renode micro-ROS demo](https://github.com/antmicro/renode-microros-demo).
 
 ## Layer dependencies
 
-The `meta-microros` layer depends on following Yocto layers:
+The `meta-microros` layer depends on the following Yocto layers:
 * `meta-ros/meta-ros-common`
 * `meta-ros/meta-ros2`
 * `meta-ros/meta-ros2-galactic`
