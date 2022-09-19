@@ -19,10 +19,12 @@ The `meta-antmicro-common` layer depends on next Yocto layers:
 * `meta-openembedded/meta-oe`
 * `meta-openembedded/meta-xfce`
 
-The `meta-antmicro-common` layer adds `lapack-native` recipe that requires support for `fortran`, it can be provided by adding following lines into your `local.conf` file:
+The `meta-antmicro-common` layer adds `lapack-native` recipe that requires support for `fortran`.
+It can be provided by adding following lines into build's `local.conf` file:
 ```
 FORTRAN:forcevariable = ",fortran"
 RUNTIMETARGET:append:pn-gcc-runtime = " libquadmath"
 HOSTTOOLS += "gfortran"
 ```
-If you are using a custom distribution, you can alternatively include above lines in your `distro.conf` file.
+
+If a custom distribution is used, the above lines can be alternatively included in the `distro.conf` file.
