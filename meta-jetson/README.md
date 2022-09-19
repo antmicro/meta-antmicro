@@ -6,9 +6,9 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 ## Description
 
-The `meta-jetson` Yocto layer contains settings and recipes specific to `Jetson` family devices.
-Layer also adds CUDA capabilities to the existing software and libraries in the system that support GPU computing.
+The `meta-jetson` Yocto layer contains settings and recipes specific to the `Jetson` family of devices.
+This layer also adds CUDA capabilities to the existing software and libraries in the system that support GPU computing.
 
 ## Layer dependencies
 
-The `meta-jetson` layer depends on [meta-tegra](https://github.com/OE4T/meta-tegra) Yocto layer.
+The `meta-jetson` layer depends on the [meta-tegra](https://github.com/OE4T/meta-tegra) Yocto layer.
