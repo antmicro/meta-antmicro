@@ -21,8 +21,8 @@ source sources/poky/oe-init-build-env
 PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="jetson-xavier-nx-devkit-emmc" bitbake darknet-edgeai-demo
 ```
 
-When the build process is complete, the resulting image will be stored in `build/tmp/deploy/images/jetson-xavier-nx-devkit-emmc` directory.
-We can unpack the tegraflash package, and then flash the board by putting the hardware in recovery mode, run the following commands:
+When the build process is complete, the resulting image will be stored in the `build/tmp/deploy/images/jetson-xavier-nx-devkit-emmc` directory.
+We can unpack the tegraflash package and then flash the board by putting the hardware in recovery mode by runnning the following commands:
 ```
 cd tmp/deploy/images/jetson-xavier-nx-devkit-emmc
 mkdir flash-directory && cd flash-directory
