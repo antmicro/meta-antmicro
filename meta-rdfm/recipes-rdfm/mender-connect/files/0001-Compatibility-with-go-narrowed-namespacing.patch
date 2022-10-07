@@ -1,0 +1,26 @@
+From 2cdabad3e3ea75e994b2c16905f8c7283b7e01e8 Mon Sep 17 00:00:00 2001
+From: Arkadiusz Kozdra <akozdra@internships.antmicro.com>
+Date: Fri, 4 Feb 2022 11:15:18 +0100
+Subject: [PATCH] Compatibility with go 1.16+ narrowed namespacing
+
+---
+ client/dbus/dbus.go | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/github.com/mendersoftware/mender-connect/client/dbus/dbus.go b/src/github.com/mendersoftware/mender-connect/client/dbus/dbus.go
+index 9be58a7..93dd18d 100644
+--- a/src/github.com/mendersoftware/mender-connect/client/dbus/dbus.go
++++ b/src/github.com/mendersoftware/mender-connect/client/dbus/dbus.go
+@@ -26,6 +26,10 @@ type MainLoop unsafe.Pointer
+ 
+ var dbusAPI DBusAPI = nil
+ 
++const (
++	GDBusTypeString = "s"
++)
++
+ // DBusCallResponse stores the response of a method invocation
+ type DBusCallResponse interface {
+ 	// GetString returns a string stored in the response object
+-- 
+2.30.2
