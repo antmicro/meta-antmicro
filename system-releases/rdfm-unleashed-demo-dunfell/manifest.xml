@@ -11,6 +11,7 @@
       <linkfile dest="build/conf/bblayers.conf" src="system-releases/rdfm-unleashed-demo-dunfell/bblayers.conf"/>
       <linkfile dest="build/conf/local.conf" src="system-releases/rdfm-unleashed-demo-dunfell/local.conf"/>
       <linkfile dest="script.sh" src="system-releases/rdfm-unleashed-demo-dunfell/script.sh"/>
+      <linkfile dest="setup-environment" src="system-releases/rdfm-unleashed-demo-dunfell/setup-environment"/>
   </project>
   <project name="riscv/meta-riscv.git" remote="github" revision="dunfell" path="sources/meta-riscv"/>
   <project name="sifive/meta-sifive.git" remote="github" revision="2020.11" path="sources/meta-sifive"/>
