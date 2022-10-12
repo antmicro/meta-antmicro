@@ -21,5 +21,6 @@ rm ${script_dir}/sources/meta-sifive/recipes-devtools/qemu/qemu-native_5.1.0.bba
 rm ${script_dir}/sources/meta-sifive/recipes-devtools/qemu/qemu-system-native_5.1.0.bbappend
 rm ${script_dir}/sources/meta-sifive/recipes-devtools/qemu/qemu_5.1.0.bbappend
 rm ${script_dir}/sources/meta-sifive/recipes-extended/man-pages/man-pages_5.08.bbappend
+rm ${script_dir}/sources/meta-sifive/recipes-graphics -rf
 
 . ${script_dir}/sources/poky/oe-init-build-env ${build_dir}
