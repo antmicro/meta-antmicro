@@ -58,7 +58,7 @@ EOF
 
 # U-boot bootimg
     cat >> "$wks" <<EOF
-part --source bootimg-partition --sourceparams="loader=u-boot" --ondisk $ondisk_dev --align 4096 --fstype=vfat --active --size=100M
+part --source bootimg-partition --sourceparams="loader=u-boot" --ondisk $ondisk_dev --align $alignment_kb --fstype=vfat --active --size=${MENDER_BOOT_PART_SIZE_MB}M
 EOF
 
 # Rootfs partitions
@@ -85,5 +85,8 @@ EOF
     mv "$wicout/$(basename "${wks%.wks}")"*.direct "$outimgname"
 
     rm -rf "$wicout/"
+    if [ -e ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.$suffix ]; then
+        rm ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.$suffix
+    fi
     ln -s -r ${IMGDEPLOYDIR}/${IMAGE_NAME}.$suffix ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.$suffix
 }
