@@ -1,0 +1,7 @@
+virtio: Storage.VirtIOBlockDevice @ sysbus 0x100d0000
+    IRQ -> plic@40
+
+resetpin: Miscellaneous.ResetPin @ gpio 10
+
+gpio:
+    10 -> resetpin@0
