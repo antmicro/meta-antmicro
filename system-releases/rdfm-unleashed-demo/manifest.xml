@@ -7,11 +7,11 @@
   <remote fetch="git://git.openembedded.org" name="oe"/>
   <remote fetch="https://github.com/mendersoftware" name="mender"/>
 
-  <project name="meta-antmicro.git" remote="antmicro" revision="37877-unleashed-rdfm-dunfell" path="sources/meta-antmicro">
-      <linkfile dest="build/conf/bblayers.conf" src="system-releases/rdfm-unleashed-demo-dunfell/bblayers.conf"/>
-      <linkfile dest="build/conf/local.conf" src="system-releases/rdfm-unleashed-demo-dunfell/local.conf"/>
-      <linkfile dest="script.sh" src="system-releases/rdfm-unleashed-demo-dunfell/script.sh"/>
-      <linkfile dest="setup-environment" src="system-releases/rdfm-unleashed-demo-dunfell/setup-environment"/>
+  <project name="meta-antmicro.git" remote="antmicro" revision="30934-build-unleashed-demo" path="sources/meta-antmicro">
+      <linkfile dest="build/conf/bblayers.conf" src="system-releases/rdfm-unleashed-demo/bblayers.conf"/>
+      <linkfile dest="build/conf/local.conf" src="system-releases/rdfm-unleashed-demo/local.conf"/>
+      <linkfile dest="script.sh" src="system-releases/rdfm-unleashed-demo/script.sh"/>
+      <linkfile dest="setup-environment" src="system-releases/rdfm-unleashed-demo/setup-environment"/>
   </project>
   <project name="riscv/meta-riscv.git" remote="github" revision="dunfell" path="sources/meta-riscv"/>
   <project name="sifive/meta-sifive.git" remote="github" revision="2020.11" path="sources/meta-sifive"/>
