@@ -56,6 +56,12 @@ part --source rawcopy --sourceparams="file=u-boot-spl.bin" --ondisk $ondisk_dev 
 part --source rawcopy --sourceparams="file=u-boot.itb" --ondisk $ondisk_dev --fixed-size 4M --align 1 --part-type 2e54b353-1271-4842-806f-e436d6af6985
 EOF
 
+# U-boot environment
+    cat >> "$wks" <<EOF
+part --ondisk $ondisk_dev --fixed-size 512K --align $alignment_kb
+part --ondisk $ondisk_dev --fixed-size 512K --align $alignment_kb
+EOF
+
 # U-boot bootimg
     cat >> "$wks" <<EOF
 part --source bootimg-partition --sourceparams="loader=u-boot" --ondisk $ondisk_dev --align $alignment_kb --fstype=vfat --active --size=${MENDER_BOOT_PART_SIZE_MB}M
