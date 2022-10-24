@@ -1,7 +1,7 @@
-From a721a711704bb5219992afa618b8b43f00d55d9a Mon Sep 17 00:00:00 2001
+From 3e5e9783de52e501263f20d578280829be1f4b59 Mon Sep 17 00:00:00 2001
 From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
-Date: Mon, 10 Oct 2022 12:41:00 +0200
-Subject: [PATCH] Integration of RDFM boot code for sifive-fu540
+Date: Wed, 19 Oct 2022 15:20:51 +0200
+Subject: [PATCH] Integration of RDFM boot code for sifive fu540
 
 ---
  include/configs/sifive-fu540.h | 4 ++++
@@ -23,5 +23,5 @@ index 72c841eb9b..be768101a1 100644
  #define TYPE_GUID_LOADER2	"2E54B353-1271-4842-806F-E436D6AF6985"
  #define TYPE_GUID_SYSTEM	"0FC63DAF-8483-4772-8E79-3D69D8477DE4"
 -- 
-2.35.1
+2.38.0
 
