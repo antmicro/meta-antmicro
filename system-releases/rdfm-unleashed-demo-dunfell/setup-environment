@@ -12,6 +12,7 @@ script_dir=$(dirname "$this_script")
 script_dir=$(readlink -f "$script_dir")
 build_dir=${script_dir}/build
 
+rm ${script_dir}/sources/meta-sifive/recipes-bsp/u-boot/libubootenv_0.2.bb
 rm ${script_dir}/sources/meta-sifive/recipes-connectivity/bind/bind_9.16.5.bbappend
 rm ${script_dir}/sources/meta-sifive/recipes-core/glibc/cross-localedef-native_2.32.bbappend
 rm ${script_dir}/sources/meta-sifive/recipes-core/kbd/kbd_2.3.0.bbappend
