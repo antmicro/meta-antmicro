@@ -1,5 +1,9 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-SRC_URI:append:mender-uboot:freedom-u540 = " file://0001-Remove-unleashed-mmc.patch"
+SRC_URI:append:mender-uboot:freedom-u540 = " \
+    file://0001-Remove-unleashed-mmc.patch \
+    file://0001-unleashed-renode-virtio.patch \
+    file://unleashed.cfg \
+"
 
 DEPENDS:remove:freedom-u540 = "opensbi"
 
