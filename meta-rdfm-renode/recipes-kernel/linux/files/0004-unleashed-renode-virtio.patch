@@ -1,0 +1,56 @@
+From 1c7706929058ed2fcc6ab4bec2010f854ca60163 Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Wed, 9 Nov 2022 19:27:52 +0100
+Subject: [PATCH] arch: riscv: boot: dts: hifive-unleashed-a00: Add virtio support
+
+Added virtio to the SoC device tree for Renode simulation support,
+in order to provide the filesystem via virtio.
+
+---
+ .../boot/dts/sifive/hifive-unleashed-a00.dts  | 23 ++++++++++---------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+index c8a47bf32f04..7a1f130b2dca 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+@@ -59,6 +59,18 @@ d4 {
+ 				linux,default-trigger = "none";
+ 			};
+ 		};
++		virtio@100d0000 {
++				compatible = "virtio,mmio";
++				reg = <0x00 0x100d0000 0x00 0x150>;
++				interrupts = <0x28>;
++				interrupt-parent = <&plic0>;
++		};
++		virtio@100e0000 {
++				compatible = "virtio,mmio";
++				reg = <0x00 0x100e0000 0x00 0x150>;
++				interrupts = <0x28>;
++				interrupt-parent = <&plic0>;
++		};
+ 	};
+ 
+ 	hfclk: hfclk {
+@@ -138,17 +150,6 @@ flash@0 {
+ 	};
+ };
+ 
+-&qspi2 {
+-	status = "okay";
+-	mmc@0 {
+-		compatible = "mmc-spi-slot";
+-		reg = <0>;
+-		spi-max-frequency = <20000000>;
+-		voltage-ranges = <3300 3300>;
+-		disable-wp;
+-	};
+-};
+-
+ &eth0 {
+ 	status = "okay";
+ 	phy-mode = "gmii";
+-- 
+2.38.0
+
