@@ -15,6 +15,7 @@ The `meta-antmicro` Yocto layer consists of the following sublayers:
 * [meta-ml](meta-ml/README.md)
 * [meta-rdfm-tegra](meta-rdfm-tegra/README.md)
 * [meta-rdfm](meta-rdfm/README.md)
+* [meta-antmicro-demo-base](meta-antmicro-demo-base/README.md)
 
 ## Yocto BSP build dependencies
 
