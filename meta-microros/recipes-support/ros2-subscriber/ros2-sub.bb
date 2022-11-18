@@ -19,7 +19,7 @@ DEPENDS = " \
     micro-ros-agent \
 "
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
     ament-cmake \
     builtin-interfaces \
     rmw \
