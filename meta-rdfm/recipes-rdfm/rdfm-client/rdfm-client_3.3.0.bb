@@ -15,4 +15,4 @@ S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 
 DEPENDS += "xz openssl"
-RDEPENDS_${PN} += "liblzma openssl"
+RDEPENDS:${PN} += "liblzma openssl"
