@@ -20,7 +20,7 @@ DEPENDS = " \
     rosidl-typesupport-fastrtps-c-native \
 "
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
     rosidl-default-runtime \
 "
 
