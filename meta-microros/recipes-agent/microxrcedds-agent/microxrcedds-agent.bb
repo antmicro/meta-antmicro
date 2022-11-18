@@ -8,11 +8,11 @@ inherit ros_superflore_generated
 SRC_URI = "git://github.com/eProsima/Micro-XRCE-DDS-Agent;branch=ros2;protocol=https"
 SRCREV = "08a762d9d2b3326e4c9b19115109031a65ba8e2c"
 DEPENDS = " \
-    cmake-native \ 
+    cmake-native \
     ament-cmake \
     builtin-interfaces \
     ninja-native \
-    ament-cmake-native \ 
+    ament-cmake-native \
     ament-cmake-ros-native \
     rosidl-default-generators \
     ament-lint-auto \
@@ -29,7 +29,7 @@ DEPENDS = " \
     spdlog \
 "
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
     ament-cmake \
     rosidl-default-generators \
     ament-lint-auto \
@@ -42,7 +42,7 @@ RDEPENDS_${PN} = " \
     rmw-fastrtps-shared-cpp \
     rmw-dds-common \
     micro-ros-msgs \
-    fastcdr \ 
+    fastcdr \
     spdlog \
 "
 
