@@ -3,16 +3,16 @@ HOMEPAGE = "https://github.com/antmicro/protoplaster"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}:"
 
 SRC_URI = " \
     git://github.com/antmicro/protoplaster.git;protocol=https;branch=main \
 "
-SRCREV="${AUTOREV}"
+SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
     python3-smbus2 \
     python3-pytest \
     python3-pyrav4l2 \
@@ -21,4 +21,3 @@ RDEPENDS_${PN} = " \
 "
 
 inherit setuptools3
-
