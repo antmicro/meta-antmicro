@@ -8,11 +8,11 @@ inherit ros_superflore_generated
 SRC_URI = "git://github.com/micro-ROS/micro-ROS-Agent;branch=galactic;protocol=https"
 SRCREV = "52b35ef2eb9ea24bced342f6fc27f881ae5600cb"
 DEPENDS = " \
-    cmake-native \ 
+    cmake-native \
     ament-cmake \
     builtin-interfaces \
     ninja-native \
-    ament-cmake-native \ 
+    ament-cmake-native \
     ament-cmake-ros-native \
     rosidl-default-generators \
     ament-lint-auto \
@@ -35,7 +35,7 @@ DEPENDS = " \
     rosidl-typesupport-fastrtps-c-native \
 "
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
     ament-cmake \
     rosidl-default-generators \
     ament-lint-auto \
@@ -48,7 +48,7 @@ RDEPENDS_${PN} = " \
     rmw-fastrtps-shared-cpp \
     rmw-dds-common \
     micro-ros-msgs \
-    fastcdr \ 
+    fastcdr \
     microxrcedds-agent \
     rosidl-cmake \
     rosidl-adapter \
