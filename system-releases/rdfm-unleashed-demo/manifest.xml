@@ -10,7 +10,6 @@
   <project name="meta-antmicro.git" remote="antmicro" revision="dunfell" path="sources/meta-antmicro">
       <linkfile dest="build/conf/bblayers.conf" src="system-releases/rdfm-unleashed-demo/bblayers.conf"/>
       <linkfile dest="build/conf/local.conf" src="system-releases/rdfm-unleashed-demo/local.conf"/>
-      <linkfile dest="script.sh" src="system-releases/rdfm-unleashed-demo/script.sh"/>
       <linkfile dest="setup-environment" src="system-releases/rdfm-unleashed-demo/setup-environment"/>
   </project>
   <project name="riscv/meta-riscv.git" remote="github" revision="dunfell" path="sources/meta-riscv"/>
