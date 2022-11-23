@@ -13,7 +13,7 @@ SRC_URI = " \
 SRC_URI[sha256sum] = "eca224c7c2c8ee4072a0743e4898a84a9bdf8297b5e5910a2632e4c4182ffb2a"
 SRCREV = "cf6dfad9a770e4d6412ea88f1833c8e0118e163d"
 
-inherit cmake python3native
+inherit cmake python3native python3-dir
 
 DISTUTILS_INSTALL_ARGS ?= " \
     --root=${D} \
@@ -47,15 +47,26 @@ FILES:${PN} += " \
 "
 
 OECMAKE_GENERATOR = "Unix Makefiles"
-PYTHON_MAJOR_VERSION = "3"
-PYTHON_MINOR_VERSION = "10"
-PYTHON_DOT_VERSION = "${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
+PYTHON_MAJOR_VERSION = "${@get_major_version}"
+PYTHON_MINOR_VERSION = "${@get_minor_version(d)}"
+
+def get_major_version(d):
+    version = d.getVar('PYTHON_BASEVERSION')
+    if not version:
+        return
+    return version.split('.')[0]
+
+def get_minor_version(d):
+    version = d.getVar('PYTHON_BASEVERSION')
+    if not version:
+        return
+    return version.split('.')[1] if len(version.split('.')) > 1 else ''
 
 EXTRA_OECMAKE += " \
     -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DONNX_NAMESPACE=onnx \
-    -DPYTHON_INCLUDE_DIR=${STAGING_DIR_TARGET}/usr/include/python${PYTHON_DOT_VERSION} \
+    -DPYTHON_INCLUDE_DIR=${STAGING_DIR_TARGET}/usr/include/python${PYTHON_BASEVERSION} \
     -DPY_EXT_SUFFIX=.cpython-${PYTHON_MAJOR_VERSION}${PYTHON_MINOR_VERSION}-${TARGET_ARCH}-${TARGET_OS}-gnu.so \
     -DONNX_CUSTOM_PROTOC_EXECUTABLE=${STAGING_DIR_NATIVE}${prefix}/bin/protoc \
     -DONNX_USE_PROTOBUF_SHARED_LIBS=ON \
