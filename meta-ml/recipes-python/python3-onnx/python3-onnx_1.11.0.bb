@@ -13,7 +13,7 @@ SRC_URI = " \
 SRC_URI[sha256sum] = "eca224c7c2c8ee4072a0743e4898a84a9bdf8297b5e5910a2632e4c4182ffb2a"
 SRCREV = "cf6dfad9a770e4d6412ea88f1833c8e0118e163d"
 
-inherit cmake python3native python3-dir
+inherit cmake python3native ml-helper-functions
 
 DISTUTILS_INSTALL_ARGS ?= " \
     --root=${D} \
@@ -47,20 +47,8 @@ FILES:${PN} += " \
 "
 
 OECMAKE_GENERATOR = "Unix Makefiles"
-PYTHON_MAJOR_VERSION = "${@get_major_version}"
-PYTHON_MINOR_VERSION = "${@get_minor_version(d)}"
-
-def get_major_version(d):
-    version = d.getVar('PYTHON_BASEVERSION')
-    if not version:
-        return
-    return version.split('.')[0]
-
-def get_minor_version(d):
-    version = d.getVar('PYTHON_BASEVERSION')
-    if not version:
-        return
-    return version.split('.')[1] if len(version.split('.')) > 1 else ''
+PYTHON_MAJOR_VERSION = "${@get_major_python_version(d)}"
+PYTHON_MINOR_VERSION = "${@get_minor_python_version(d)}"
 
 EXTRA_OECMAKE += " \
     -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
