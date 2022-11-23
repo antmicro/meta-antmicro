@@ -67,10 +67,10 @@ do_install() {
     bbfatal_log "'${PYTHON_PN} setup.py install ${DISTUTILS_INSTALL_ARGS}' execution failed."
     sed -i "s+.*/python3-native/python3+#\!/usr/bin/env python3+" ${D}/${bindir}/tvmc
     rm ${D}${PYTHON_SITEPACKAGES_DIR}/easy-install.pth
-    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/tvm ${D}${PYTHON_SITEPACKAGES_DIR}
-    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/EGG-INFO/* ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/
-    rm ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/EGG-INFO -r
-    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-0.8.0*/ ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}-py3.9.egg-info
+    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}*/tvm ${D}${PYTHON_SITEPACKAGES_DIR}
+    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}*/EGG-INFO/* ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}*/
+    rm ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}*/EGG-INFO -r
+    mv ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}*/ ${D}${PYTHON_SITEPACKAGES_DIR}/tvm-${PV}-py${PYTHON_BASEVERSION}.egg-info
     cd ${D}${PYTHON_SITEPACKAGES_DIR}/tvm
     find . -type f -name "*.so" -exec chrpath -d "{}" \;
     cd -
