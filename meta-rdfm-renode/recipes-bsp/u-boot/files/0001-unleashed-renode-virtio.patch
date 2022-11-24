@@ -1,0 +1,55 @@
+From 0e2df2fd50f2a1322e9f8d083d0b6738340930fb Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Tue, 22 Nov 2022 22:14:41 +0100
+Subject: [PATCH] arch: riscv: dts: hifive-unleashed-a00: Add virtio support
+
+Added virtio to the SoC device tree for Renode simulation support, in order to provide the filesystem via virtio.
+---
+ arch/riscv/dts/hifive-unleashed-a00.dts | 13 +++++++++++++
+ board/sifive/fu540/fu540.c              |  6 ++++++
+ 2 files changed, 19 insertions(+)
+
+diff --git a/arch/riscv/dts/hifive-unleashed-a00.dts b/arch/riscv/dts/hifive-unleashed-a00.dts
+index 4a2729f5ca..1257f4dc06 100644
+--- a/arch/riscv/dts/hifive-unleashed-a00.dts
++++ b/arch/riscv/dts/hifive-unleashed-a00.dts
+@@ -27,6 +27,19 @@
+ 	};
+ 
+ 	soc {
++		virtio@100d0000 {
++			compatible = "virtio,mmio";
++			reg = <0x00 0x100d0000 0x00 0x150>;
++			interrupts = <0x28>;
++			interrupt-parent = <&plic0>;
++		};
++
++		virtio@100e0000 {
++			compatible = "virtio,mmio";
++			reg = <0x00 0x100e0000 0x00 0x150>;
++			interrupts = <0x29>;
++			interrupt-parent = <&plic0>;
++		};
+ 	};
+ 
+ 	hfclk: hfclk {
+diff --git a/board/sifive/fu540/fu540.c b/board/sifive/fu540/fu540.c
+index 27ff52f903..8c5fa45a0a 100644
+--- a/board/sifive/fu540/fu540.c
++++ b/board/sifive/fu540/fu540.c
+@@ -124,6 +124,12 @@ int board_init(void)
+ 		return ret;
+ 	}
+ 
++	/*
++	 * Make sure virtio bus is enumerated so that peripherals
++	 * on the virtio bus can be discovered by their drivers
++	 */
++	virtio_init();
++
+ 	return 0;
+ }
+ 
+-- 
+2.38.1
+

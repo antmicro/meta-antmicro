@@ -1,0 +1,24 @@
+From 98016498e2c882658ca27dd0dc62534199c8f0d6 Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Fri, 7 Oct 2022 17:55:59 +0200
+Subject: [PATCH] Define 'bootargs'
+
+---
+ include/env_mender.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/env_mender.h b/include/env_mender.h
+index 261775afd5..bfaa506c54 100644
+--- a/include/env_mender.h
++++ b/include/env_mender.h
+@@ -44,6 +44,7 @@
+     MENDER_DEFAULT_ALTBOOTCMD                                           \
+     MENDER_UBI_SETTINGS                                                 \
+                                                                         \
++    "bootargs=rootwait console=ttySIF0,115200 earlycon=sbi"             \
+     "bootlimit=1\0"                                                     \
+     "bootcount=0\0"                                                     \
+                                                                         \
+-- 
+2.35.1
+

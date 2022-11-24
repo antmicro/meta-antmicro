@@ -1,0 +1,26 @@
+$name?="hifive-unleashed" 
+
+using sysbus
+mach create $name
+machine LoadPlatformDescription @/volume/sifive-fu540.repl
+machine LoadPlatformDescription @/volume/sifive-fu540-reset.repl
+
+showAnalyzer uart0
+
+$elf ?= @/volume/fw_payload.elf
+
+logLevel 3
+logFile @/volume/log.txt
+
+macro reset
+""" 
+    sysbus LoadELF $elf
+""" 
+runMacro $reset
+
+emulation CreateTap "tap0" "tap"
+emulation CreateSwitch "switch"
+connector Connect host.tap switch
+connector Connect sysbus.ethernet switch
+
+virtio LoadImage @/volume/rdfm-image-minimal-freedom-u540.flash.sdimg true

@@ -1,0 +1,27 @@
+From 3e5e9783de52e501263f20d578280829be1f4b59 Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Wed, 19 Oct 2022 15:20:51 +0200
+Subject: [PATCH] Integration of RDFM boot code for sifive fu540
+
+---
+ include/configs/sifive-fu540.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/configs/sifive-fu540.h b/include/configs/sifive-fu540.h
+index 72c841eb9b..be768101a1 100644
+--- a/include/configs/sifive-fu540.h
++++ b/include/configs/sifive-fu540.h
+@@ -47,6 +47,10 @@
+ 
+ #include <config_distro_bootcmd.h>
+ 
++#define CONFIG_BOOTCOUNT_LIMIT
++#define CONFIG_BOOTCOUNT_ENV
++#define CONFIG_ENV_IS_IN_MMC
++
+ #define TYPE_GUID_LOADER1	"5B193300-FC78-40CD-8002-E86C45580B47"
+ #define TYPE_GUID_LOADER2	"2E54B353-1271-4842-806F-E436D6AF6985"
+ #define TYPE_GUID_SYSTEM	"0FC63DAF-8483-4772-8E79-3D69D8477DE4"
+-- 
+2.38.0
+

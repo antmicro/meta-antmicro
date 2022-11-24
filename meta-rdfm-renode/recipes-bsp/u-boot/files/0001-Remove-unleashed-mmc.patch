@@ -1,0 +1,37 @@
+From 0f676a38066fb1af103902f703a94df8b70bd532 Mon Sep 17 00:00:00 2001
+From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
+Date: Tue, 22 Nov 2022 22:20:29 +0100
+Subject: [PATCH] arch: riscv: dts: hifive-unleashed-a00: Remove mmc
+
+Removed mmc from the SoC device tree for Renode simulation support.
+
+Since the Renode doesn't support mmc, this block was removed so system don't try use it
+---
+ arch/riscv/dts/hifive-unleashed-a00.dts | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/arch/riscv/dts/hifive-unleashed-a00.dts b/arch/riscv/dts/hifive-unleashed-a00.dts
+index 1257f4dc06..4b84feeb60 100644
+--- a/arch/riscv/dts/hifive-unleashed-a00.dts
++++ b/arch/riscv/dts/hifive-unleashed-a00.dts
+@@ -85,17 +85,6 @@
+ 	};
+ };
+ 
+-&qspi2 {
+-	status = "okay";
+-	mmc@0 {
+-		compatible = "mmc-spi-slot";
+-		reg = <0>;
+-		spi-max-frequency = <20000000>;
+-		voltage-ranges = <3300 3300>;
+-		disable-wp;
+-	};
+-};
+-
+ &eth0 {
+ 	status = "okay";
+ 	phy-mode = "gmii";
+-- 
+2.38.1
+
