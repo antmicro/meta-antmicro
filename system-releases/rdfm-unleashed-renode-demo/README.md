@@ -4,7 +4,42 @@ The `rdfm-unleashed-renode-demo` release is an Over The Air update demo using `R
 
 ## How to use
 
+### Demo Overview
+
+The `renode-demo` directory contains all the files needed to run the over-the-air update demo. It includes scripts and configuration files to set up the demo environment and run the demo.
+
+#### Scripts
+
+* `repack.sh`: Copies all built artifacts to a dedicated folder.
+* `download.sh`: (located in the `resources/` directory): Downloads prebuilt artifacts used for demo.
+* `clean.sh`: Removes all temporary files (such as built artifacts) from the demo folder.
+* `deltas.sh`: (located in the `resources/` directory): Generates a delta update from two provided files. To use, run `deltas.sh <old-image.rdfm> <new-image.rdfm>`. The generated delta update will be placed in the `<new-image.rdfm>` file.
+
+#### Directories
+
+* `Docker/`: Contains the `Dockerfile.renode` script, used to build a Docker image with all the necessary dependencies for running the demo.
+* `resources/`: Contains the `deltas.sh` script (as mentioned above) and other Renode-related files for machine configuration.
+
+An overview of the file structure:
+```
+renode-demo
+├── clean.sh
+├── Docker
+│   └── Dockerfile.renode
+├── repack.sh
+└── resources
+    ├── deltas.sh
+    ├── download.sh
+    ├── rdfm-demo.resc
+    ├── rdfm-renode.sh
+    ├── sifive-fu540.repl
+    ├── sifive-fu540-reset.repl
+    ├── SiFive-FU540.robot
+    └── resources
+```
+
 ### Building image
+
 You can fetch all the necessary code with:
 ```
 mkdir rdfm-unleashed-renode-demo && cd rdfm-unleashed-renode-demo
@@ -28,40 +63,22 @@ sudo apt install jq
 
 When the build process is complete, the resulting image will be stored in the `build/tmp/deploy/images/freedom-u540` directory.
 
-Clone `rdfm-artifact` on the host device and build it:
+Clone `rdfm-artifact` on the host device and install it:
 ```
 cd build/tmp/deploy/images/freedom-u540
 git clone https://github.com/antmicro/rdfm-artifact.git rdfm-artifact-repo
 cd rdfm-artifact-repo
 make
-cp rdfm-artifact ../ && cd ..
+install -m 755 rdfm-artifact /usr/bin
+cd ..
 ```
 
-Create a `deltas.sh` script with the following content:
+When generating a delta update it's recommended to use the [deltas.sh](renode-demo/resources/deltas.sh) script presented under the `renode-demo/resources` directory:
 ```
-#!/bin/sh
-
-set -ex
-
-OLD="$1"
-NEW="$2"
-
-SIGFILE="/tmp/rootfs-$$.sig"
-
-checksum=$(tar -xOf "$OLD" header.tar.gz |tar -xzOf- headers/0000/type-info |jq -r '.artifact_provides."rootfs-image.checksum"')
-tar -xOf "$OLD" data/0000.tar.gz | tar -xzOf- | /usr/bin/rdiff signature -R rollsum -b 4096 - "$SIGFILE"
-./rdfm-artifact modify --delta-compress "$SIGFILE" "$NEW"
-
-rm "$SIGFILE"
+./deltas.sh <initial-image.rdfm> <image-with-update.rdfm> <output.rdfm>
 ```
 
-Add execution rights to the script and run it:
-```
-chmod +x deltas.sh
-./deltas.sh rdfm-image-minimal-freedom-u540.rdfm rdfm-image-upgraded-freedom-u540.rdfm
-```
-
-After script running the `rdfm-image-upgraded-freedom-u540.rdfm` will contain a delta generated update.
+After script execution the `<output.rdfm>` will contain a delta-generated update.
 
 ### Running a Renode demo
 
@@ -72,27 +89,25 @@ cd ../../../../../sources/meta-antmicro/system-releases/rdfm-unleashed-renode-de
 
 Build the `docker` image containing [Renode](https://github.com/renode/renode/) and run the demo with:
 ```
-./Dockerfile.renode
+cd Docker/ && ./Dockerfile.renode && cd ..
 ./repack.sh
-./rdfm-renode.sh
+docker run --rm -v $PWD/resources:/data -v /dev/net/tun:/dev/net/tun --name=reno2 --cap-add=net_admin -it renoderdfm bash
+cd /data && ./rdfm-renode.sh
 ```
 
-> **Warning:** The emulated machine modifies the `volume/rdfm-image-minimal-freedom-u540.flash.sdimg` file in order to save state.
+> **Warning:** The emulated machine modifies the `resources/rdfm-image-minimal-freedom-u540.flash.sdimg` file in order to save state.
 > If you want to checkpoint your work, back up that file.
 > Doing `./repack.sh` overwrites the file as well, in order to always do a fresh 'first-run' start.
 
-The `rdfm-renode.sh` script will set up the python server used for updates by itself.
-On the beginning of the execution log will be displayed ip address needed for update performing:
+The `rdfm-renode.sh` script will set up the python server and ip address used for updates by itself.
+Once the board booted, log to the `root` user and add ip address on `eth0` device for simulated connection with server. Perform the delta update using `rdfm-client`:
 ```
-+ ...
-+ ADDR=<ip addr>
-+ ...
-```
+Poky (Yocto Project Reference Distro) 3.1.21 freedom-u540 ttySIF0
 
-Once the board booted, log to the `root` user and add ip address on `eth0` device for simulated connection with server. Perform the delta update using `rdfm-client` and earlier copied `<ip addr>`:
-```
-ip addr add <your ip addr> dev eth0
-rdfm install http://<ip addr>:12345/rdfm-image-upgraded-freedom-u540.rdfm
+freedom-u540 login: root
+
+root@freedom-u540:~# ip addr add 100.64.0.2/10 dev eth0
+root@freedom-u540:~# rdfm install http://100.64.0.1:12345/<output.rdfm>
 ```
 
 Reboot the system and verify if the update was installed successfully.

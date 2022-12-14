@@ -5,6 +5,7 @@ The `rdfm-unleashed-demo` release is an Over The Air update demo using the `RDFM
 ## How to use
 
 ### Building image
+
 You can fetch all the necessary code with:
 ```
 mkdir rdfm-unleashed-demo && cd rdfm-unleashed-demo
@@ -19,6 +20,7 @@ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="freedom-u540" 
 ```
 
 ### Writing image
+
 When the build process is complete, the resulting image will be stored in the `build/tmp/deploy/images/freedom-u540` directory.
 The built `.flash.sdimg` image can be written to a uSD card and later runned on board.
 > Be very careful while picking /dev/sdX device! Look at dmesg, lsblk, blkid, GNOME Disks, etc.
@@ -85,6 +87,7 @@ chmod +x deltas.sh
 After script running the `rdfm-image-upgraded-freedom-u540.rdfm` will contain a delta generated update.
 
 ### Running a demo
+
 After successful booting, establish Ethernet connection between host and target device.
 
 On your host device, start the server in the folder containing built images:

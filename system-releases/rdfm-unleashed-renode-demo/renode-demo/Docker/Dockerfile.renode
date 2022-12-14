@@ -1,0 +1,56 @@
+#!/usr/bin/env -S docker build -t renoderdfm . -f
+# This docker configuration file lets you easily run Renode and simulate embedded devices
+# on an x86 desktop or laptop. The framework can be used for debugging and automated testing.
+FROM debian:bullseye
+
+# Install main dependencies and some useful tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    sudo \
+    wget \
+    make \
+    golang \
+    gcc \
+    gio-2.0 \
+    liblzma-dev \
+    libssl-dev \
+    git \
+    tzdata \
+    rdiff \
+    jq \
+    iproute2 \
+    && apt-get autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set up users
+RUN sed -i.bkp -e \
+      's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' \
+      /etc/sudoers
+ARG userId
+ARG groupId
+RUN mkdir -p /home/developer && \
+    echo "developer:x:$userId:$groupId:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
+    echo "developer:x:$userId:" >> /etc/group && \
+    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+    chmod 0440 /etc/sudoers.d/developer && \
+    chown $userId:$groupId -R /home/developer
+
+USER developer
+ENV HOME /home/developer
+WORKDIR /home/developer
+
+# Install Renode
+RUN wget --progress=dot:giga https://dl.antmicro.com/projects/renode/builds/renode-latest.linux-portable.tar.gz && \
+    mkdir -p /opt/renode && \
+    tar -xf renode-latest.linux-portable.tar.gz -C /opt/renode --strip-components=1 && \
+    rm renode-latest.linux-portable.tar.gz
+
+ENV PATH=$PATH:/opt/renode
+
+# Install RDFM-Artifact
+RUN git clone https://github.com/antmicro/rdfm-artifact.git && \
+    cd rdfm-artifact && \
+    make && \
+    install -m 755 rdfm-artifact /usr/bin/ && \
+    cd .. && \
+    rm -rf rdfm-artifact
