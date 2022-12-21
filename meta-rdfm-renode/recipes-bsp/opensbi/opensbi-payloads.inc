@@ -2,7 +2,7 @@ def riscv_get_extra_oemake_image(d):
     sbi_payload = d.getVar('RISCV_SBI_PAYLOAD')
     deploy_dir = d.getVar('DEPLOY_DIR_IMAGE')
 
-    if sbi_payload is None:
+    if not sbi_payload:
         return ""
 
     return "FW_PAYLOAD_PATH=" + deploy_dir + "/" + sbi_payload
@@ -11,7 +11,7 @@ def riscv_get_fdt_path(d):
     fdt_binary = d.getVar('RISCV_SBI_FDT')
     deploy_dir = d.getVar('DEPLOY_DIR_IMAGE')
 
-    if fdt_binary is None:
+    if not fdt_binary:
         return ""
 
     return "FW_PAYLOAD_FDT_PATH=" + deploy_dir + "/" + fdt_binary
