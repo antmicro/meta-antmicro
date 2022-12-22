@@ -6,7 +6,7 @@ RDEPENDS:${PN} += "python3-protoplaster"
 
 TEST_DEST ?= "${sysconfdir}/protoplaster"
 
-FILES_${PN} = " \
+FILES:${PN} = " \
     ${TEST_DEST} \
 "
 
