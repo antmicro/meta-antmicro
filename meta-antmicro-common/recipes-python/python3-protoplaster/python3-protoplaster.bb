@@ -18,6 +18,7 @@ RDEPENDS:${PN} = " \
     python3-pyrav4l2 \
     python3-pyyaml \
     python3-colorama \
+    python3-jinja2 \
 "
 
 inherit setuptools3
