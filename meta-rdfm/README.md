@@ -123,7 +123,7 @@ Besides the already existing parameters in meta-mender, the meta-rdfm layer intr
 
 ### RDFM_ARTIFACT_NAME
 
-Specifies the name of the generated artifact. Required for the `rdfm` image building process. Should be specified on the command line, and not in the configuration:
+Specifies the name of the generated artifact. Required for the `rdfm` image building process.
 ```
 RDFM_ARTIFACT_NAME = "release-1"
 ```
