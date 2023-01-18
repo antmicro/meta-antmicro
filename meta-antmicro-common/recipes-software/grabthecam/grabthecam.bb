@@ -9,7 +9,7 @@ SRC_URI = " \
     git://github.com/antmicro/grabthecam;protocol=https;branch=main \
 "
 
-SRCREV = "ec59861a99d759bcdd54e00ee8af29571d755ddc"
+SRCREV = "8448169fad3024bee18a08a673d34a10b2e3425f"
 
 inherit cmake
 

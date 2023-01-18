@@ -18,7 +18,9 @@ IMAGE_INSTALL:append = " \
     cudnn \
     darknet \
     darknet-demo-service \
+    farshow \
     glfw \
+    grabthecam \
     htop \
     nano \
     opencv \
