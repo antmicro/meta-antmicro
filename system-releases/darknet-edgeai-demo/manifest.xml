@@ -5,12 +5,12 @@
     <remote fetch="https://github.com/openembedded/" name="meta-openembedded"/>
     <remote fetch="https://github.com/OE4T/" name="meta-tegra"/>
 
-    <project name="meta-antmicro.git" remote="antmicro" revision="master" path="sources/meta-antmicro">
+    <project name="meta-antmicro.git" remote="antmicro" revision="dunfell" path="sources/meta-antmicro">
         <linkfile dest="build/conf/bblayers.conf" src="system-releases/darknet-edgeai-demo/bblayers.conf"/>
         <linkfile dest="build/conf/local.conf" src="system-releases/darknet-edgeai-demo/local.conf"/>
     </project>
 
-    <project name="poky.git" remote="yoctoproject" revision="kirkstone" path="sources/poky"/>
-    <project name="meta-openembedded.git" remote="meta-openembedded" revision="kirkstone" path="sources/meta-openembedded"/>
-    <project name="meta-tegra.git" remote="meta-tegra" revision="kirkstone" path="sources/meta-tegra" />
+    <project name="poky.git" remote="yoctoproject" revision="dunfell" path="sources/poky"/>
+    <project name="meta-openembedded.git" remote="meta-openembedded" revision="dunfell" path="sources/meta-openembedded"/>
+    <project name="meta-tegra.git" remote="meta-tegra" revision="dunfell" path="sources/meta-tegra" />
 </manifest>
