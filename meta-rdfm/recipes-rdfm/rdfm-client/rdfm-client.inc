@@ -285,10 +285,6 @@ do_install() {
             prefix=${D} \
             datadir=${datadir} \
             install-dbus
-
-        # install the D-Bus interface file(s)
-        install -d ${D}${datadir}/dbus-1/interface
-        install -m 0644 ${B}/src/Documentation/io.mender.*.xml ${D}${datadir}/dbus-1/interface
     fi
 
     #install our prepared configuration
