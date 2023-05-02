@@ -1,18 +1,18 @@
 SUMMARY = "RDFM Artifact"
-DESCRIPTION = "RDFM image artifact library"
+DESCRIPTION = "RDFM Artifact manipulation tool"
 HOMEPAGE = "https://github.com/antmicro/rdfm-artifact"
 
 SRC_URI = "git://github.com/antmicro/rdfm-artifact.git;protocol=https;branch=main;destsuffix=git/src"
-SRCREV = "a38e0e60aa2c710d0d33f86157b6bac098ad2e1d"
-SRCREV[sha256sum] = "06062eeeae20e13789b122ec488b6de80fa9d61f725fe7023c97c21a45863216"
-SRCREV[md5sum] = "4fbbe446c9c8d5bb956aee11f052a242"
+SRCREV = "3281512a331abe10d2d3e82bc0b59a9bd35d855e"
 LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT"
-LIC_FILES_CHKSUM = "file://src/LICENSE;md5=fbe9cd162201401ffbb442445efecfdc"
+LIC_FILES_CHKSUM = "file://${WORKDIR}/git/src/LICENSE;md5=2a944942e1496af1886903d274dedb13"
 
-inherit go
+inherit go pkgconfig
+# Required for fetching Go dependencies
+do_compile[network] = "1"
 
 S = "${WORKDIR}/git"
-DEPENDS += "xz"
+DEPENDS += "xz openssl"
 GOPATHDIR = "${B}/src/"
 GOPATH = "${B}:${STAGING_LIBDIR}/${TARGET_SYS}/go"
 GO_IMPORT = ""
