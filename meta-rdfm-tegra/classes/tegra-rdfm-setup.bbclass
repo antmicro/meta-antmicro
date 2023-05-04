@@ -24,7 +24,7 @@ def tegra_mender_image_rootfs_size(d):
     return calc_rootfs_size - eval(d.getVar('IMAGE_ROOTFS_EXTRA_SPACE'))
 
 # meta-tegra and tegraflash requirements
-IMAGE_CLASSES += "image_types_mender_tegra"
+IMAGE_CLASSES += "image_types_rdfm_tegra"
 IMAGE_FSTYPES += "tegraflash"
 
 ARTIFACTIMG_FSTYPE = "ext4"
