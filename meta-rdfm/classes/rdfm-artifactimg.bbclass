@@ -64,26 +64,8 @@ IMAGE_CMD:rdfm() {
     extra_args=
 
     for dev in ${MENDER_DEVICE_TYPES_COMPATIBLE}; do
-        extra_args="$extra_args -t $dev"
+        extra_args="$extra_args --device-type $dev"
     done
-
-    if [ -z "${RDFM_CLEAR_PROVIDES}" ]; then
-        extra_args="$extra_args --no-default-clears-provides"
-    fi
-
-    if [ -n "${MENDER_ARTIFACT_SIGNING_KEY}" ]; then
-        extra_args="$extra_args -k ${MENDER_ARTIFACT_SIGNING_KEY}"
-    fi
-
-    if [ -d "${DEPLOY_DIR_IMAGE}/mender-state-scripts" ]; then
-        extra_args="$extra_args -s ${DEPLOY_DIR_IMAGE}/mender-state-scripts"
-    fi
-
-    if rdfm-artifact write rootfs-image --help | grep -e '-u FILE'; then
-        image_flag=-u
-    else
-        image_flag=-f
-    fi
 
     if [ -n "${MENDER_ARTIFACT_NAME_DEPENDS}" ]; then
         cmd=""
@@ -117,17 +99,11 @@ IMAGE_CMD:rdfm() {
 
 
     rdfm-artifact write rootfs-image \
-        -n ${RDFM_ARTIFACT_NAME} \
+        --artifact-name ${RDFM_ARTIFACT_NAME} \
         $extra_args \
-        $image_flag ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE} \
+        --file ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE} \
         ${MENDER_ARTIFACT_EXTRA_ARGS} \
-        -o ${RDFM_ARTIFACT_PATH}.rdfm
-
-    if [ -z "${RDFM_NO_PROVIDES_LOCALLY}" ]; then
-        rdfm-artifact modify \
-            --save-provides-to-file \
-            ${RDFM_ARTIFACT_PATH}.rdfm
-    fi
+        --output-path ${RDFM_ARTIFACT_PATH}.rdfm
 }
 
 IMAGE_CMD:rdfm[vardepsexclude] += "IMAGE_ID"
