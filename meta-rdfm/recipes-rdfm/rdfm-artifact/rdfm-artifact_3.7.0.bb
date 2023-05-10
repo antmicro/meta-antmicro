@@ -24,6 +24,9 @@ EXTRA_OEMAKE:append = " \
 
 do_compile() {
     oe_runmake V=1 install
+    # Workaround for https://github.com/golang/go/issues/35615 causing failures
+    # when do_rm_work is executed
+    find ${B}/pkg/mod -exec chmod u+w {} \;
 }
 
 do_install() {

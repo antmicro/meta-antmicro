@@ -161,6 +161,10 @@ do_compile() {
     # run verbose build, we should see which dependencies are pulled in
     oe_runmake V=1
 
+    # Workaround for https://github.com/golang/go/issues/35615 causing failures
+    # when do_rm_work is executed
+    find ${B}/pkg/mod -exec chmod u+w {} \;
+
     echo "device_type=${MENDER_DEVICE_TYPE}" > ${B}/device_type
 }
 
