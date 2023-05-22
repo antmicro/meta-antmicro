@@ -1,0 +1,29 @@
+From 904889d52fdd3f21278803c9617a13877ba5068a Mon Sep 17 00:00:00 2001
+From: Roman Dobrodii <rdobrodii@antmicro.com>
+Date: Mon, 20 Mar 2023 10:41:05 +0100
+Subject: [PATCH 5/8] nvidia/drivers/media: fix kernel panic in VI channel
+ driver
+
+Panic happened when debug logs were enabled for that module.
+
+Signed-off-by: Roman Dobrodii <rdobrodii@antmicro.com>
+---
+ nvidia/drivers/media/platform/tegra/camera/vi/channel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/nvidia/drivers/media/platform/tegra/camera/vi/channel.c b/nvidia/drivers/media/platform/tegra/camera/vi/channel.c
+index 6c978d0d4f92..fef5f1f12773 100644
+--- a/nvidia/drivers/media/platform/tegra/camera/vi/channel.c
++++ b/nvidia/drivers/media/platform/tegra/camera/vi/channel.c
+@@ -275,7 +275,7 @@ static void tegra_channel_update_format(struct tegra_channel *chan,
+ 	chan->buffer_offset[0] = 0;
+ 	chan->interlace_bplfactor = 1;
+ 
+-	dev_dbg(&chan->video->dev,
++	dev_dbg((chan && chan->video) ? &chan->video->dev : NULL,
+ 			"%s: Resolution= %dx%d bytesperline=%d\n",
+ 			__func__, width, height, chan->format.bytesperline);
+ 
+-- 
+2.25.1
+

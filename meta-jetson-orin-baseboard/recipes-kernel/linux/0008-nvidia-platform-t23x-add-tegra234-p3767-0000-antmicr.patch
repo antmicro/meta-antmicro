@@ -1,0 +1,1157 @@
+From a0861582129bb67d377b471a86cd6e651aa53301 Mon Sep 17 00:00:00 2001
+From: Roman Dobrodii <rdobrodii@antmicro.com>
+Date: Tue, 18 Apr 2023 14:53:14 +0200
+Subject: [PATCH 8/8] nvidia/platform/t23x: add
+ tegra234-p3767-0000-antmicro-job DTS
+
+Signed-off-by: Roman Dobrodii <rdobrodii@antmicro.com>
+---
+ .../platform/t23x/p3768/kernel-dts/Makefile   |   1 +
+ .../tegra234-antmicro-job-camera-ov5640.dtsi  | 517 ++++++++++++++++++
+ ...egra234-antmicro-job-fixed-regulators.dtsi |  88 +++
+ .../cvb/tegra234-antmicro-job-gpioex.dtsi     |  47 ++
+ .../cvb/tegra234-antmicro-job-i2c-buses.dtsi  |  59 ++
+ .../cvb/tegra234-antmicro-job-usb.dtsi        | 159 ++++++
+ .../kernel-dts/cvb/tegra234-antmicro-job.dtsi | 173 ++++++
+ .../tegra234-p3767-0000-antmicro-job.dts      |  32 ++
+ 8 files changed, 1076 insertions(+)
+ create mode 100644 nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-camera-ov5640.dtsi
+ create mode 100644 nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-fixed-regulators.dtsi
+ create mode 100644 nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-gpioex.dtsi
+ create mode 100644 nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-i2c-buses.dtsi
+ create mode 100644 nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-usb.dtsi
+ create mode 100644 nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job.dtsi
+ create mode 100644 nvidia/platform/t23x/p3768/kernel-dts/tegra234-p3767-0000-antmicro-job.dts
+
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/Makefile b/nvidia/platform/t23x/p3768/kernel-dts/Makefile
+index 8ceb482f53db..601989d56c26 100644
+--- a/nvidia/platform/t23x/p3768/kernel-dts/Makefile
++++ b/nvidia/platform/t23x/p3768/kernel-dts/Makefile
+@@ -23,6 +23,7 @@ dtb-$(BUILD_ENABLE) += tegra234-p3767-0000-as-p3767-0004-p3768-0000-a0.dtb
+ dtb-$(BUILD_ENABLE) += tegra234-p3767-0001-p3768-0000-a0.dtb
+ dtb-$(BUILD_ENABLE) += tegra234-p3767-0003-p3768-0000-a0.dtb
+ dtb-$(BUILD_ENABLE) += tegra234-p3767-0004-p3768-0000-a0.dtb
++dtb-$(BUILD_ENABLE) += tegra234-p3767-0000-antmicro-job.dtb
+ dtbo-$(BUILD_ENABLE) += tegra234-p3767-0000-p3509-a02-adafruit-sph0645lm4h.dtbo
+ dtbo-$(BUILD_ENABLE) += tegra234-p3767-0000-p3509-a02-adafruit-uda1334a.dtbo
+ dtbo-$(BUILD_ENABLE) += tegra234-p3767-0000-p3509-a02-csi.dtbo
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-camera-ov5640.dtsi b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-camera-ov5640.dtsi
+new file mode 100644
+index 000000000000..c18f93809dd8
+--- /dev/null
++++ b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-camera-ov5640.dtsi
+@@ -0,0 +1,517 @@
++/*
++ * Copyright (c) 2022, NVIDIA CORPORATION.  All rights reserved.
++ * Copyright (c) 2023 Antmicro <www.antmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++ #include <dt-bindings/media/camera.h>
++
++/*
++ * This DTSI file implements support for Antmicro OV5640 Dual Camera Board
++ * connected to Antmicro Jetson Orin Baseboard (JOB). There are two cameras
++ * on each board, labeled on schematic M1 and M2.
++ * JOB supports two camera boards connected simulatenously to CSI A (J7) and
++ * CSI B (J8) connectors, so 4x OV5640 cameras max.
++ * For simplicity, we've assigned indices to those cameras as follows:
++ * - 0: connector A - camera M2
++ * - 1: connector A - camera M1
++ * - 2: connector B - camera M2
++ * - 3: connector B - camera M1
++ * These indices are also observed in /dev/video* device numbering.
++ *
++ * NOTE:
++ * Connecting OV5640 board to CSI B connector on JOB requires resistor
++ * jumpers to be placed correctly on JOB. See below.
++ *
++ * ====== Power management ======
++ * CSI A and CSA B connectors feature GPIO-controlled 5V and 3V3 power
++ * supplies. OV5640 uses only 3V3 rails, controlled by following regulators:
++ * - job_reg_csia_3v3 for CSI A
++ * - job_reg_csib_3v3 for CSI B
++ *
++ * Each regulator powers up both cameras on the daughterboard as well as XTAL
++ * oscillators which clock them.
++ *
++ * Reset pins of OV5640 are not routed on JOB and are pulled high, so GPIO
++ * reset functionality is not available.
++ * Power-down pins of OV5640 are routed on JOB to the following nets:
++ * - Camera 0: VSYNC_CAM0_3V3 / VSYNC_CAM0 - SoM pin 114 - GPIO H.6
++ * - Camera 1: VSYNC_CAM1_3V3 / VSYNC_CAM1 - SoM pin 120 - GPIO AC.0
++ * - Camera 2: VSYNC_CAM3_3V3 / VSYNC_CAM3 - SoM pin 228 - GPIO H.0
++ *                 (needs R5 placed, R3 removed)
++ * - Camera 3: VSYNC_CAM2_3V3 / VSYNC_CAM2 - SoM pin 218 - GPIO N.1
++ *                 (needs R4 placed, R2 removed)
++ *
++ * ====== I2C routing ======
++ * - Camera 0: SCL/SDA_CAM0 (job_cam0_i2c)
++ * - Camera 1: SCL/SDA_CAM1 (job_cam1_i2c)
++ * - Camera 2: SCL/SDA_CAM2 (job_cam2_i2c)
++ * - Camera 3: SCL/SDA_CAM3 (job_cam3_i2c)
++ *
++ * ====== CSI lane mapping ======
++ * - Camera 0: CSI0 = CSI_A [CLK, D0, D1]
++ * - Camera 1: CSI2 = CSI_C [CLK, D0, D1]
++ * - Camera 2: CSI1 = CSI_B [CLK, D0, D1]
++ *        (needs R107 placed, R103 removed - is a default configuration)
++ * - Camera 3: CSI3 = CSI_D [CLK, D0, D1]
++ *        (needs R122 placed, R108 removed)
++ *
++ * ====== CSI lane polarity ======
++ *
++ * See Jetson Orin NX Design Guide DG-10931-001 fig.10-1.:
++ * - CSI0_D1 is inverted on SoM
++ * - CSI1_D0 is inverted on SoM
++ */
++
++
++ // Camera nodes
++ &job_cam0_i2c {
++ 	ov5640_cam0: camera@3c {
++ 		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		nvidia,no-sensor-bus-introspection;
++		vdd-supply = <&job_reg_csia_3v3>;
++
++		vertical-flip = "true";
++
++		/* 1920x1080 */
++		mode0 {
++			mclk_khz = "24000";
++			num_lanes = "2";
++			tegra_sinterface = "serial_a";
++			phy_mode = "DPHY";
++			discontinuous_clk = "yes";
++			dpcm_enable = "false";
++			cil_settletime = "0";
++			/*
++			 * even with a 2-lane camera this controls the whole
++			 * SCIL - 4 lanes of both CSI 0 and CSI 1!
++			 */
++			lane_polarity = "6";
++
++			active_w = "1920";
++			active_h = "1080";
++			pixel_t = "bayer_bggr";
++			readout_orientation = "0";
++			line_length = "2688";
++			inherent_gain = "1";
++			pix_clk_hz = "168000000";
++			csi_pixel_bit_depth = "8";
++
++			gain_factor = "1";
++			min_gain_val = "1";
++			max_gain_val = "16";
++			framerate_factor = "1000000";
++			min_framerate = "1816577";
++			max_framerate = "30000000";
++			exposure_factor = "1";
++			min_exp_time = "34";
++			max_exp_time = "550385";
++		};
++
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				ov5640_cam0_out: endpoint {
++					status = "okay";
++					port-index = <0>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_in0>;
++				};
++			};
++		};
++	};
++};
++
++&job_cam1_i2c {
++	ov5640_cam1: camera@3c {
++		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		nvidia,no-sensor-bus-introspection;
++		vdd-supply = <&job_reg_csia_3v3>;
++
++		vertical-flip = "true";
++
++		/* 1920x1080 */
++		mode0 {
++			mclk_khz = "24000";
++			num_lanes = "2";
++			tegra_sinterface = "serial_c";
++			phy_mode = "DPHY";
++			discontinuous_clk = "yes";
++			dpcm_enable = "false";
++			cil_settletime = "0";
++
++			active_w = "1920";
++			active_h = "1080";
++			pixel_t = "bayer_bggr";
++			readout_orientation = "0";
++			line_length = "2688";
++			inherent_gain = "1";
++			pix_clk_hz = "168000000";
++			csi_pixel_bit_depth = "8";
++
++			gain_factor = "1";
++			min_gain_val = "1";
++			max_gain_val = "16";
++			framerate_factor = "1000000";
++			min_framerate = "1816577";
++			max_framerate = "30000000";
++			exposure_factor = "1";
++			min_exp_time = "34";
++			max_exp_time = "550385";
++		};
++
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				ov5640_cam1_out: endpoint {
++					status = "okay";
++					port-index = <2>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_in2>;
++				};
++			};
++		};
++	};
++};
++
++&job_cam2_i2c {
++	ov5640_cam2: camera@3c {
++		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		nvidia,no-sensor-bus-introspection;
++		vdd-supply = <&job_reg_csib_3v3>;
++
++		vertical-flip = "true";
++
++		/* 1920x1080 */
++		mode0 {
++			mclk_khz = "24000";
++			num_lanes = "2";
++			tegra_sinterface = "serial_b";
++			phy_mode = "DPHY";
++			discontinuous_clk = "yes";
++			dpcm_enable = "false";
++			cil_settletime = "0";
++			/*
++			 * even with a 2-lane camera this controls the whole
++			 * SCIL - 4 lanes of both CSI 0 and CSI 1!
++			 */
++			lane_polarity = "6";
++
++			active_w = "1920";
++			active_h = "1080";
++			pixel_t = "bayer_bggr";
++			readout_orientation = "0";
++			line_length = "2688";
++			inherent_gain = "1";
++			// mclk_multiplier = "6.67";
++			pix_clk_hz = "168000000";
++			csi_pixel_bit_depth = "8";
++
++			gain_factor = "1";
++			min_gain_val = "1";
++			max_gain_val = "16";
++			framerate_factor = "1000000";
++			min_framerate = "1816577";
++			max_framerate = "30000000";
++			exposure_factor = "1";
++			min_exp_time = "34";
++			max_exp_time = "550385";
++		};
++
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				ov5640_cam2_out: endpoint {
++					status = "okay";
++					port-index = <1>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_in1>;
++				};
++			};
++		};
++	};
++};
++
++&job_cam3_i2c {
++	ov5640_cam3: camera@3c {
++		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		nvidia,no-sensor-bus-introspection;
++		vdd-supply = <&job_reg_csib_3v3>;
++
++		vertical-flip = "true";
++
++		/* 1920x1080 */
++		mode0 {
++			mclk_khz = "24000";
++			num_lanes = "2";
++			tegra_sinterface = "serial_d";
++			phy_mode = "DPHY";
++			discontinuous_clk = "yes";
++			dpcm_enable = "false";
++			cil_settletime = "0";
++
++			active_w = "1920";
++			active_h = "1080";
++			pixel_t = "bayer_bggr";
++			readout_orientation = "0";
++			line_length = "2688";
++			inherent_gain = "1";
++			pix_clk_hz = "168000000";
++			csi_pixel_bit_depth = "8";
++
++			gain_factor = "1";
++			min_gain_val = "1";
++			max_gain_val = "16";
++			framerate_factor = "1000000";
++			min_framerate = "1816577";
++			max_framerate = "30000000";
++			exposure_factor = "1";
++			min_exp_time = "34";
++			max_exp_time = "550385";
++		};
++
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				ov5640_cam3_out: endpoint {
++					status = "okay";
++					port-index = <3>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_in3>;
++				};
++			};
++		};
++	};
++};
++
++&tegra_main_gpio {
++	/* hog camera PWRDN GPIOs: drive all of them low so that cameras are always enabled */
++	cam0_pwrdn-hog {
++		gpio-hog;
++		gpios = <TEGRA234_MAIN_GPIO(H, 6) GPIO_ACTIVE_HIGH>;
++		output-low;
++	};
++
++	cam1_pwrdn-hog {
++		gpio-hog;
++		gpios = <TEGRA234_MAIN_GPIO(AC, 0) GPIO_ACTIVE_HIGH>;
++		output-low;
++	};
++
++	cam2_pwrdn-hog {
++		gpio-hog;
++		gpios = <TEGRA234_MAIN_GPIO(H, 0) GPIO_ACTIVE_HIGH>;
++		output-low;
++	};
++
++	cam3_pwrdn-hog {
++		gpio-hog;
++		gpios = <TEGRA234_MAIN_GPIO(N, 1) GPIO_ACTIVE_HIGH>;
++		output-low;
++	};
++};
++
++/ {
++	host1x@13e00000 {
++		nvcsi@15a00000 {
++			num-channels = <4>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			channel@0 {
++				reg = <0>;
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						rbpcv2_nvcsi_in0: endpoint@0 {
++							port-index = <0>;
++							bus-width = <2>;
++							remote-endpoint = <&ov5640_cam0_out>;
++						};
++					};
++					port@1 {
++						reg = <1>;
++						rbpcv2_nvcsi_out0: endpoint@1 {
++							remote-endpoint = <&rbpcv2_vi_in0>;
++						};
++					};
++				};
++			};
++			channel@1 {
++				reg = <1>;
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						rbpcv2_nvcsi_in2: endpoint@0 {
++							port-index = <2>;
++							bus-width = <2>;
++							remote-endpoint = <&ov5640_cam1_out>;
++						};
++					};
++					port@1 {
++						reg = <1>;
++						rbpcv2_nvcsi_out2: endpoint@1 {
++							remote-endpoint = <&rbpcv2_vi_in2>;
++						};
++					};
++				};
++			};
++			channel@2 {
++				reg = <2>;
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						rbpcv2_nvcsi_in1: endpoint@0 {
++							port-index = <1>;
++							bus-width = <2>;
++							remote-endpoint = <&ov5640_cam2_out>;
++						};
++					};
++					port@1 {
++						reg = <1>;
++						rbpcv2_nvcsi_out1: endpoint@1 {
++							remote-endpoint = <&rbpcv2_vi_in1>;
++						};
++					};
++				};
++			};
++			channel@3 {
++				reg = <3>;
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						rbpcv2_nvcsi_in3: endpoint@0 {
++							port-index = <3>;
++							bus-width = <2>;
++							remote-endpoint = <&ov5640_cam3_out>;
++						};
++					};
++					port@1 {
++						reg = <1>;
++						rbpcv2_nvcsi_out3: endpoint@1 {
++							remote-endpoint = <&rbpcv2_vi_in3>;
++						};
++					};
++				};
++			};
++		};
++	};
++
++	tegra-capture-vi {
++		num-channels = <4>;
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				rbpcv2_vi_in0: endpoint {
++					port-index = <0>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_out0>;
++				};
++			};
++			port@1 {
++				reg = <1>;
++				rbpcv2_vi_in2: endpoint {
++					port-index = <2>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_out2>;
++				};
++			};
++			port@2 {
++				reg = <2>;
++				rbpcv2_vi_in1: endpoint {
++					port-index = <1>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_out1>;
++				};
++			};
++			port@3 {
++				reg = <3>;
++				rbpcv2_vi_in3: endpoint {
++					port-index = <3>;
++					bus-width = <2>;
++					remote-endpoint = <&rbpcv2_nvcsi_out3>;
++				};
++			};
++		};
++	};
++
++	tcp: tegra-camera-platform {
++		compatible = "nvidia, tegra-camera-platform";
++		status = "okay";
++		/**
++		* Physical settings to calculate max ISO BW
++		*
++		* num_csi_lanes = <>;
++		* Total number of CSI lanes when all cameras are active
++		*
++		* max_lane_speed = <>;
++		* Max lane speed in Kbit/s
++		*
++		* min_bits_per_pixel = <>;
++		* Min bits per pixel
++		*
++		* vi_peak_byte_per_pixel = <>;
++		* Max byte per pixel for the VI ISO case
++		*
++		* vi_bw_margin_pct = <>;
++		* Vi bandwidth margin in percentage
++		*
++		* max_pixel_rate = <>;
++		* Max pixel rate in Kpixel/s for the ISP ISO case
++		*
++		* isp_peak_byte_per_pixel = <>;
++		* Max byte per pixel for the ISP ISO case
++		*
++		* isp_bw_margin_pct = <>;
++		* Isp bandwidth margin in percentage
++		*/
++		num_csi_lanes = <8>;
++		max_lane_speed = <1500000>;
++		min_bits_per_pixel = <10>;
++		vi_peak_byte_per_pixel = <2>;
++		vi_bw_margin_pct = <25>;
++		max_pixel_rate = <240000>;
++		isp_peak_byte_per_pixel = <5>;
++		isp_bw_margin_pct = <25>;
++	};
++};
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-fixed-regulators.dtsi b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-fixed-regulators.dtsi
+new file mode 100644
+index 000000000000..ac81ae898c2d
+--- /dev/null
++++ b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-fixed-regulators.dtsi
+@@ -0,0 +1,88 @@
++/*
++ * Copyright (c) 2022, NVIDIA CORPORATION.  All rights reserved.
++ * Copyright (c) 2023 Antmicro <www.antmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++/ {
++	fixed-regulators {
++		/* System supplies */
++		job_reg_1v8: regulator@100 {
++			compatible = "regulator-fixed";
++			regulator-name = "job_reg_1v8";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-always-on;
++		};
++
++		job_reg_3v3: regulator@101 {
++			compatible = "regulator-fixed";
++			regulator-name = "job_reg_3v3";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			regulator-always-on;
++		};
++
++		job_reg_5v: regulator@102 {
++			compatible = "regulator-fixed";
++			regulator-name = "job_reg_5v";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++			regulator-always-on;
++		};
++
++		/* CSI camera power switches */
++		job_reg_csia_5v: regulator@110 {
++			compatible = "regulator-fixed";
++			regulator-name = "job_reg_csia_5v";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++			vin-supply = <&job_reg_5v>;
++			gpio = <&job_gpio_expander 0 GPIO_ACTIVE_HIGH>;
++			enable-active-high;
++			startup-delay-us = <10000>;
++		};
++
++		job_reg_csia_3v3: regulator@111 {
++			compatible = "regulator-fixed";
++			regulator-name = "job_reg_csia_3v3";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			vin-supply = <&job_reg_3v3>;
++			gpio = <&job_gpio_expander 0 GPIO_ACTIVE_HIGH>;
++			enable-active-high;
++			startup-delay-us = <10000>;
++		};
++
++		job_reg_csib_5v: regulator@112 {
++			compatible = "regulator-fixed";
++			regulator-name = "job_reg_csib_5v";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++			vin-supply = <&job_reg_5v>;
++			gpio = <&job_gpio_expander 1 GPIO_ACTIVE_HIGH>;
++			enable-active-high;
++			startup-delay-us = <10000>;
++		};
++
++		job_reg_csib_3v3: regulator@113 {
++			compatible = "regulator-fixed";
++			regulator-name = "job_reg_csib_3v3";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			vin-supply = <&job_reg_3v3>;
++			gpio = <&job_gpio_expander 1 GPIO_ACTIVE_HIGH>;
++			enable-active-high;
++			startup-delay-us = <10000>;
++		};
++	};
++};
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-gpioex.dtsi b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-gpioex.dtsi
+new file mode 100644
+index 000000000000..d0790995c4d9
+--- /dev/null
++++ b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-gpioex.dtsi
+@@ -0,0 +1,47 @@
++/*
++ * Copyright (c) 2023 Antmicro <www.antmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++
++&gen2_i2c {
++	job_gpio_expander: gpio@20 {
++		compatible = "nxp,pcal6408";
++		status = "okay";
++		reg = <0x20>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		gpio-line-names =
++			"CSIA_PEN",
++			"CSIB_PEN",
++			"USBC1_PEN",
++			"DISABLE_POE_DCDC",
++			"CSIA_FLG",
++			"CSIB_FLG",
++			"USBC1_FLG",
++			"USBC0_FLG";
++		interrupt-parent = <&tegra_main_gpio>;
++		interrupts = <TEGRA234_MAIN_GPIO(P, 6) GPIO_ACTIVE_LOW>;
++		interrupt-controller;
++		#interrupt-cells = <2>;
++
++		usbc1_pen-hog {
++			gpio-hog;
++			gpios = <2 GPIO_ACTIVE_HIGH>;
++			output-high;
++		};
++		disable_poe_dcdc-hog {
++			gpio-hog;
++			gpios = <3 GPIO_ACTIVE_HIGH>;
++			output-low;
++		};
++	};
++};
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-i2c-buses.dtsi b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-i2c-buses.dtsi
+new file mode 100644
+index 000000000000..3c358952e97e
+--- /dev/null
++++ b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-i2c-buses.dtsi
+@@ -0,0 +1,59 @@
++/*
++ * Copyright (c) 2023 Antmicro <www.antmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++&cam_i2c {
++	job_cam_i2c_mux: pca9548@70 {
++		compatible = "nxp,pca9548";
++		status = "okay";
++		reg = <0x70>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		job_cam0_i2c: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++		};
++
++		job_cam1_i2c: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++
++		job_cam2_i2c: i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++		};
++
++		job_cam3_i2c: i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++		};
++	};
++};
++
++/ {
++	/*
++	 * Assign fixed I2C bus numbers (visible as /dev/i2c-*)
++	 * to muxed CAM I2C interfaces
++	 */
++	aliases {
++		i2c16 = &job_cam0_i2c;
++		i2c17 = &job_cam1_i2c;
++		i2c18 = &job_cam2_i2c;
++		i2c19 = &job_cam3_i2c;
++	};
++};
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-usb.dtsi b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-usb.dtsi
+new file mode 100644
+index 000000000000..da5712fb874f
+--- /dev/null
++++ b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job-usb.dtsi
+@@ -0,0 +1,159 @@
++/*
++ * Copyright (c) 2023 Antmicro <www.antmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++
++/*
++ * Placeholders for USB PD and DRP controllers on SYS I2C bus
++ * (not implemented)
++ */
++&gen2_i2c {
++	/*
++	 * TPS65988 dual-port USB-C Power Delivery controller
++	 * port1 is USBC3 (J3) @ i2c_addr=h23
++	 * port2 is USBC0 (J4) @ i2c_addr=h27
++	 */
++	job_usbc3_pdc: tps65988@23 {
++		compatible = "ti,tps6598x";
++		status = "disabled";
++		reg = <0x23>;
++	};
++
++	job_usbc0_pdc: tps65988@27 {
++		compatible = "ti,tps6598x";
++		status = "disabled";
++		reg = <0x27>;
++	};
++
++	/*
++	 * HD3SS3220 dual role port controller for USBC1 port
++	 * NOTE: this is just a DRD/DRP without Power Delivery
++	 */
++	job_usbc1_drpc: hd3ss3220@47 {
++		compatible = "ti,hd3ss3220";
++		status = "disabled";
++		reg = <0x47>;
++	};
++};
++
++/ {
++	xusb_padctl: xusb_padctl@3520000 {
++		/*
++		 * See Documentation/devicetree/bindings/phy/
++		 * nvidia,tegra124-xusb-padctl.txt for reference
++		 */
++		status = "okay";
++		pads {
++			usb2 {
++				lanes {
++					usb2-0 {
++						nvidia,function = "xusb";
++						status = "okay";
++					};
++					usb2-1 {
++						nvidia,function = "xusb";
++						status = "okay";
++					};
++					usb2-2 {
++						nvidia,function = "xusb";
++						status = "okay";
++					};
++				};
++			};
++			usb3 {
++				lanes {
++					usb3-0 {
++						nvidia,function = "xusb";
++						status = "okay";
++					};
++					usb3-1 {
++						nvidia,function = "xusb";
++						status = "okay";
++					};
++					usb3-2 {
++						nvidia,function = "xusb";
++						status = "okay";
++					};
++				};
++			};
++		};
++
++		ports {
++			/* USB-C 0 */
++			usb2-2 {
++				mode = "host";
++				/* Delegate switching to HW (consider VBUS always on) */
++				vbus-supply = <&job_reg_5v>;
++				status = "okay";
++				connector {
++					compatible = "usb-c-connector";
++ 					label = "USB-C 0";
++ 				};
++			};
++			usb3-0 {
++				nvidia,usb2-companion = <2>;
++				status = "okay";
++			};
++
++			/* USB-C 1 (also functions as a Jetson recovery port) */
++			usb2-0 {
++				mode = "peripheral";
++				status = "okay";
++				/* Delegate switching to HW (consider VBUS always on) */
++				vbus-supply = <&job_reg_5v>;
++				usb-role-switch;
++				connector {
++					compatible = "usb-b-connector", "gpio-usb-b-connector";
++ 					label = "micro-USB";
++ 					type = "micro";
++ 					vbus-gpio = <&tegra_main_gpio TEGRA234_MAIN_GPIO(Z, 1) GPIO_ACTIVE_LOW>;
++ 				};
++			};
++			usb3-2 {
++				nvidia,usb2-companion = <0>;
++				status = "okay";
++			};
++
++			/* USB on M.2 & extension connector */
++			usb2-1 {
++				mode = "host";
++				/* VBUS is always on */
++				vbus-supply = <&job_reg_5v>;
++				status = "okay";
++			};
++			usb3-1 {
++				nvidia,usb2-companion = <1>;
++				status = "okay";
++			};
++		};
++	};
++
++	/* USB Device controller */
++	tegra_xudc: xudc@3550000 {
++		status = "okay";
++		phys = <&{/xusb_padctl@3520000/pads/usb2/lanes/usb2-0}>,
++			<&{/xusb_padctl@3520000/pads/usb3/lanes/usb3-2}>;
++		phy-names = "usb2-0", "usb3-2";
++		nvidia,xusb-padctl = <&xusb_padctl>;
++	};
++
++	/* USB Host controller */
++	tegra_xhci: xhci@3610000 {
++		status = "okay";
++		phys = <&{/xusb_padctl@3520000/pads/usb2/lanes/usb2-1}>,
++			<&{/xusb_padctl@3520000/pads/usb2/lanes/usb2-2}>,
++			<&{/xusb_padctl@3520000/pads/usb3/lanes/usb3-0}>,
++			<&{/xusb_padctl@3520000/pads/usb3/lanes/usb3-1}>;
++		phy-names = "usb2-1", "usb2-2", "usb3-0", "usb3-1";
++		nvidia,xusb-padctl = <&xusb_padctl>;
++	};
++};
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job.dtsi b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job.dtsi
+new file mode 100644
+index 000000000000..8a661580eb6e
+--- /dev/null
++++ b/nvidia/platform/t23x/p3768/kernel-dts/cvb/tegra234-antmicro-job.dtsi
+@@ -0,0 +1,173 @@
++/*
++ * Copyright (c) 2022, NVIDIA CORPORATION.  All rights reserved.
++ * Copyright (c) 2023 Antmicro <www.antmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++#include <dt-bindings/gpio/tegra234-gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++
++#include "tegra234-p3509-a02-pwm-fan.dtsi"
++#include "tegra234-p3509-a02-pcie.dtsi"
++#include "tegra234-p3509-audio.dtsi"
++#include "tegra234-antmicro-job-fixed-regulators.dtsi"
++#include "tegra234-antmicro-job-i2c-buses.dtsi"
++#include "tegra234-antmicro-job-gpioex.dtsi"
++#include "tegra234-antmicro-job-usb.dtsi"
++
++/* 4xOV5640 cameras */
++#include "tegra234-antmicro-job-camera-ov5640.dtsi"
++
++/ {
++	gpio-keys {
++		compatible = "gpio-keys";
++		status = "okay";
++
++		user_btn0 {
++			label = "USER_BTN0";
++			gpios = <&tegra_aon_gpio TEGRA234_AON_GPIO(CC, 2) GPIO_ACTIVE_LOW>;
++			linux,code = <BTN_0>;
++		};
++
++		user_btn1 {
++			label = "USER_BTN1";
++			gpios = <&tegra_aon_gpio TEGRA234_AON_GPIO(CC, 3) GPIO_ACTIVE_LOW>;
++			linux,code = <BTN_1>;
++		};
++
++		forcerecovery {
++			label = "FORCE_RECOVERY";
++			gpios = <&tegra_main_gpio TEGRA234_MAIN_GPIO(G, 0) GPIO_ACTIVE_LOW>;
++			linux,code = <BTN_2>;
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++		status = "okay";
++
++		user_led0 {
++			label = "USER_LED0";
++			gpios = <&tegra_aon_gpio TEGRA234_AON_GPIO(CC, 0) GPIO_ACTIVE_HIGH>;
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_INDICATOR;
++			linux,default-trigger = "activity";
++		};
++
++		user_led1 {
++			label = "USER_LED1";
++			gpios = <&tegra_aon_gpio TEGRA234_AON_GPIO(CC, 1) GPIO_ACTIVE_HIGH>;
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_INDICATOR;
++		};
++	};
++
++	spi@3210000{ /* SPI1 in 40 pin conn */
++		status = "okay";
++		spi@0 { /* chip select 0 */
++			compatible = "tegra-spidev";
++			reg = <0x0>;
++			spi-max-frequency = <50000000>;
++			controller-data {
++				nvidia,enable-hw-based-cs;
++				nvidia,rx-clk-tap-delay = <0x10>;
++				nvidia,tx-clk-tap-delay = <0x0>;
++			};
++		};
++		spi@1 { /* chip select 1 */
++			compatible = "tegra-spidev";
++			reg = <0x1>;
++			spi-max-frequency = <50000000>;
++			controller-data {
++				nvidia,enable-hw-based-cs;
++				nvidia,rx-clk-tap-delay = <0x10>;
++				nvidia,tx-clk-tap-delay = <0x0>;
++			};
++		};
++	};
++
++	spi@3230000{ /* SPI3 in 40 pin conn */
++		status = "okay";
++		spi@0 { /* chip select 0 */
++			compatible = "tegra-spidev";
++			reg = <0x0>;
++			spi-max-frequency = <50000000>;
++			controller-data {
++				nvidia,enable-hw-based-cs;
++				nvidia,rx-clk-tap-delay = <0x10>;
++				nvidia,tx-clk-tap-delay = <0x0>;
++			};
++		};
++		spi@1 { /* chips select 1 */
++			compatible = "tegra-spidev";
++			reg = <0x1>;
++			spi-max-frequency = <50000000>;
++			controller-data {
++				nvidia,enable-hw-based-cs;
++				nvidia,rx-clk-tap-delay = <0x10>;
++				nvidia,tx-clk-tap-delay = <0x0>;
++			};
++		};
++	};
++
++	serial@3100000 {/* UARTA, for 40 pin header */
++		status = "okay";
++	};
++
++	mttcan@c310000 {
++		status = "okay";
++	};
++
++	serial@3140000 {
++		/* UARTE, Goes to M2.E and also some of the pins to bootstrap */
++		status = "okay";
++	};
++
++	serial@31d0000 {/* UARTI - SBSA */
++		status = "okay";
++	};
++
++	tachometer@39c0000 {
++		status = "okay";
++		upper-threshold = <0xfffff>;
++		lower-threshold = <0x0>;
++	};
++
++	pwm@3280000 {/* PWM1 40pin header, pin 15 */
++		status = "okay";
++	};
++
++	pwm@32a0000 {/* PWM3 - FAN */
++		status = "okay";
++	};
++
++	pwm@c340000 { /* PWM4 - OVR */
++		status = "disabled";
++	};
++
++	pwm@32c0000 {/* PWM5 40 pin header, pin 33 */
++		status = "okay";
++	};
++
++	pwm@32d0000 {/* PWM6 OVR */
++		status = "disabled";
++	};
++
++	bluedroid_pm {
++		status = "disabled";
++	};
++
++	display@13800000 {
++		status = "okay";
++		os_gpio_hotplug_a = <&tegra_main_gpio TEGRA234_MAIN_GPIO(M, 0) GPIO_ACTIVE_HIGH>;
++	};
++};
+diff --git a/nvidia/platform/t23x/p3768/kernel-dts/tegra234-p3767-0000-antmicro-job.dts b/nvidia/platform/t23x/p3768/kernel-dts/tegra234-p3767-0000-antmicro-job.dts
+new file mode 100644
+index 000000000000..f345e1dcef58
+--- /dev/null
++++ b/nvidia/platform/t23x/p3768/kernel-dts/tegra234-p3767-0000-antmicro-job.dts
+@@ -0,0 +1,32 @@
++/*
++ * Top level DTS file for CVM:P3767-0000 and CVB:antmicro-job.
++ *
++ * Copyright (c) 2021-2022, NVIDIA CORPORATION.  All rights reserved.
++ * Copyright (c) 2023 Antmicro <www.antmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++/dts-v1/;
++#include "tegra234-dcb-p3767-0000-hdmi.dtsi"
++#include <tegra234-soc/mods-simple-bus.dtsi>
++#include <t234-common-cvm/tegra234-thermal.dtsi>
++#include <t234-common-cvm/tegra234-cpuidle.dtsi>
++#include <t234-common-cvm/tegra234-thermal-cooling.dtsi>
++#include <t234-common-cvm/tegra234-thermal-userspace-alert.dtsi>
++#include "cvm/tegra234-p3767-0000.dtsi"
++#include "cvb/tegra234-antmicro-job.dtsi"
++
++/ {
++	nvidia,dtsfilename = __FILE__;
++	nvidia,dtbbuildtime = __DATE__, __TIME__;
++	compatible = "antmicro,job+p3767-0000", "nvidia,p3767-0000", "nvidia,tegra234", "nvidia,tegra23x";
++	model = "NVIDIA Orin NX SoM on Antmicro Jetson Orin Baseboard";
++};
+-- 
+2.25.1
+

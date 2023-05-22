@@ -1,0 +1,94 @@
+From 05c70c681ab665039885aaba739e515b6d30022e Mon Sep 17 00:00:00 2001
+From: Roman Dobrodii <rdobrodii@antmicro.com>
+Date: Fri, 17 Mar 2023 20:09:29 +0100
+Subject: [PATCH 3/8] nvidia/drivers/media/i2c/nv_ov5640: add regulator support
+
+Signed-off-by: Roman Dobrodii <rdobrodii@antmicro.com>
+---
+ nvidia/drivers/media/i2c/nv_ov5640.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/nvidia/drivers/media/i2c/nv_ov5640.c b/nvidia/drivers/media/i2c/nv_ov5640.c
+index 459bca015841..0730edc36739 100644
+--- a/nvidia/drivers/media/i2c/nv_ov5640.c
++++ b/nvidia/drivers/media/i2c/nv_ov5640.c
+@@ -52,6 +52,7 @@ struct ov5640 {
+ 	struct i2c_client		*i2c_client;
+ 	struct v4l2_subdev		*subdev;
+ 	struct media_pad		pad;
++	struct regulator		*vdd_reg;
+ 
+ 	int				reg_offset;
+ 
+@@ -143,7 +144,7 @@ static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
+ {
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+ 	struct camera_common_data *s_data = to_camera_common_data(&client->dev);
+-	struct ov5640 *priv = (struct ov5640 *)s_data->priv;	
++	struct ov5640 *priv = (struct ov5640 *)s_data->priv;
+ 	int err;
+ 	u32 frame_time;
+ 	u8 val;
+@@ -184,7 +185,7 @@ static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
+ 		ov5640_write_reg(priv->s_data, OV5640_TIMING_REG21,
+ 				 val & (~HORIZONTAL_MIRROR_MASK));
+ 	}
+-	
++
+ 	if (test_mode) {
+ 	dev_dbg(&client->dev, "%s-- test_mode----------------\n", __func__);
+ 		err = ov5640_write_table(priv,
+@@ -286,7 +287,7 @@ static struct camera_common_sensor_ops ov5640_common_ops = {
+ 
+ static int ov5640_ctrls_init(struct ov5640 *priv)
+ {
+-	struct i2c_client *client = priv->i2c_client;	
++	struct i2c_client *client = priv->i2c_client;
+ 	struct v4l2_ctrl *ctrl;
+ 	int numctrls;
+ 	int err;
+@@ -437,6 +438,14 @@ static int ov5640_probe(struct i2c_client *client,
+ 		return -EFAULT;
+ 	}
+ 
++	priv->vdd_reg = devm_regulator_get(&client->dev, "vdd");
++	if (IS_ERR(priv->vdd_reg))
++		return dev_err_probe(&client->dev, PTR_ERR(priv->vdd_reg),
++			"reg get err\n");
++	err = regulator_enable(priv->vdd_reg);
++	if (err)
++		return dev_err_probe(&client->dev, err, "reg en err\n");
++
+ 	common_data->ops		= &ov5640_common_ops;
+ 	common_data->ctrl_handler	= &priv->ctrl_handler;
+ 	common_data->dev		= &client->dev;
+@@ -486,7 +495,7 @@ static int ov5640_probe(struct i2c_client *client,
+                 err = -ENODEV;
+                 return err;
+         }
+-	
++
+ 	err = camera_common_parse_ports(&client->dev, common_data);
+ 	if (err) {
+ 		dev_err(&client->dev, "Failed to find port info\n");
+@@ -497,7 +506,7 @@ static int ov5640_probe(struct i2c_client *client,
+ 	camera_common_create_debugfs(common_data, debugfs_name);
+ 
+ 	v4l2_i2c_subdev_init(priv->subdev, client, &ov5640_subdev_ops);
+-	
++
+ 	err = ov5640_ctrls_init(priv);
+ 	if (err)
+ 		return err;
+@@ -533,6 +542,8 @@ ov5640_remove(struct i2c_client *client)
+ 	struct camera_common_data *s_data = to_camera_common_data(&client->dev);
+ 	struct ov5640 *priv = (struct ov5640 *)s_data->priv;
+ 
++	regulator_disable(priv->vdd_reg);
++
+ 	v4l2_async_unregister_subdev(priv->subdev);
+ #if defined(CONFIG_MEDIA_CONTROLLER)
+ 	media_entity_cleanup(&priv->subdev->entity);
+-- 
+2.25.1
+
