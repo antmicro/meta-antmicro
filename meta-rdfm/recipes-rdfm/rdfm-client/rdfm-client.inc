@@ -7,12 +7,9 @@ BBCLASSEXTEND = "native"
 RDEPENDS:${PN}:class-native = ""
 DEPENDS:class-native = ""
 
-PACKAGES:append = " mender-modules-gen"
-
 RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd = " parted util-linux-fdisk"
 RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd:mender-partlabel = " util-linux-blkid"
 RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd:mender-partuuid = " util-linux-blkid"
-RDEPENDS:mender-modules-gen = "bash"
 
 MENDER_CLIENT ?= "mender-client"
 MENDER_SERVER_URL ?= "https://docker.mender.io"
@@ -25,36 +22,10 @@ MENDER_RETRY_POLL_INTERVAL_SECONDS ?= "300"
 
 inherit go pkgconfig systemd
 
-SYSTEMD_SERVICE:${PN} = "${MENDER_CLIENT}.service"
 FILES:${PN} += "\
-    ${datadir}/dbus-1/system.d/io.mender.AuthenticationManager.conf \
-    ${datadir}/dbus-1/system.d/io.mender.UpdateManager.conf \
-    ${datadir}/mender/identity \
-    ${datadir}/mender/identity/mender-device-identity \
-    ${datadir}/mender/inventory \
-    ${datadir}/mender/inventory/mender-inventory-bootloader-integration \
-    ${datadir}/mender/inventory/mender-inventory-hostinfo \
-    ${datadir}/mender/inventory/mender-inventory-network \
-    ${datadir}/mender/inventory/mender-inventory-os \
-    ${datadir}/mender/inventory/mender-inventory-rootfs-type \
-    ${datadir}/mender/modules/v3/deb \
-    ${datadir}/mender/modules/v3/directory \
-    ${datadir}/mender/modules/v3/docker \
-    ${datadir}/mender/modules/v3/rpm \
-    ${datadir}/mender/modules/v3/script \
-    ${datadir}/mender/modules/v3/single-file \
     ${sysconfdir}/udev/mount.blacklist.d/mender \
-    ${systemd_unitdir}/system/${MENDER_CLIENT}.service \
     /data/mender/device_type \
     /data/mender/mender.conf \
-"
-FILES:${PN}-dev += " \
-    ${datadir}/dbus-1/interface \
-"
-FILES:mender-modules-gen = " \
-    ${bindir}/directory-artifact-gen \
-    ${bindir}/single-file-artifact-gen \
-    ${bindir}/docker-artifact-gen \
 "
 
 SYSROOT_DIRS += "/data"
@@ -97,9 +68,7 @@ FILES:${PN}:append:mender-persist-systemd-machine-id = " \
 # like. We disable those checks here.
 INSANE_SKIP:${PN} = "ldflags textrel"
 
-_MENDER_PACKAGECONFIG_DEFAULT = "${@mender_feature_is_enabled("mender-client-install", "dbus modules inventory-network-scripts", "", d)}"
-PACKAGECONFIG ?= "${_MENDER_PACKAGECONFIG_DEFAULT}"
-
+PACKAGECONFIG ?= ""
 PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-client-install', ' mender-client-install', '', d)}"
 PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-uboot', ' u-boot', '', d)}"
 PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-grub', ' grub', '', d)}"
@@ -265,31 +234,7 @@ do_install() {
         bindir=${bindir} \
         datadir=${datadir} \
         sysconfdir=${sysconfdir} \
-        systemd_unitdir=${systemd_unitdir} \
-        install-bin \
-        install-identity-scripts \
-        install-systemd \
-        ${@bb.utils.contains('PACKAGECONFIG', 'modules', 'install-modules', '', d)}
-
-    # install inventory scripts
-    oe_runmake \
-        -C ${B}/src/ \
-        V=1 \
-        prefix=${D} \
-        datadir=${datadir} \
-        install-inventory-local-scripts \
-        ${@bb.utils.contains('PACKAGECONFIG', 'inventory-network-scripts', 'install-inventory-network-scripts', '', d)}
-
-    # install dbus files
-    if ${@bb.utils.contains('PACKAGECONFIG', 'dbus', 'true', 'false', d)}; then
-        # install the D-Bus policy file
-        oe_runmake \
-            -C ${B}/src/ \
-            V=1 \
-            prefix=${D} \
-            datadir=${datadir} \
-            install-dbus
-    fi
+        install-bin
 
     #install our prepared configuration
     install -d ${D}/${sysconfdir}/mender
@@ -329,6 +274,7 @@ do_install() {
 }
 
 do_install:append:class-target:mender-image:mender-systemd() {
+    install -d -m 755 ${D}${systemd_unitdir}/system/
     install -m 644 ${WORKDIR}/mender-client-data-dir.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}-data-dir.service
     install -d -m 755 ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants
     ln -sf ../mender-client-data-dir.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/${MENDER_CLIENT}-data-dir.service
@@ -368,18 +314,4 @@ do_install:append:class-target:mender-persist-systemd-machine-id() {
     ln -sf ../mender-client-systemd-machine-id.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/
     install -d -m 755 ${D}${bindir}
     install -m 755 ${WORKDIR}/mender-client-set-systemd-machine-id.sh ${D}${bindir}/
-}
-
-# Native overrides, installing scripts for package mender-modules-gen
-do_compile:class-native() {
-    true
-}
-
-do_install:class-native() {
-    oe_runmake \
-        -C ${B}/src/ \
-        V=1 \
-        prefix=${D} \
-        bindir=${bindir} \
-        install-modules-gen
 }
