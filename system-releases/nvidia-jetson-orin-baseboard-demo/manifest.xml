@@ -11,7 +11,6 @@
       <linkfile dest="build/conf/local.conf" src="system-releases/nvidia-jetson-orin-baseboard-demo/local.conf"/>
     </project>
 
-    <project name="antmicro-jetson-orin-baseboard-kernel-5-10" remote="antmicro" revision="master" path="sources/kernel-5-10"/>
     <project name="poky.git" remote="yoctoproject" revision="kirkstone" path="sources/poky"/>
     <project name="meta-openembedded.git" remote="meta-openembedded" revision="kirkstone" path="sources/meta-openembedded"/>
     <project name="meta-tegra.git" remote="meta-tegra" revision="kirkstone" path="sources/meta-tegra" />
