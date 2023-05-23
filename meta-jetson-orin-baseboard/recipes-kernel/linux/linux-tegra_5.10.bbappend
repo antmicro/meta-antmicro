@@ -1,4 +1,4 @@
-FILESEXTRAPATHS:prepend := "${THISDIR}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 SRC_URI += " \
     file://0001-gpio-pca953x-introduce-support-for-nxp-pcal6408.patch \
     file://0002-nvidia-drivers-media-i2c-nv_ov5640-add-driver.patch \
@@ -9,8 +9,19 @@ SRC_URI += " \
     file://0007-arch-arm64-configs-p3767_antmicro_job-enable-dynamic.patch \
     file://0008-nvidia-platform-t23x-add-tegra234-p3767-0000-antmicr.patch \
     "
-SRCBRANCH = "oe4t-patches-l4t-r35.2.1"
-SRCREV = "a0861582129bb67d377b471a86cd6e651aa53301"
+
+LINUX_VERSION_EXTENSION = "-l4t-r35.2.1"
+SRCBRANCH = "oe4t-patches${LINUX_VERSION_EXTENSION}"
+
+SRCREV = "AUTOINC"
 KBRANCH = "${SRCBRANCH}"
 
 KBUILD_DEFCONFIG = "p3767_antmicro_job_defconfig"
+
+# Configuration file comes with patches, so we need to apply patches before checking the config file
+do_fixsource() {
+    cd ${STAGING_KERNEL_DIR}
+    for p in ${WORKDIR}/*.patch; do echo $p; patch -p1 < $p; done
+}
+addtask fixsource before do_kernel_metadata after do_kernel_checkout
+do_patch[noexec] = "1"
