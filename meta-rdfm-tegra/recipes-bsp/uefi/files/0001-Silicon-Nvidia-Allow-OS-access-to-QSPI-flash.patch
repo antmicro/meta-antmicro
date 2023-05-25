@@ -1,0 +1,26 @@
+From da973c3a03f3ea393c3ffc783829f5ab4f515002 Mon Sep 17 00:00:00 2001
+From: Mateusz Sierszulski <msierszulski@antmicro.com>
+Date: Thu, 25 May 2023 10:18:08 +0200
+Subject: [PATCH] Silicon: Nvidia: Allow OS access to QSPI flash
+
+Signed-off-by: Mateusz Sierszulski <msierszulski@antmicro.com>
+---
+ Silicon/NVIDIA/NVIDIA.dec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Silicon/NVIDIA/NVIDIA.dec b/Silicon/NVIDIA/NVIDIA.dec
+index 6528ab3..409cc0c 100644
+--- a/Silicon/NVIDIA/NVIDIA.dec
++++ b/Silicon/NVIDIA/NVIDIA.dec
+@@ -475,7 +475,7 @@
+   gNVIDIATokenSpaceGuid.PcdNewDeviceHierarchy|0x01|UINT8|0x00000068
+ 
+ #Enable OS access to QSPI DTB
+-  gNVIDIATokenSpaceGuid.PcdAllowOsAccessQspi|FALSE|BOOLEAN|0x0000006B
++  gNVIDIATokenSpaceGuid.PcdAllowOsAccessQspi|TRUE|BOOLEAN|0x0000006B
+ 
+ #Enable STMM Secure Variable Store
+   gNVIDIATokenSpaceGuid.PcdTegraStmmEnabled|TRUE|BOOLEAN|0x0000006C
+-- 
+2.30.2
+
