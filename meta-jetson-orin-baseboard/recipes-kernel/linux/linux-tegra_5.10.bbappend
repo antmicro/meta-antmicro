@@ -18,6 +18,10 @@ KBRANCH = "${SRCBRANCH}"
 
 KBUILD_DEFCONFIG = "p3767_antmicro_job_defconfig"
 
+# This is required to properly build the custom devicetree as this task removes
+# the necessary changes in kernel-dts Makefile.
+do_validate_branches[noexec] = "1"
+
 # Configuration file comes with patches, so we need to apply patches before checking the config file
 do_fixsource() {
     cd ${STAGING_KERNEL_DIR}
