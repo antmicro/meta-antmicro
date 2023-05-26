@@ -23,7 +23,7 @@ Board flashing process requires the following packages to be installed:
 ```
 sudo apt-get install gdisk udisks2
 ```
-Connect the USB stick to the device (at least 64 GB, USB3.0) and put the device into recovery mode:
+Connect the USB stick to the device (at least 16 GB, USB3.0) and put the device into recovery mode:
 * connect the Recovery USB-C port to your host PC
 * press POWER button (if the device isn't powered yet)
 * press and hold RECOV button
