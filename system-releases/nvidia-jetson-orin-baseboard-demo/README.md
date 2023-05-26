@@ -24,12 +24,52 @@ It can be done using:
 ```
 sudo pip install PyYAML
 ```
-We can unpack the tegraflash package, and then flash the board by putting the hardware in recovery mode, run the following commands:
+Connect the USB stick to the device and put the device into recovery mode:
+* connect the Recovery USB-C port to your host PC
+* press POWER button (if the device isn't powered yet)
+* press and hold RECOV button
+* press RESET button
+* release RESET and RECOV buttons
+* check if you see the following USB device on your host PC:
+```
+$lsusb
+ID 0955:7323 NVIDIA Corp. APX
+```
+Then unpack the tegraflash package:
 ```
 cd tmp/deploy/images/p3509-a02-p3767-0000
 mkdir flash-directory && cd flash-directory
 tar xzvf ../nvidia-jetson-orin-baseboard-demo-p3509-a02-p3767-0000.tegraflash.tar.gz
-sudo ./doflash
 ```
+In the next step, temporarily disable automatic mounting of removable media, for example:
+```
+dconf read /org/gnome/desktop/media-handling/automount
+dconf write /org/gnome/desktop/media-handling/automount false
+```
+Run the flashing script:
+```
+sudo ./initrd-flash
+```
+By default, the USB stick (/dev/sda1) will be used to store the rootfs, which can be easily verified by looking at the flash script logs:
+```
+$ sudo ./initrd-flash
+Starting at 2023-05-26T15:35:22+02:00
+Machine:       p3509-a02-p3767-0000
+Rootfs device: sda1
+```
+If you want to use NVMe instead of USB stick, you should modify the `TNSPEC_BOOTDEV` variable in the `layer.conf` file in the `meta-jetson-orin-baseboard` sources as follows:
+```
+TNSPEC_BOOTDEV = "nvme0n1p1"
+```
+and then rebuild the image and flash again as described above. For NVMe, the output logs will look like this:
+```
+Machine:       p3509-a02-p3767-0000
+Rootfs device: nvme0n1p1
+```
+and the step where you disable the automatic mounting of removable media can be skipped.
 
-After a successful flashing, the board should boot up and a darknet visualization demo should start automatically.
+After a successful flashing, the board should boot up and you can capture a frame from each camera, for example:
+```
+v4l2-ctl -d0 --stream-mmap --stream-count=1 --stream-to=cam0_image.raw
+v4l2-ctl -d1 --stream-mmap --stream-count=1 --stream-to=cam1_image.raw
+```
