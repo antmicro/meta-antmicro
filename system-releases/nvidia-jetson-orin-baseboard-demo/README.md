@@ -19,12 +19,11 @@ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p376
 
 When the build process is complete, the resulting image will be stored in `build/tmp/deploy/images/p3509-a02-p3767-0000` directory.
 
-Board flashing process requires [PyYAML](https://pypi.org/project/PyYAML/) package to be pre-installed.
-It can be done using:
+Board flashing process requires the following packages to be installed:
 ```
-sudo pip install PyYAML
+sudo apt-get install gdisk udisks2
 ```
-Connect the USB stick to the device and put the device into recovery mode:
+Connect the USB stick to the device (at least 64 GB, USB3.0) and put the device into recovery mode:
 * connect the Recovery USB-C port to your host PC
 * press POWER button (if the device isn't powered yet)
 * press and hold RECOV button
