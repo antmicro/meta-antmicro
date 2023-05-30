@@ -24,7 +24,7 @@ Board flashing process requires the following packages to be installed:
 sudo apt-get update
 sudo apt-get install gdisk udisks2 bmap-tools
 ```
-Connect the USB stick to the device (at least 16 GB, USB3.0) and put the device into recovery mode:
+Connect the NVMEe storage or USB stick (at least 16 GB, USB3.0) to the device and put the device into recovery mode:
 * connect the Recovery USB-C port to your host PC
 * press POWER button (if the device isn't powered yet)
 * press and hold RECOV button
@@ -45,21 +45,21 @@ Run the flashing script:
 ```
 sudo ./initrd-flash
 ```
-By default, the USB stick (/dev/sda1) will be used to store the rootfs, which can be easily verified by looking at the flash script logs:
+By default, the NVMEe storage (/dev/nvme0n1p1) will be used to store the rootfs, which can be easily verified by looking at the flash script logs:
 ```
 $ sudo ./initrd-flash
 Starting at 2023-05-26T15:35:22+02:00
 Machine:       p3509-a02-p3767-0000
-Rootfs device: sda1
+Rootfs device: nvme0n1p1
 ```
-If you want to use NVMe instead of USB stick, you should modify the `TNSPEC_BOOTDEV` variable in the `layer.conf` file in the `meta-jetson-orin-baseboard` sources as follows:
+If you want to use USB stick instead of NVMe, you should modify the `TNSPEC_BOOTDEV` variable in the `layer.conf` file in the `meta-jetson-orin-baseboard` sources as follows:
 ```
-TNSPEC_BOOTDEV = "nvme0n1p1"
+TNSPEC_BOOTDEV = "sda1"
 ```
-and then rebuild the image and flash again as described above. For NVMe, the output logs will look like this:
+and then rebuild the image and flash again as described above. For USB stick, the output logs will look like this:
 ```
 Machine:       p3509-a02-p3767-0000
-Rootfs device: nvme0n1p1
+Rootfs device: sda1
 ```
 After a successful flashing, the board should boot up and you can capture a frame from each camera, for example:
 ```
