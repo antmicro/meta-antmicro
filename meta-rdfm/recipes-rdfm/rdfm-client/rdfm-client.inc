@@ -23,9 +23,9 @@ MENDER_RETRY_POLL_INTERVAL_SECONDS ?= "300"
 inherit go pkgconfig systemd
 
 FILES:${PN} += "\
-    ${sysconfdir}/udev/mount.blacklist.d/mender \
-    /data/mender/device_type \
-    /data/mender/mender.conf \
+    ${sysconfdir}/udev/mount.blacklist.d/rdfm \
+    /data/rdfm/device_type \
+    /data/rdfm/rdfm.conf \
 "
 
 SYSROOT_DIRS += "/data"
@@ -170,7 +170,7 @@ python do_prepare_mender_conf() {
 
     # Add new variable -> config assignments here.
     if key_in_src_uri or key_in_var:
-        conf_maybe_add("ArtifactVerifyKey", "%s/mender/artifact-verify-key.pem" % d.getVar("sysconfdir"), getvar=False, integer=False)
+        conf_maybe_add("ArtifactVerifyKey", "%s/rdfm/artifact-verify-key.pem" % d.getVar("sysconfdir"), getvar=False, integer=False)
     conf_maybe_add("InventoryPollIntervalSeconds", "MENDER_INVENTORY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     # Mandatory variables - will always exist
     conf_maybe_add("RetryPollIntervalSeconds", "MENDER_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
@@ -237,40 +237,40 @@ do_install() {
         install-bin
 
     #install our prepared configuration
-    install -d ${D}/${sysconfdir}/mender
-    install -d ${D}/data/mender
+    install -d ${D}/${sysconfdir}/rdfm
+    install -d ${D}/data/rdfm
     if [ -f ${B}/transient_mender.conf ]; then
-        install -m 0600 ${B}/transient_mender.conf ${D}/${sysconfdir}/mender/mender.conf
+        install -m 0600 ${B}/transient_mender.conf ${D}/${sysconfdir}/rdfm/rdfm.conf
     fi
     if [ -f ${B}/persistent_mender.conf ]; then
-        install -m 0600 ${B}/persistent_mender.conf ${D}/data/mender/mender.conf
+        install -m 0600 ${B}/persistent_mender.conf ${D}/data/rdfm/rdfm.conf
     fi
 
-    install -d ${D}/${localstatedir}/lib/mender
+    install -d ${D}/${localstatedir}/lib/rdfm
 
     # install artifact verification key, if any.
     if [ -e ${WORKDIR}/artifact-verify-key.pem ]; then
         if [ -n "${MENDER_ARTIFACT_VERIFY_KEY}" ]; then
             bbfatal "You can not specify both MENDER_ARTIFACT_VERIFY_KEY and have artifact-verify-key.pem in SRC_URI."
         fi
-        install -m 0444 ${WORKDIR}/artifact-verify-key.pem ${D}${sysconfdir}/mender
+        install -m 0444 ${WORKDIR}/artifact-verify-key.pem ${D}${sysconfdir}/rdfm
     elif [ -n "${MENDER_ARTIFACT_VERIFY_KEY}" ]; then
-        install -m 0444 "${MENDER_ARTIFACT_VERIFY_KEY}" ${D}${sysconfdir}/mender/artifact-verify-key.pem
+        install -m 0444 "${MENDER_ARTIFACT_VERIFY_KEY}" ${D}${sysconfdir}/rdfm/artifact-verify-key.pem
     fi
 
     if ${@bb.utils.contains('MENDER_FEATURES', 'mender-image', 'true', 'false', d)}; then
-        # symlink /var/lib/mender to /data/mender
-        rm -rf ${D}/${localstatedir}/lib/mender
-        ln -s /data/mender ${D}/${localstatedir}/lib/mender
+        # symlink /var/lib/rdfm to /data/rdfm
+        rm -rf ${D}/${localstatedir}/lib/rdfm
+        ln -s /data/rdfm ${D}/${localstatedir}/lib/rdfm
 
-        install -m 755 -d ${D}/data/mender
-        install -m 444 ${B}/device_type ${D}/data/mender/
+        install -m 755 -d ${D}/data/rdfm
+        install -m 444 ${B}/device_type ${D}/data/rdfm/
     fi
 
     # Setup blacklist to ensure udev does not automatically mount Mender managed partitions
     install -d ${D}${sysconfdir}/udev/mount.blacklist.d
-    echo ${MENDER_ROOTFS_PART_A} > ${D}${sysconfdir}/udev/mount.blacklist.d/mender
-    echo ${MENDER_ROOTFS_PART_B} >> ${D}${sysconfdir}/udev/mount.blacklist.d/mender
+    echo ${MENDER_ROOTFS_PART_A} > ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
+    echo ${MENDER_ROOTFS_PART_B} >> ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
 }
 
 do_install:append:class-target:mender-image:mender-systemd() {
