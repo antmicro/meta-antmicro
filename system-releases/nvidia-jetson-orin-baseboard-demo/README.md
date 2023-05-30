@@ -21,7 +21,8 @@ When the build process is complete, the resulting image will be stored in `build
 
 Board flashing process requires the following packages to be installed:
 ```
-sudo apt-get install gdisk udisks2
+sudo apt-get update
+sudo apt-get install gdisk udisks2 bmap-tools
 ```
 Connect the USB stick to the device (at least 16 GB, USB3.0) and put the device into recovery mode:
 * connect the Recovery USB-C port to your host PC
@@ -39,11 +40,6 @@ Then unpack the tegraflash package:
 cd tmp/deploy/images/p3509-a02-p3767-0000
 mkdir flash-directory && cd flash-directory
 tar xzvf ../nvidia-jetson-orin-baseboard-demo-p3509-a02-p3767-0000.tegraflash.tar.gz
-```
-In the next step, temporarily disable automatic mounting of removable media, for example:
-```
-dconf read /org/gnome/desktop/media-handling/automount
-dconf write /org/gnome/desktop/media-handling/automount false
 ```
 Run the flashing script:
 ```
@@ -65,8 +61,6 @@ and then rebuild the image and flash again as described above. For NVMe, the out
 Machine:       p3509-a02-p3767-0000
 Rootfs device: nvme0n1p1
 ```
-and the step where you disable the automatic mounting of removable media can be skipped.
-
 After a successful flashing, the board should boot up and you can capture a frame from each camera, for example:
 ```
 v4l2-ctl -d0 --stream-mmap --stream-count=1 --stream-to=cam0_image.raw
