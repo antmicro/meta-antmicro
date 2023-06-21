@@ -18,11 +18,10 @@ We recommend using the `4664d5b7ebaa12dc3ba844843de8dd3d54a0585f` revision of `m
 
 ## local.conf configuration
 
-In order to use `meta-rdfm` with your project you have to define a set of [features](https://docs.mender.io/system-updates-yocto-project/image-customization/features) you want to include in your `local.conf`:
+In order to use `meta-rdfm` with your project, inherit from the `rdfm-full` class in your `local.conf`:
 
 ```
-# Defines rdfm features to be used
-INHERIT += "mender-full"
+INHERIT += "rdfm-full"
 ```
 
 **Note:** By default the `meta-rdfm` layer sets `ext4` rootfs to be read-only, as it's a requirement for reliable delta updates.
@@ -109,7 +108,7 @@ The freshly generated image with the delta update will be located in the specifi
 
 ## Glossary
 
-Besides the already existing parameters in meta-mender, the meta-rdfm layer introduces new variables that affect the build process.
+The meta-rdfm layer introduces new variables that affect the build process.
 
 ### RDFM_ARTIFACT_NAME
 
