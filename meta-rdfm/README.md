@@ -87,8 +87,8 @@ The `meta-rdfm` layer supports OTA updates using deltas. In order to generate on
 
 To generate a delta artifact, you must install the `rdfm-artifact` tool on the host device. This can be done as follows:
 ```
-git clone git@github.com:antmicro/rdfm-artifact.git
-cd rdfm-artifact
+git clone git@github.com:antmicro/rdfm.git
+cd rdfm/tools/rdfm-artifact
 make
 make install
 ```

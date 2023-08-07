@@ -125,7 +125,7 @@ do_compile() {
     # recreate temporary $GOPATH/src/ structure and link our source tree
     mkdir -p ${B}/src/
     ln -s ${S} ${B}/src/
-    cd ${B}/src/
+    cd ${B}/src/devices/linux-client
 
     # run verbose build, we should see which dependencies are pulled in
     oe_runmake V=1
@@ -228,7 +228,7 @@ do_prepare_mender_conf[vardeps] = " \
 
 do_install() {
     oe_runmake \
-        -C ${B}/src/ \
+        -C ${B}/src/devices/linux-client \
         V=1 \
         prefix=${D} \
         bindir=${bindir} \
