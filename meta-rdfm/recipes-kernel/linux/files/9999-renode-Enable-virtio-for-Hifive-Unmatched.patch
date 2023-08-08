@@ -1,0 +1,28 @@
+From 6d5ac09b83252a84c0a2711b0cf0922b706c65ba Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
+Date: Mon, 17 Jul 2023 08:45:55 +0200
+Subject: [PATCH] [DEV] Enable virtio for Hifive Unmatched
+
+---
+ arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+index e0116210981c..a2c4b24f3a10 100644
+--- a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
++++ b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+@@ -322,5 +322,11 @@ pcie@e00000000 {
+ 			resets = <&prci 4>;
+ 			status = "okay";
+ 		};
++		virtio0: virtio@100d0000 {
++			compatible = "virtio,mmio";
++			reg = <0x00 0x100d0000 0x00 0x150>;
++			interrupts = <54>;
++			interrupt-parent = <&plic0>;
++		};
+ 	};
+ };
+-- 
+2.40.1
+

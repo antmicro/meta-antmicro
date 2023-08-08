@@ -2,6 +2,8 @@
 
 The `rdfm-unmatched-demo` release is an Over The Air update demo using the `RDFM` for `HiFive Unmatched` board.
 
+If you wish to try out this system release but don't have access to the hardware, refer to the [Renode demo README](./renode/README.md).
+
 ## How to use
 
 ### Building image
@@ -48,45 +50,16 @@ BOOT MODE SEL
 
 ### Generating a delta update
 
-Install dependencies:
-```
-sudo apt install rdiff
-sudo apt install jq
-```
+Run the following `rdfm-artifact` command:
 
-Clone `rdfm-artifact` on the host device and build it:
 ```
-git clone https://github.com/antmicro/rdfm-artifact.git rdfm-artifact-repo
-cd rdfm-artifact-repo
-make
-cp rdfm-artifact ../ && cd ..
+rdfm-artifact write delta-rootfs-image \
+    --base-artifact rdfm-image-minimal-unmatched.rdfm \
+    --target-artifact rdfm-image-upgraded-unmatched.rdfm \
+    --output-path minimal-to-upgraded.rdfm
 ```
 
-Create a `deltas.sh` script with the following content:
-```
-#!/bin/sh
-
-set -ex
-
-OLD="$1"
-NEW="$2"
-
-SIGFILE="/tmp/rootfs-$$.sig"
-
-checksum=$(tar -xOf "$OLD" header.tar.gz |tar -xzOf- headers/0000/type-info |jq -r '.artifact_provides."rootfs-image.checksum"')
-tar -xOf "$OLD" data/0000.tar.gz | tar -xzOf- | /usr/bin/rdiff signature -R rollsum -b 4096 - "$SIGFILE"
-./rdfm-artifact modify --delta-compress "$SIGFILE" "$NEW"
-
-rm "$SIGFILE"
-```
-
-Add execution rights to the script and run it:
-```
-chmod +x deltas.sh
-./deltas.sh rdfm-image-minimal-unmatched.rdfm rdfm-image-upgraded-unmatched.rdfm
-```
-
-After script running the `rdfm-image-upgraded-unmatched.rdfm` will contain a delta generated update.
+For more information, refer to the `meta-rdfm` [README](../../meta-rdfm/README.md#how-to-use).
 
 ### Running a demo
 After successful booting, establish Ethernet connection between host and target device.
