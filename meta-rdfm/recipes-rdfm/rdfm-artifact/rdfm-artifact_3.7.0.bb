@@ -3,7 +3,7 @@ DESCRIPTION = "RDFM Artifact manipulation tool"
 HOMEPAGE = "https://github.com/antmicro/rdfm"
 
 SRC_URI = "git://github.com/antmicro/rdfm.git;protocol=https;branch=main;destsuffix=git/src"
-SRCREV = "597fc101836f95b9b58e8f7d2208abacd5aafbe7"
+SRCREV = "e528565607818be6a23fe52079c533caf4da2361"
 LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/git/src/LICENSE;md5=2a944942e1496af1886903d274dedb13"
 
