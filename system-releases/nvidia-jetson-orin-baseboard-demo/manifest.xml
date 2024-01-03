@@ -13,5 +13,5 @@
 
     <project name="poky.git" remote="yoctoproject" revision="kirkstone" path="sources/poky"/>
     <project name="meta-openembedded.git" remote="meta-openembedded" revision="kirkstone" path="sources/meta-openembedded"/>
-    <project name="meta-tegra.git" remote="meta-tegra" revision="kirkstone" path="sources/meta-tegra" />
+    <project name="meta-tegra.git" remote="meta-tegra" revision="dd0d91ad1ac0f0654aed6cce143ed8fc26719196" path="sources/meta-tegra" />
 </manifest>
