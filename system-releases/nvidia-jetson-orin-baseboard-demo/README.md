@@ -1,6 +1,6 @@
 # `Jetson Orin Baseboard` BSP demo
 
-Copyright (c) 2022-2023 [Antmicro](https://www.antmicro.com)
+Copyright (c) 2022-2024 [Antmicro](https://www.antmicro.com)
 
 This `nvidia-jetson-orin-baseboard-demo` release lets you build a Board Support Package demo you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard).
 
