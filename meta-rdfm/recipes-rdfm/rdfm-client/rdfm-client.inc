@@ -186,27 +186,6 @@ python do_prepare_mender_conf() {
     conf_maybe_add("UpdateControlMapExpirationTimeSeconds", "MENDER_UPDATE_CONTROL_MAP_EXPIRATION_TIME_SECONDS", getvar=True, integer=True)
     conf_maybe_add("UpdateControlMapBootExpirationTimeSeconds", "MENDER_UPDATE_CONTROL_MAP_BOOT_EXPIRATION_TIME_SECONDS", getvar=True, integer=True)
 
-    # Filter returns the variables that are present in both instances.
-    # Thus no misspelled variables will ever enter the persistent configuration during migration.
-    persistent_configs = bb.utils.filter("MENDER_PERSISTENT_CONFIGURATION_VARS", d.getVar("MENDER_CONFIGURATION_VARS"), d)
-
-    persistent_conf = {}
-
-    # Extract the variables that are destined for the persistent mender-configuration.
-    if bb.utils.contains('PACKAGECONFIG', 'split-mender-config', True, False, d):
-        for config_var in transient_conf:
-            if config_var in persistent_configs:
-                persistent_conf[config_var] = transient_conf[config_var]
-
-        # Remove the configurations from the transient conf that are already in the persistent configuration.
-        for config_var in persistent_conf:
-            del transient_conf[config_var]
-
-        dst_conf = os.path.join(d.getVar("B"), "persistent_mender.conf")
-        fd = open(dst_conf, "w")
-        json.dump(persistent_conf, fd, indent=4, sort_keys=True)
-        fd.close()
-
     dst_conf = os.path.join(d.getVar("B"), "transient_mender.conf")
     fd = open(dst_conf, "w")
     json.dump(transient_conf, fd, indent=4, sort_keys=True)
@@ -241,9 +220,7 @@ do_install() {
     install -d ${D}/data/rdfm
     if [ -f ${B}/transient_mender.conf ]; then
         install -m 0600 ${B}/transient_mender.conf ${D}/${sysconfdir}/rdfm/rdfm.conf
-    fi
-    if [ -f ${B}/persistent_mender.conf ]; then
-        install -m 0600 ${B}/persistent_mender.conf ${D}/data/rdfm/rdfm.conf
+        install -m 0600 ${B}/transient_mender.conf ${D}/data/rdfm/rdfm.conf
     fi
 
     install -d ${D}/${localstatedir}/lib/rdfm
