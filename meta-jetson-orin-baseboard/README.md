@@ -1,6 +1,6 @@
 # `meta-jetson-orin-baseboard` Yocto layer
 
-Copyright (c) 2022-2023 [Antmicro](https://www.antmicro.com)
+Copyright (c) 2022-2024 [Antmicro](https://www.antmicro.com)
 
 Antmicro's collection of Yocto layers for machine learning and computer vision applications.
 
