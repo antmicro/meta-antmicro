@@ -1,0 +1,13 @@
+diff --git a/Silicon/NVIDIA/NVIDIA.dec b/Silicon/NVIDIA/NVIDIA.dec
+index 7b61f50..9c08cc8 100644
+--- a/Silicon/NVIDIA/NVIDIA.dec
++++ b/Silicon/NVIDIA/NVIDIA.dec
+@@ -475,7 +475,7 @@
+   gNVIDIATokenSpaceGuid.PcdNewDeviceHierarchy|0x01|UINT8|0x00000068
+ 
+ #Enable OS access to QSPI DTB
+-  gNVIDIATokenSpaceGuid.PcdAllowOsAccessQspi|FALSE|BOOLEAN|0x0000006B
++  gNVIDIATokenSpaceGuid.PcdAllowOsAccessQspi|TRUE|BOOLEAN|0x0000006B
+ 
+ #Enable STMM Secure Variable Store
+   gNVIDIATokenSpaceGuid.PcdTegraStmmEnabled|TRUE|BOOLEAN|0x0000006C
