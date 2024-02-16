@@ -1,15 +1,13 @@
+# Required for fetching Go dependencies
+do_compile[network] = "1"
+
 require rdfm-client.inc
 
-SRC_URI = " \
-    git://github.com/antmicro/rdfm.git;protocol=https;branch=main;destsuffix=git \
-    file://0001-Fix-openssl-Could-not-determine-kind-of-name-for-C.F.patch \
-"
-SRCREV = "cf28383be07350b3767980d7d9d8386c1dbf2759"
-SRCREV[sha256sum] = "92a37d9209c02bd72b32088045424d3a426dfd8d0837f36302fbaee3584e2d41"
-SRCREV[md5sum] = "db9b5b9b093f1cd4295ea510a119c3c3"
+SRC_URI = "git://github.com/antmicro/rdfm.git;protocol=https;branch=main;destsuffix=git"
+SRCREV = "f8d65ce7085db8c4d026671e5c625b429762a459"
 
 LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT & OLDAP-2.8 & OpenSSL"
-LIC_FILES_CHKSUM = "file://LIC_FILES_CHKSUM.sha256;md5=69a48b331ae876b6775139310ec72f1b"
+LIC_FILES_CHKSUM = "file://${WORKDIR}/git/LICENSE;md5=2a944942e1496af1886903d274dedb13"
 
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"

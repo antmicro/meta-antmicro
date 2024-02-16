@@ -1,19 +1,19 @@
 SUMMARY = "RDFM Artifact"
-DESCRIPTION = "RDFM image artifact library"
-HOMEPAGE = "https://github.com/antmicro/rdfm-artifact"
+DESCRIPTION = "RDFM Artifact manipulation tool"
+HOMEPAGE = "https://github.com/antmicro/rdfm"
 
-SRC_URI = "git://github.com/antmicro/rdfm-artifact.git;protocol=https;branch=main;destsuffix=git/src"
-SRCREV = "a38e0e60aa2c710d0d33f86157b6bac098ad2e1d"
-SRCREV[sha256sum] = "06062eeeae20e13789b122ec488b6de80fa9d61f725fe7023c97c21a45863216"
-SRCREV[md5sum] = "4fbbe446c9c8d5bb956aee11f052a242"
+SRC_URI = "git://github.com/antmicro/rdfm.git;protocol=https;branch=main;destsuffix=git/src"
+SRCREV = "f8d65ce7085db8c4d026671e5c625b429762a459"
 LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT"
-LIC_FILES_CHKSUM = "file://src/LICENSE;md5=fbe9cd162201401ffbb442445efecfdc"
+LIC_FILES_CHKSUM = "file://${WORKDIR}/git/src/LICENSE;md5=2a944942e1496af1886903d274dedb13"
 
-inherit go
+inherit go pkgconfig
+# Required for fetching Go dependencies
+do_compile[network] = "1"
 
 S = "${WORKDIR}/git"
-DEPENDS += "xz"
-GOPATHDIR = "${B}/src/"
+DEPENDS += "xz openssl"
+GOPATHDIR = "${B}/src/tools/rdfm-artifact"
 GOPATH = "${B}:${STAGING_LIBDIR}/${TARGET_SYS}/go"
 GO_IMPORT = ""
 
@@ -24,6 +24,9 @@ EXTRA_OEMAKE:append = " \
 
 do_compile() {
     oe_runmake V=1 install
+    # Workaround for https://github.com/golang/go/issues/35615 causing failures
+    # when do_rm_work is executed
+    find ${B}/pkg/mod -exec chmod u+w {} \;
 }
 
 do_install() {

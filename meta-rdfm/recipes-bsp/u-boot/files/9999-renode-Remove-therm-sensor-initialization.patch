@@ -1,0 +1,26 @@
+From badbb32cd43b73951235bc5e08591f7af2d6f269 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
+Date: Mon, 12 Jun 2023 15:18:48 +0200
+Subject: [PATCH] [DEV] Remove therm sensor initialization for Renode compat
+
+---
+ board/sifive/unmatched/spl.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/board/sifive/unmatched/spl.c b/board/sifive/unmatched/spl.c
+index 05ba59160a..b76efe7e2d 100644
+--- a/board/sifive/unmatched/spl.c
++++ b/board/sifive/unmatched/spl.c
+@@ -115,12 +115,6 @@ int spl_board_init_f(void)
+ 
+ 	pwm_device_init();
+ 
+-	ret = init_tmp451_remote_therm_limit();
+-	if (ret) {
+-		debug("TMP451 remote THERM limit init failed: %d\n", ret);
+-		goto end;
+-	}
+-
+ 	ret = spl_gemgxl_init();
+ 	if (ret) {
+ 		debug("Gigabit ethernet PHY (VSC8541) init failed: %d\n", ret);

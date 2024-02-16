@@ -1,0 +1,7 @@
+using "./sifive-fu740.repl"
+
+tmp451: Mocks.DummyI2CSlave @ i2c1 0x4c
+
+virtio: Storage.VirtIOBlockDevice @ sysbus 0x100d0000
+    IRQ -> plic@54
+

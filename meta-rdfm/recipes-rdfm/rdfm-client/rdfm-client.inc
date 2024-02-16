@@ -7,12 +7,9 @@ BBCLASSEXTEND = "native"
 RDEPENDS:${PN}:class-native = ""
 DEPENDS:class-native = ""
 
-PACKAGES:append = " mender-modules-gen"
-
 RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd = " parted util-linux-fdisk"
 RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd:mender-partlabel = " util-linux-blkid"
 RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd:mender-partuuid = " util-linux-blkid"
-RDEPENDS:mender-modules-gen = "bash"
 
 MENDER_CLIENT ?= "mender-client"
 MENDER_SERVER_URL ?= "https://docker.mender.io"
@@ -25,36 +22,10 @@ MENDER_RETRY_POLL_INTERVAL_SECONDS ?= "300"
 
 inherit go pkgconfig systemd
 
-SYSTEMD_SERVICE:${PN} = "${MENDER_CLIENT}.service"
 FILES:${PN} += "\
-    ${datadir}/dbus-1/system.d/io.mender.AuthenticationManager.conf \
-    ${datadir}/dbus-1/system.d/io.mender.UpdateManager.conf \
-    ${datadir}/mender/identity \
-    ${datadir}/mender/identity/mender-device-identity \
-    ${datadir}/mender/inventory \
-    ${datadir}/mender/inventory/mender-inventory-bootloader-integration \
-    ${datadir}/mender/inventory/mender-inventory-hostinfo \
-    ${datadir}/mender/inventory/mender-inventory-network \
-    ${datadir}/mender/inventory/mender-inventory-os \
-    ${datadir}/mender/inventory/mender-inventory-rootfs-type \
-    ${datadir}/mender/modules/v3/deb \
-    ${datadir}/mender/modules/v3/directory \
-    ${datadir}/mender/modules/v3/docker \
-    ${datadir}/mender/modules/v3/rpm \
-    ${datadir}/mender/modules/v3/script \
-    ${datadir}/mender/modules/v3/single-file \
-    ${sysconfdir}/udev/mount.blacklist.d/mender \
-    ${systemd_unitdir}/system/${MENDER_CLIENT}.service \
-    /data/mender/device_type \
-    /data/mender/mender.conf \
-"
-FILES:${PN}-dev += " \
-    ${datadir}/dbus-1/interface \
-"
-FILES:mender-modules-gen = " \
-    ${bindir}/directory-artifact-gen \
-    ${bindir}/single-file-artifact-gen \
-    ${bindir}/docker-artifact-gen \
+    ${sysconfdir}/udev/mount.blacklist.d/rdfm \
+    /data/rdfm/device_type \
+    /data/rdfm/rdfm.conf \
 "
 
 SYSROOT_DIRS += "/data"
@@ -97,9 +68,7 @@ FILES:${PN}:append:mender-persist-systemd-machine-id = " \
 # like. We disable those checks here.
 INSANE_SKIP:${PN} = "ldflags textrel"
 
-_MENDER_PACKAGECONFIG_DEFAULT = "${@mender_feature_is_enabled("mender-client-install", "dbus modules inventory-network-scripts", "", d)}"
-PACKAGECONFIG ?= "${_MENDER_PACKAGECONFIG_DEFAULT}"
-
+PACKAGECONFIG ?= ""
 PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-client-install', ' mender-client-install', '', d)}"
 PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-uboot', ' u-boot', '', d)}"
 PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-grub', ' grub', '', d)}"
@@ -156,10 +125,14 @@ do_compile() {
     # recreate temporary $GOPATH/src/ structure and link our source tree
     mkdir -p ${B}/src/
     ln -s ${S} ${B}/src/
-    cd ${B}/src/
+    cd ${B}/src/devices/linux-client
 
     # run verbose build, we should see which dependencies are pulled in
     oe_runmake V=1
+
+    # Workaround for https://github.com/golang/go/issues/35615 causing failures
+    # when do_rm_work is executed
+    find ${B}/pkg/mod -exec chmod u+w {} \;
 
     echo "device_type=${MENDER_DEVICE_TYPE}" > ${B}/device_type
 }
@@ -197,7 +170,7 @@ python do_prepare_mender_conf() {
 
     # Add new variable -> config assignments here.
     if key_in_src_uri or key_in_var:
-        conf_maybe_add("ArtifactVerifyKey", "%s/mender/artifact-verify-key.pem" % d.getVar("sysconfdir"), getvar=False, integer=False)
+        conf_maybe_add("ArtifactVerifyKey", "%s/rdfm/artifact-verify-key.pem" % d.getVar("sysconfdir"), getvar=False, integer=False)
     conf_maybe_add("InventoryPollIntervalSeconds", "MENDER_INVENTORY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     # Mandatory variables - will always exist
     conf_maybe_add("RetryPollIntervalSeconds", "MENDER_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
@@ -212,27 +185,6 @@ python do_prepare_mender_conf() {
     # Add the update control configurations if set
     conf_maybe_add("UpdateControlMapExpirationTimeSeconds", "MENDER_UPDATE_CONTROL_MAP_EXPIRATION_TIME_SECONDS", getvar=True, integer=True)
     conf_maybe_add("UpdateControlMapBootExpirationTimeSeconds", "MENDER_UPDATE_CONTROL_MAP_BOOT_EXPIRATION_TIME_SECONDS", getvar=True, integer=True)
-
-    # Filter returns the variables that are present in both instances.
-    # Thus no misspelled variables will ever enter the persistent configuration during migration.
-    persistent_configs = bb.utils.filter("MENDER_PERSISTENT_CONFIGURATION_VARS", d.getVar("MENDER_CONFIGURATION_VARS"), d)
-
-    persistent_conf = {}
-
-    # Extract the variables that are destined for the persistent mender-configuration.
-    if bb.utils.contains('PACKAGECONFIG', 'split-mender-config', True, False, d):
-        for config_var in transient_conf:
-            if config_var in persistent_configs:
-                persistent_conf[config_var] = transient_conf[config_var]
-
-        # Remove the configurations from the transient conf that are already in the persistent configuration.
-        for config_var in persistent_conf:
-            del transient_conf[config_var]
-
-        dst_conf = os.path.join(d.getVar("B"), "persistent_mender.conf")
-        fd = open(dst_conf, "w")
-        json.dump(persistent_conf, fd, indent=4, sort_keys=True)
-        fd.close()
 
     dst_conf = os.path.join(d.getVar("B"), "transient_mender.conf")
     fd = open(dst_conf, "w")
@@ -255,80 +207,51 @@ do_prepare_mender_conf[vardeps] = " \
 
 do_install() {
     oe_runmake \
-        -C ${B}/src/ \
+        -C ${B}/src/devices/linux-client \
         V=1 \
         prefix=${D} \
         bindir=${bindir} \
         datadir=${datadir} \
         sysconfdir=${sysconfdir} \
-        systemd_unitdir=${systemd_unitdir} \
-        install-bin \
-        install-identity-scripts \
-        install-systemd \
-        ${@bb.utils.contains('PACKAGECONFIG', 'modules', 'install-modules', '', d)}
-
-    # install inventory scripts
-    oe_runmake \
-        -C ${B}/src/ \
-        V=1 \
-        prefix=${D} \
-        datadir=${datadir} \
-        install-inventory-local-scripts \
-        ${@bb.utils.contains('PACKAGECONFIG', 'inventory-network-scripts', 'install-inventory-network-scripts', '', d)}
-
-    # install dbus files
-    if ${@bb.utils.contains('PACKAGECONFIG', 'dbus', 'true', 'false', d)}; then
-        # install the D-Bus policy file
-        oe_runmake \
-            -C ${B}/src/ \
-            V=1 \
-            prefix=${D} \
-            datadir=${datadir} \
-            install-dbus
-
-        # install the D-Bus interface file(s)
-        install -d ${D}${datadir}/dbus-1/interface
-        install -m 0644 ${B}/src/Documentation/io.mender.*.xml ${D}${datadir}/dbus-1/interface
-    fi
+        install-bin
 
     #install our prepared configuration
-    install -d ${D}/${sysconfdir}/mender
-    install -d ${D}/data/mender
+    install -d ${D}/${sysconfdir}/rdfm
+    install -d ${D}/data/rdfm
     if [ -f ${B}/transient_mender.conf ]; then
-        install -m 0600 ${B}/transient_mender.conf ${D}/${sysconfdir}/mender/mender.conf
-    fi
-    if [ -f ${B}/persistent_mender.conf ]; then
-        install -m 0600 ${B}/persistent_mender.conf ${D}/data/mender/mender.conf
+        install -m 0600 ${B}/transient_mender.conf ${D}/${sysconfdir}/rdfm/rdfm.conf
+        install -m 0600 ${B}/transient_mender.conf ${D}/data/rdfm/rdfm.conf
     fi
 
-    install -d ${D}/${localstatedir}/lib/mender
+    install -d ${D}/${localstatedir}/lib/rdfm
 
     # install artifact verification key, if any.
     if [ -e ${WORKDIR}/artifact-verify-key.pem ]; then
         if [ -n "${MENDER_ARTIFACT_VERIFY_KEY}" ]; then
             bbfatal "You can not specify both MENDER_ARTIFACT_VERIFY_KEY and have artifact-verify-key.pem in SRC_URI."
         fi
-        install -m 0444 ${WORKDIR}/artifact-verify-key.pem ${D}${sysconfdir}/mender
+        install -m 0444 ${WORKDIR}/artifact-verify-key.pem ${D}${sysconfdir}/rdfm
     elif [ -n "${MENDER_ARTIFACT_VERIFY_KEY}" ]; then
-        install -m 0444 "${MENDER_ARTIFACT_VERIFY_KEY}" ${D}${sysconfdir}/mender/artifact-verify-key.pem
+        install -m 0444 "${MENDER_ARTIFACT_VERIFY_KEY}" ${D}${sysconfdir}/rdfm/artifact-verify-key.pem
     fi
 
     if ${@bb.utils.contains('MENDER_FEATURES', 'mender-image', 'true', 'false', d)}; then
-        # symlink /var/lib/mender to /data/mender
-        rm -rf ${D}/${localstatedir}/lib/mender
-        ln -s /data/mender ${D}/${localstatedir}/lib/mender
+        # symlink /var/lib/rdfm to /data/rdfm
+        rm -rf ${D}/${localstatedir}/lib/rdfm
+        ln -s /data/rdfm ${D}/${localstatedir}/lib/rdfm
 
-        install -m 755 -d ${D}/data/mender
-        install -m 444 ${B}/device_type ${D}/data/mender/
+        install -m 755 -d ${D}/data/rdfm
+        install -m 444 ${B}/device_type ${D}/data/rdfm/
     fi
 
     # Setup blacklist to ensure udev does not automatically mount Mender managed partitions
     install -d ${D}${sysconfdir}/udev/mount.blacklist.d
-    echo ${MENDER_ROOTFS_PART_A} > ${D}${sysconfdir}/udev/mount.blacklist.d/mender
-    echo ${MENDER_ROOTFS_PART_B} >> ${D}${sysconfdir}/udev/mount.blacklist.d/mender
+    echo ${MENDER_ROOTFS_PART_A} > ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
+    echo ${MENDER_ROOTFS_PART_B} >> ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
 }
 
 do_install:append:class-target:mender-image:mender-systemd() {
+    install -d -m 755 ${D}${systemd_unitdir}/system/
     install -m 644 ${WORKDIR}/mender-client-data-dir.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}-data-dir.service
     install -d -m 755 ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants
     ln -sf ../mender-client-data-dir.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/${MENDER_CLIENT}-data-dir.service
@@ -368,18 +291,4 @@ do_install:append:class-target:mender-persist-systemd-machine-id() {
     ln -sf ../mender-client-systemd-machine-id.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/
     install -d -m 755 ${D}${bindir}
     install -m 755 ${WORKDIR}/mender-client-set-systemd-machine-id.sh ${D}${bindir}/
-}
-
-# Native overrides, installing scripts for package mender-modules-gen
-do_compile:class-native() {
-    true
-}
-
-do_install:class-native() {
-    oe_runmake \
-        -C ${B}/src/ \
-        V=1 \
-        prefix=${D} \
-        bindir=${bindir} \
-        install-modules-gen
 }

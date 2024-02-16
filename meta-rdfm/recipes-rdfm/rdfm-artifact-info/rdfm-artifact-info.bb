@@ -22,12 +22,12 @@ END
 }
 
 do_install() {
-    install -d ${D}${sysconfdir}/mender
-    install -m 0644 -t ${D}${sysconfdir}/mender ${B}/artifact_info
-    install -m 0644 -t ${D}${sysconfdir}/mender ${B}/provides_info
+    install -d ${D}${sysconfdir}/rdfm
+    install -m 0644 -t ${D}${sysconfdir}/rdfm ${B}/artifact_info
+    install -m 0644 -t ${D}${sysconfdir}/rdfm ${B}/provides_info
 }
 
 FILES:${PN} += " \
-    ${sysconfdir}/mender/artifact_info \
-    ${sysconfdir}/mender/provides_info \
+    ${sysconfdir}/rdfm/artifact_info \
+    ${sysconfdir}/rdfm/provides_info \
 "

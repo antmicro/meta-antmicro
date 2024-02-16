@@ -1,0 +1,257 @@
+From 42b20867ae6fe4df87a2a0c70cbd66662e7d0e02 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
+Date: Tue, 18 Jul 2023 11:26:59 +0200
+Subject: [PATCH] env: Add generic block device environment loader
+
+---
+ env/Kconfig            |  40 ++++++++++++
+ env/Makefile           |   1 +
+ env/block.c            | 136 +++++++++++++++++++++++++++++++++++++++++
+ env/env.c              |   3 +
+ include/env_internal.h |   1 +
+ 5 files changed, 181 insertions(+)
+ create mode 100644 env/block.c
+
+diff --git a/env/Kconfig b/env/Kconfig
+index b9d04725a3a..29110d66787 100644
+--- a/env/Kconfig
++++ b/env/Kconfig
+@@ -83,6 +83,13 @@ config ENV_IS_IN_FAT
+ 	help
+ 	  Define this if you want to use the FAT file system for the environment.
+ 
++config ENV_IS_IN_BLOCK
++	bool "Environment is in a generic block device"
++	depends on !CHAIN_OF_TRUST
++	help
++	  Define this if you want to use a generic block device with 
++	  a binary format environment.
++
+ config ENV_IS_IN_EXT4
+ 	bool "Environment is in a EXT4 filesystem"
+ 	depends on !CHAIN_OF_TRUST
+@@ -480,6 +487,31 @@ config ENV_FAT_FILE_REDUND
+ 	  It's a string of the FAT file name. This file use to store the
+ 	  redundant environment.
+ 
++config ENV_BLOCK_INTERFACE
++	string "Name of the block device for the environment"
++	depends on ENV_IS_IN_BLOCK
++	default "virtio"
++	help
++	  Define this to a string that is the name of the block device.
++
++config ENV_BLOCK_DEVICE_AND_PART
++	string "Device and partition for where to store the environment in blk"
++	depends on ENV_IS_IN_BLOCK
++	help
++	  Define this to a string to specify the partition of the device. It can
++	  be as following:
++
++	    "D:P", "D:0", "D", "D:" or "D:auto" (D, P are integers. And P >= 1)
++	       - "D:P": device D partition P. Error occurs if device D has no
++	                partition table.
++	       - "D:0": device D.
++	       - "D" or "D:": device D partition 1 if device D has partition
++	                      table, or the whole device D if has no partition
++	                      table.
++	       - "D:auto": first partition in device D with bootable flag set.
++	                   If none, first valid partition in device D. If no
++	                   partition table then means device D.
++
+ config ENV_EXT4_INTERFACE
+ 	string "Name of the block device for the environment"
+ 	depends on ENV_IS_IN_EXT4
+@@ -730,6 +762,14 @@ config SPL_ENV_IS_IN_FAT
+ 	help
+ 	  Similar to ENV_IS_IN_FAT, used for SPL environment.
+ 
++config SPL_ENV_IS_IN_BLOCK
++	bool "SPL Environment is in a generic block device"
++	depends on !SPL_ENV_IS_NOWHERE
++	depends on ENV_IS_IN_BLOCK
++	default y
++	help
++	  Similar to ENV_IS_IN_BLOCK, used for SPL environment.
++
+ config SPL_ENV_IS_IN_EXT4
+ 	bool "SPL Environment is in a EXT4 filesystem"
+ 	depends on !SPL_ENV_IS_NOWHERE
+diff --git a/env/Makefile b/env/Makefile
+index c4ad6543286..531af9ef771 100644
+--- a/env/Makefile
++++ b/env/Makefile
+@@ -29,5 +29,6 @@ obj-$(CONFIG_$(SPL_TPL_)ENV_IS_IN_EXT4) += ext4.o
+ obj-$(CONFIG_$(SPL_TPL_)ENV_IS_IN_NAND) += nand.o
+ obj-$(CONFIG_$(SPL_TPL_)ENV_IS_IN_SPI_FLASH) += sf.o
+ obj-$(CONFIG_$(SPL_TPL_)ENV_IS_IN_FLASH) += flash.o
++obj-$(CONFIG_$(SPL_TPL_)ENV_IS_IN_BLOCK) += block.o
+ 
+ CFLAGS_embedded.o := -Wa,--no-warn -DENV_CRC=$(shell tools/envcrc 2>/dev/null)
+diff --git a/env/block.c b/env/block.c
+new file mode 100644
+index 00000000000..fa19e41be7f
+--- /dev/null
++++ b/env/block.c
+@@ -0,0 +1,132 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * (c) Copyright 2023, Antmicro
++ * Based on env/mmc.c by Maximilian Schwerin
++ */
++
++#include <common.h>
++#include <command.h>
++#include <env.h>
++#include <env_internal.h>
++#include <part.h>
++#include <malloc.h>
++#include <memalign.h>
++#include <search.h>
++#include <errno.h>
++#include <asm/cache.h>
++#include <asm/global_data.h>
++#include <linux/stddef.h>
++
++#ifdef CONFIG_SPL_BUILD
++#else
++# define LOADENV
++#endif
++
++DECLARE_GLOBAL_DATA_PTR;
++
++static char *env_block_device_and_part(void)
++{
++	return CONFIG_ENV_BLOCK_DEVICE_AND_PART;
++}
++
++static inline int write_env(struct blk_desc *desc, unsigned long size,
++			    unsigned long offset, const void *buffer)
++{
++	uint blk_start, blk_cnt, n;
++	
++	blk_start	= ALIGN(offset, desc->blksz) / desc->blksz;
++	blk_cnt		= ALIGN(size, desc->blksz) / desc->blksz;
++
++	n = blk_dwrite(desc, blk_start, blk_cnt, (u_char *)buffer);
++
++	return (n == blk_cnt) ? 0 : -1;
++}
++static inline int read_env(struct blk_desc *desc, unsigned long size,
++			   unsigned long offset, const void *buffer)
++{
++	uint blk_start, blk_cnt, n;
++
++	blk_start	= ALIGN(offset, desc->blksz) / desc->blksz;
++	blk_cnt		= ALIGN(size, desc->blksz) / desc->blksz;
++
++	n = blk_dread(desc, blk_start, blk_cnt, (uchar *)buffer);
++
++	return (n == blk_cnt) ? 0 : -1;
++}
++
++static int env_block_save(void)
++{
++	env_t __aligned(ARCH_DMA_MINALIGN) env_new;
++	struct blk_desc *dev_desc = NULL;
++	struct disk_partition info;
++	int dev, part;
++	int err;
++    int len;
++	loff_t size;
++
++	err = env_export(&env_new);
++	if (err)
++		return err;
++
++	part = blk_get_device_part_str(CONFIG_ENV_BLOCK_INTERFACE,
++					env_block_device_and_part(),
++					&dev_desc, &info, 1);
++	if (part < 0)
++		return 1;
++
++	dev = dev_desc->devnum;
++	err = write_env(dev_desc, CONFIG_ENV_SIZE, info.start * dev_desc->blksz, (void*)&env_new);
++	if (err < 0) {
++		/*
++		 * This printf is embedded in the messages from env_save that
++		 * will calling it. The missing \n is intentional.
++		 */
++		printf("Unable to write env to %s%d:%d... \n", CONFIG_ENV_BLOCK_INTERFACE, dev, part);
++		return 1;
++	}
++	return 0;
++}
++
++#ifdef LOADENV
++static int env_block_load(void)
++{
++	ALLOC_CACHE_ALIGN_BUFFER(char, buf1, CONFIG_ENV_SIZE);
++	struct blk_desc *dev_desc = NULL;
++	struct disk_partition info;
++	int dev, part;
++	int err1;
++
++	part = blk_get_device_part_str(CONFIG_ENV_BLOCK_INTERFACE,
++					env_block_device_and_part(),
++					&dev_desc, &info, 1);
++	if (part < 0)
++		goto err_env_relocate;
++
++	dev = dev_desc->devnum;
++	err1 = read_env(dev_desc, CONFIG_ENV_SIZE, info.start * dev_desc->blksz, buf1);
++	if (err1 < 0) {
++		/*
++		 * This printf is embedded in the messages from env_save that
++		 * will calling it. The missing \n is intentional.
++		 */
++		printf("Unable to read env from %s%d:%d... \n",CONFIG_ENV_BLOCK_INTERFACE, dev, part);
++		goto err_env_relocate;
++	}
++
++	return env_import(buf1, 1, H_EXTERNAL);
++
++err_env_relocate:
++	env_set_default(NULL, 0);
++
++	return -EIO;
++}
++#endif /* LOADENV */
++
++U_BOOT_ENV_LOCATION(block) = {
++	.location	= ENVL_BLOCK,
++	ENV_NAME("BLOCK")
++#ifdef LOADENV
++	.load		= env_block_load,
++#endif
++	.save		= ENV_SAVE_PTR(env_block_save),
++};
+diff --git a/env/env.c b/env/env.c
+index e4dfb92e154..a357ac0a837 100644
+--- a/env/env.c
++++ b/env/env.c
+@@ -54,6 +54,9 @@ static struct env_driver *_env_driver_lookup(enum env_location loc)
+ }
+ 
+ static enum env_location env_locations[] = {
++#ifdef CONFIG_ENV_IS_IN_BLOCK
++	ENVL_BLOCK,
++#endif
+ #ifdef CONFIG_ENV_IS_IN_EEPROM
+ 	ENVL_EEPROM,
+ #endif
+diff --git a/include/env_internal.h b/include/env_internal.h
+index 07c227ecc03..f6783ed005f 100644
+--- a/include/env_internal.h
++++ b/include/env_internal.h
+@@ -137,6 +137,7 @@ enum env_location {
+ 	ENVL_SPI_FLASH,
+ 	ENVL_UBI,
+ 	ENVL_NOWHERE,
++	ENVL_BLOCK,
+ 
+ 	ENVL_COUNT,
+ };
+-- 
+2.41.0
+

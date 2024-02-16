@@ -3,10 +3,7 @@ inherit mender-helpers
 # ------------------------------ CONFIGURATION ---------------------------------
 
 # Extra arguments that should be passed to rdfm-artifact.
-MENDER_ARTIFACT_EXTRA_ARGS ?= ""
-
-# The key used to sign the mender update.
-MENDER_ARTIFACT_SIGNING_KEY ?= ""
+RDFM_ARTIFACT_EXTRA_ARGS ?= ""
 
 # --------------------------- END OF CONFIGURATION -----------------------------
 
@@ -18,16 +15,14 @@ ARTIFACTIMG_FSTYPE_DEFAULT = "ext4"
 ARTIFACTIMG_NAME ??= "${ARTIFACTIMG_NAME_DEFAULT}"
 ARTIFACTIMG_NAME_DEFAULT = "${IMAGE_LINK_NAME}"
 
-MENDER_ARTIFACT_NAME_DEPENDS ?= ""
+RDFM_ARTIFACT_NAME_DEPENDS ?= ""
 
-MENDER_ARTIFACT_PROVIDES ?= ""
-MENDER_ARTIFACT_PROVIDES_GROUP ?= ""
+RDFM_ARTIFACT_PROVIDES ?= ""
+RDFM_ARTIFACT_PROVIDES_GROUP ?= ""
 
-MENDER_ARTIFACT_DEPENDS ?= ""
-MENDER_ARTIFACT_DEPENDS_GROUPS ?= ""
+RDFM_ARTIFACT_DEPENDS ?= ""
+RDFM_ARTIFACT_DEPENDS_GROUPS ?= ""
 
-RDFM_CLEAR_PROVIDES ?= ""
-RDFM_NO_PROVIDES_LOCALLY ?= ""
 RDFM_ARTIFACT_PATH = "${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}"
 
 apply_arguments () {
@@ -57,77 +52,53 @@ IMAGE_CMD:rdfm() {
         bbfatal "Size of rootfs is greater than the calculated partition space ($rootfs_size > $calc_rootfs_size). This image won't fit on a device with the current storage configuration. Try reducing IMAGE_OVERHEAD_FACTOR if it is higher than 1.0, or raise MENDER_STORAGE_TOTAL_SIZE_MB if the device in fact has more storage."
     fi
 
-    if [ -z "${MENDER_DEVICE_TYPES_COMPATIBLE}" ]; then
-        bbfatal "MENDER_DEVICE_TYPES_COMPATIBLE variable cannot be empty."
+    if [ -z "${RDFM_DEVICE_TYPES_COMPATIBLE}" ]; then
+        bbfatal "RDFM_DEVICE_TYPES_COMPATIBLE variable cannot be empty."
     fi
 
     extra_args=
 
-    for dev in ${MENDER_DEVICE_TYPES_COMPATIBLE}; do
-        extra_args="$extra_args -t $dev"
+    for dev in ${RDFM_DEVICE_TYPES_COMPATIBLE}; do
+        extra_args="$extra_args --device-type $dev"
     done
 
-    if [ -z "${RDFM_CLEAR_PROVIDES}" ]; then
-        extra_args="$extra_args --no-default-clears-provides"
-    fi
-
-    if [ -n "${MENDER_ARTIFACT_SIGNING_KEY}" ]; then
-        extra_args="$extra_args -k ${MENDER_ARTIFACT_SIGNING_KEY}"
-    fi
-
-    if [ -d "${DEPLOY_DIR_IMAGE}/mender-state-scripts" ]; then
-        extra_args="$extra_args -s ${DEPLOY_DIR_IMAGE}/mender-state-scripts"
-    fi
-
-    if rdfm-artifact write rootfs-image --help | grep -e '-u FILE'; then
-        image_flag=-u
-    else
-        image_flag=-f
-    fi
-
-    if [ -n "${MENDER_ARTIFACT_NAME_DEPENDS}" ]; then
+    if [ -n "${RDFM_ARTIFACT_NAME_DEPENDS}" ]; then
         cmd=""
-        apply_arguments "--artifact-name-depends" "${MENDER_ARTIFACT_NAME_DEPENDS}"
+        apply_arguments "--artifact-name-depends" "${RDFM_ARTIFACT_NAME_DEPENDS}"
         extra_args="$extra_args  $cmd"
     fi
 
-    if [ -n "${MENDER_ARTIFACT_PROVIDES}" ]; then
+    if [ -n "${RDFM_ARTIFACT_PROVIDES}" ]; then
         cmd=""
-        apply_arguments "--provides" "${MENDER_ARTIFACT_PROVIDES}"
+        apply_arguments "--provides" "${RDFM_ARTIFACT_PROVIDES}"
         extra_args="$extra_args  $cmd"
     fi
 
-    if [ -n "${MENDER_ARTIFACT_PROVIDES_GROUP}" ]; then
+    if [ -n "${RDFM_ARTIFACT_PROVIDES_GROUP}" ]; then
         cmd=""
-        apply_arguments "--provides-group" "${MENDER_ARTIFACT_PROVIDES_GROUP}"
+        apply_arguments "--provides-group" "${RDFM_ARTIFACT_PROVIDES_GROUP}"
         extra_args="$extra_args $cmd"
     fi
 
-    if [ -n "${MENDER_ARTIFACT_DEPENDS}" ]; then
+    if [ -n "${RDFM_ARTIFACT_DEPENDS}" ]; then
         cmd=""
-        apply_arguments "--depends" "${MENDER_ARTIFACT_DEPENDS}"
+        apply_arguments "--depends" "${RDFM_ARTIFACT_DEPENDS}"
         extra_args="$extra_args $cmd"
     fi
 
-    if [ -n "${MENDER_ARTIFACT_DEPENDS_GROUPS}" ]; then
+    if [ -n "${RDFM_ARTIFACT_DEPENDS_GROUPS}" ]; then
         cmd=""
-        apply_arguments "--depends-groups" "${MENDER_ARTIFACT_DEPENDS_GROUPS}"
+        apply_arguments "--depends-groups" "${RDFM_ARTIFACT_DEPENDS_GROUPS}"
         extra_args="$extra_args $cmd"
     fi
 
 
     rdfm-artifact write rootfs-image \
-        -n ${RDFM_ARTIFACT_NAME} \
+        --artifact-name ${RDFM_ARTIFACT_NAME} \
         $extra_args \
-        $image_flag ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE} \
+        --file ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE} \
         ${MENDER_ARTIFACT_EXTRA_ARGS} \
-        -o ${RDFM_ARTIFACT_PATH}.rdfm
-
-    if [ -z "${RDFM_NO_PROVIDES_LOCALLY}" ]; then
-        rdfm-artifact modify \
-            --save-provides-to-file \
-            ${RDFM_ARTIFACT_PATH}.rdfm
-    fi
+        --output-path ${RDFM_ARTIFACT_PATH}.rdfm
 }
 
 IMAGE_CMD:rdfm[vardepsexclude] += "IMAGE_ID"

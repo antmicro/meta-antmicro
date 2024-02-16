@@ -1,0 +1,52 @@
+$name?="hifive-unmatched" 
+$spl ?= @./u-boot-spl.bin
+$itb ?= @./u-boot.itb
+$sd  ?= @./sdcard.sdimg
+
+using sysbus
+mach create $name
+machine LoadPlatformDescription @./sifive-hifive-unmatched.repl
+
+showAnalyzer uart0
+
+macro reset
+""" 
+	sysbus LoadBinary $spl 0x08000000
+	# FIT address matches CONFIG_SPL_LOAD_FIT_ADDRESS 
+	sysbus LoadBinary $itb 0x84000000
+	sysbus SetPCOnAllCores 0x08000000
+""" 
+runMacro $reset
+
+emulation SetSeed 0x1
+emulation SetGlobalSerialExecution true
+
+# MSEL switch
+sysbus Tag <0x1000 1> "MSEL" 11
+
+# Intentionally turn off the monitor HART
+# This is because the s7 HART is disabled in the DTS, which
+# causes the timer driver not to be initialized when U-Boot is started
+# by the s7
+s7 IsHalted true
+# Also turn off all user HARTs except one
+# Linux seems to randomly deadlock during boot when all of the HARTs are running
+u74_2 IsHalted true
+u74_3 IsHalted true
+u74_4 IsHalted true
+
+# CSR required for U-boot initialization
+u74_1 RegisterCustomCSR "FEATURE_DISABLE" 0x7c1 Machine
+
+# Virtio storage device
+virtio LoadImage $sd true
+
+# Networking
+emulation CreateSwitch "switch1"
+emulation CreateTap "tap0" "tap"
+connector Connect sysbus.ethernet switch1
+connector Connect host.tap switch1
+
+# Ethernet peripheral is quite noisy, so silence the logs
+logLevel 3 ethernet
+
