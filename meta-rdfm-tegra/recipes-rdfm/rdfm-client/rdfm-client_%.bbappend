@@ -2,5 +2,5 @@
 # https://github.com/mendersoftware/meta-mender-community
 
 EXTRADEPS = ""
-EXTRADEPS:tegra = " tegra-bup-payload rdfm-tegra-utils tegra-bootpart-config dummy-fw-tools tegra-boot-tools"
+EXTRADEPS:tegra = " tegra-bup-payload dummy-fw-tools"
 RDEPENDS:${PN} += "${EXTRADEPS}"

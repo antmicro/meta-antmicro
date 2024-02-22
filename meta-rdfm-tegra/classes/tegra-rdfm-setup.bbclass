@@ -101,11 +101,3 @@ TEGRA_MENDER_RESERVED_SPACE_MB_DEFAULT = "1024"
 TEGRA_MENDER_RESERVED_SPACE_MB_DEFAULT:jetson-nano-2gb-devkit = "5120"
 TEGRA_MENDER_RESERVED_SPACE_MB ?= "${TEGRA_MENDER_RESERVED_SPACE_MB_DEFAULT}"
 MENDER_STORAGE_TOTAL_SIZE_MB_DEFAULT:tegra = "${@tegra_mender_calc_total_size(d)}"
-
-_MENDER_IMAGE_DEPS_EXTRA = ""
-_MENDER_IMAGE_DEPS_EXTRA:tegra = "tegra-state-scripts:do_deploy"
-do_image_mender[depends] += "${_MENDER_IMAGE_DEPS_EXTRA}"
-
-_RDFM_IMAGE_DEPS_EXTRA = ""
-_RDFM_IMAGE_DEPS_EXTRA:tegra = "tegra-state-scripts:do_deploy"
-do_image_rdfm[depends] += "${_RDFM_IMAGE_DEPS_EXTRA}"

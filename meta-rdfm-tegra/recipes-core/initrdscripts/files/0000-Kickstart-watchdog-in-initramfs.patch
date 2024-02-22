@@ -1,0 +1,15 @@
+--- a/init-boot.sh	2024-02-28 11:58:05.124871914 +0100
++++ b/init-boot.sh	2024-02-28 11:58:13.534775854 +0100
+@@ -5,6 +5,12 @@
+ mount -t sysfs sysfs -o nosuid,nodev,noexec /sys
+ mount -t efivarfs efivarfs -o nosuid,nodev,noexec /sys/firmware/efi/efivars
+ 
++# Start the watchdog immediately
++# If a bad rootfs update is installed, the initramfs will get
++# stuck trying to mount a corrupted partition.
++echo "Kicking the watchdog..."
++echo >/dev/watchdog || true
++
+ rootdev=""
+ opt="rw"
+ wait=""
