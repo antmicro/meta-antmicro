@@ -20,6 +20,11 @@ MENDER_UPDATE_POLL_INTERVAL_SECONDS ?= "1800"
 MENDER_INVENTORY_POLL_INTERVAL_SECONDS ?= "28800"
 MENDER_RETRY_POLL_INTERVAL_SECONDS ?= "300"
 
+# Override the default helper used for fetching the bootloader environment
+RDFM_BOOT_UTILS_GETENV_OVERRIDE ?= "rdfm-tegra-printenv"
+# Override the default helper used for setting the bootloader environment
+RDFM_BOOT_UTILS_SETENV_OVERRIDE ?= "rdfm-tegra-setenv"
+
 inherit go pkgconfig systemd
 
 FILES:${PN} += "\
@@ -176,6 +181,8 @@ python do_prepare_mender_conf() {
     conf_maybe_add("RetryPollIntervalSeconds", "MENDER_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     conf_maybe_add("RootfsPartA", "MENDER_ROOTFS_PART_A", getvar=True, integer=False)
     conf_maybe_add("RootfsPartB", "MENDER_ROOTFS_PART_B", getvar=True, integer=False)
+    conf_maybe_add("BootUtilitiesSetActivePart", "RDFM_BOOT_UTILS_SETENV_OVERRIDE", getvar=True, integer=False)
+    conf_maybe_add("BootUtilitiesGetNextActivePart", "RDFM_BOOT_UTILS_GETENV_OVERRIDE", getvar=True, integer=False)
     conf_maybe_add("ServerURL", "MENDER_SERVER_URL", getvar=True, integer=False)
     conf_maybe_add("UpdatePollIntervalSeconds", "MENDER_UPDATE_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
 
@@ -203,6 +210,8 @@ do_prepare_mender_conf[vardeps] = " \
     MENDER_TENANT_TOKEN \
     MENDER_UPDATE_POLL_INTERVAL_SECONDS \
     MENDER_PERSISTENT_CONFIGURATION_VARS \
+    RDFM_BOOT_UTILS_SETENV_OVERRIDE \
+    RDFM_BOOT_UTILS_GETENV_OVERRIDE \
 "
 
 do_install() {

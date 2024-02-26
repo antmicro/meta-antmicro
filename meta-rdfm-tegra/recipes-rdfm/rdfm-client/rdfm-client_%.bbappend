@@ -4,3 +4,6 @@
 EXTRADEPS = ""
 EXTRADEPS:tegra = " tegra-bup-payload dummy-fw-tools"
 RDEPENDS:${PN} += "${EXTRADEPS}"
+
+RDFM_BOOT_UTILS_GETENV_OVERRIDE:tegra = "rdfm-tegra-printenv"
+RDFM_BOOT_UTILS_SETENV_OVERRIDE:tegra = "rdfm-tegra-setenv"
