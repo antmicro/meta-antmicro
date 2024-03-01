@@ -2,7 +2,7 @@
 # https://github.com/mendersoftware/meta-mender-community
 
 EXTRADEPS = ""
-EXTRADEPS:tegra = " tegra-bup-payload dummy-fw-tools"
+EXTRADEPS:tegra = " tegra-bup-payload tegra-fw-tools "
 RDEPENDS:${PN} += "${EXTRADEPS}"
 
 RDFM_BOOT_UTILS_GETENV_OVERRIDE:tegra = "rdfm-tegra-printenv"

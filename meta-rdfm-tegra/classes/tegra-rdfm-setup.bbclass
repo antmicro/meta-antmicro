@@ -32,6 +32,9 @@ ARTIFACTIMG_FSTYPE = "ext4"
 IMAGE_TYPEDEP:tegraflash += " dataimg"
 IMAGE_FSTYPES += "dataimg"
 
+# Generate RDFM artifact for the rootfs
+IMAGE_FSTYPES += "rdfm"
+
 # Mender customizations to support jetson platforms.  This needs to
 # match up with your defined flash or sdcard layout.
 # You will need to update these partition values when you update the flash layout.  One way to find the correct number is to
@@ -66,7 +69,7 @@ ROOTFSPART_SIZE = "${@tegra_mender_set_rootfs_partsize(${MENDER_CALC_ROOTFS_SIZE
 # Default for thud and later is grub integration but we need to use u-boot integration already included.
 # Leave out sdimg since we don't use this with tegra (instead use
 # tegraflash)
-# MENDER_FEATURES_ENABLE:append:tegra = " mender-persist-systemd-machine-id"
+MENDER_FEATURES_ENABLE:append:tegra = " mender-image mender-client-install "
 MENDER_FEATURES_DISABLE:append:tegra = " mender-grub mender-image-uefi mender-uboot"
 
 # Use these variables to adjust your total rootfs size across both
@@ -101,3 +104,5 @@ TEGRA_MENDER_RESERVED_SPACE_MB_DEFAULT = "1024"
 TEGRA_MENDER_RESERVED_SPACE_MB_DEFAULT:jetson-nano-2gb-devkit = "5120"
 TEGRA_MENDER_RESERVED_SPACE_MB ?= "${TEGRA_MENDER_RESERVED_SPACE_MB_DEFAULT}"
 MENDER_STORAGE_TOTAL_SIZE_MB_DEFAULT:tegra = "${@tegra_mender_calc_total_size(d)}"
+
+inherit mender-setup
