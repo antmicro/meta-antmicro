@@ -1,12 +1,12 @@
 # `HiFive Unmatched RDFM` demo
 
-The `rdfm-unmatched-demo` release is an Over The Air update demo using the `RDFM` for `HiFive Unmatched` board.
+The `rdfm-unmatched-demo` release is an Over-The-Air update demo that uses [`RDFM`](https://github.com/antmicro/rdfm) for the `HiFive Unmatched` board.
 
-If you wish to try out this system release but don't have access to the hardware, refer to the [Renode demo README](./renode/README.md).
+To try out this system release without access to the hardware, refer to the [Renode demo README](./renode/README.md), which runs the demo in simulation.
 
 ## How to use
 
-### Building image
+### Building the image
 You can fetch all the necessary code with:
 ```
 mkdir rdfm-unmatched-demo && cd rdfm-unmatched-demo
@@ -20,19 +20,19 @@ source sources/poky/oe-init-build-env
 PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="unmatched" bitbake rdfm-image-minimal rdfm-image-upgraded
 ```
 
-### Writing image
+### Writing the image
 When the build process is complete, the resulting image will be stored in the `build/tmp/deploy/images/unmatched` directory.
-The built `.flash.sdimg` image can be written to a uSD card and later runned on board.
-> Be very careful while picking /dev/sdX device! Look at dmesg, lsblk, blkid, GNOME Disks, etc.
+The built `.flash.sdimg` image can be written to a uSD card and ran on board.
+> :warning: Be careful while picking /dev/sdX device! Look at dmesg, lsblk, blkid, GNOME Disks, etc.
 > before and after plugging in your uSD card to find a proper device.
 
-Unmount all mounted partitions from uSD card and write the image:
+Unmount all mounted partitions from the uSD card and write the image:
 ```
 cd tmp/deploy/images/unmatched
 sudo dd if=rdfm-image-minimal-unmatched.flash.sdimg of=/dev/sdX bs=512K iflag=fullblock oflag=direct conv=fsync status=progress
 ```
 
-After a successful image writing to a uSD, set the HiFive Unmatched `MSEL` to state allowing boot using U-Boot SPL, OpenSBI, U-Boot:
+Once written, set the HiFive Unmatched `MSEL` to a state allowing boot using U-Boot SPL, OpenSBI, U-Boot:
 ```
  +----------> CHIPIDSEL
  | +--------> MSEL3
@@ -62,16 +62,16 @@ rdfm-artifact write delta-rootfs-image \
 For more information, refer to the `meta-rdfm` [README](../../meta-rdfm/README.md#how-to-use).
 
 ### Running a demo
-After successful booting, establish Ethernet connection between host and target device.
+Once successfully booted, establish an Ethernet connection between the host and the target device.
 
-On your host device, start the server in the folder containing built images:
+On your host device, start the server in the folder containing the built images:
 ```
 python -m http.server 12345
 ```
 
 Open the running `http.server` and copy the link to the `rdfm-image-upgraded.rdfm` image that will be used for an update.
 
-On target device log to the `root` user and run update installation using `rdfm-client` and copied link to update image:
+On the target device, log in as the `root` user and start the update installation using `rdfm-client` and the copied link to the update image:
 ```
 rdfm install <link-to-rdfm-update-image>
 ```

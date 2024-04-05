@@ -1,40 +1,44 @@
 # `HiFive Unmatched RDFM` Renode demo
 
-The `rdfm-unmatched-demo` system release can be run in software using the [Renode](https://renode.io/) framework.
+You can run the `rdfm-unmatched-demo` system release in simulated hardware using the [Renode](https://renode.io/) framework.
 
 ## Installing Renode
 
-Follow the installation instructions available in Renode's [documentation](https://renode.readthedocs.io/en/latest/introduction/installing.html)
+Follow the installation instructions in the Renode [documentation](https://renode.readthedocs.io/en/latest/introduction/installing.html).
 
 ## Building the demo
 
-A compatible demo can be built in the same way as described in the `rdfm-unmatched-demo` [README](../README.md). Use the `renodeunmatched` machine type when building a system image, for example:
+A compatible demo can be built in the same way as described in the `rdfm-unmatched-demo` [README](../README.md). Use the `renodeunmatched` machine type when building the system image, for example:
 
 ```
 PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="renodeunmatched" bitbake rdfm-image-minimal rdfm-image-upgraded
 ```
 
-Built system images and pregenerated artifacts can be found in `build/tmp/deploy/images/renodeunmatched`
+You can find the built system images and pregenerated artifacts in the `build/tmp/deploy/images/renodeunmatched` directory.
 
 ## Running the demo
 
-**Automatic**: Run the `prepare-demo.sh` script from within this folder, it takes care of copying the right files from the build for you. You must be in a Yocto build environment already.
+**Automatic**: Run the `prepare-demo.sh` script from within this (`/renode`) folder.
+The script automatically copies the necessary files. 
+In order to run it, you must be in a Yocto build environment.
 
 **Manual**: From the build directory, copy the `u-boot-spl.bin` and `u-boot.itb` files to this folder.
-Additionally, copy the `rdfm-image-minimal-renodeunmatched.flash.sdimg` file and rename it to `sdcard.sdimg`. This step needs to be done only once, as you'll be updating the SD card image directly from the OS later.
+Additionally, copy the `rdfm-image-minimal-renodeunmatched.flash.sdimg` file and rename it to `sdcard.sdimg`. 
+You only need to perform this step once, as you'll be updating the SD card image directly from the OS later.
 
 To start the demo, run the following in this directory:
 ```
 renode linux-unmatched.resc -e start
 ```
 
-Depending on your system configuration you may be asked for the current user's password - this is required in order to create the TAP network interface for the emulated board.
+Depending on your system configuration you may be asked for your user password - this is required in order to create the TAP network interface for the emulated board.
 
-Default user in the emulated machine is root, no password.
+`root` is the default user on teh emulated machine.
+There is no password.
 
 ## Configuring the network
 
-In the emulated machine, run:
+On the emulated machine, run:
 
 ```
 ip link set eth0 down
@@ -65,11 +69,12 @@ To restart the machine, type `machine Reset` in the Renode monitor window.
 ### Booting hangs at/around Avahi mDNS/DNS-SD Stack
 ### Sporadic kernel panics on network usage
 
-Shutdown the machine by typing `quit` in the Renode monitor window. Then, remove the host's TAP interface by running:
+Shutdown the machine by typing `quit` in the Renode monitor window. 
+Then, remove the host's TAP interface by running:
 
 ```
 sudo ip link delete tap0
 ```
 Then, restart the emulated machine. This might take one or two retries.
 
-This happens rarely due to a race condition within the Ethernet driver, which is out of scope of the demo.
+This happens rarely due to a race condition within the Ethernet driver, which is out of scope of this demo.
