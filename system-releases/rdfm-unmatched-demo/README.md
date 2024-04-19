@@ -71,7 +71,7 @@ python -m http.server 12345
 
 Open the running `http.server` and copy the link to the `rdfm-image-upgraded.rdfm` image that will be used for an update.
 
-On the target device, log in as the `root` user and start the update installation using `rdfm-client` and the copied link to the update image:
+On the target device, log in as the `root` user and start the update installation using `rdfm-client` and the copied link to the update image, with the host address replaced to `192.168.230.1`:
 ```
 rdfm install <link-to-rdfm-update-image>
 ```
