@@ -33,7 +33,7 @@ renode linux-unmatched.resc -e start
 
 Depending on your system configuration you may be asked for your user password - this is required in order to create the TAP network interface for the emulated board.
 
-`root` is the default user on teh emulated machine.
+`root` is the default user on the emulated machine.
 There is no password.
 
 ## Configuring the network
