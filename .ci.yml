@@ -1,0 +1,85 @@
+image: d2s://external/docker/debian:bookworm
+
+stages:
+  - build
+  - local-tests
+
+.common:
+  tags: ['ace-x86_64']
+
+build:
+  extends: .common
+  variables:
+    SCALENODE_CPU: 16
+    SCALENODE_RAM: 16000
+    SCALENODE_DISK: 50
+  stage: build
+  before_script:
+    - apt update
+    - apt -qqy install --no-install-recommends gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 python3-subunit zstd liblz4-tool file locales libacl1 pipx curl openssh-client sudo gfortran &>/dev/null
+    - curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && chmod a+rx /usr/bin/repo
+    - PIPX_BIN_DIR=/usr/bin/ pipx install git+https://github.com/antmicro/tuttest
+    - sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && locale-gen
+    - useradd -m builder
+  script:
+    - export LANG=en_US.UTF-8
+    - ln -sf /usr/share/zoneinfo/UTC0 /usr/share/zoneinfo/UTC
+    - cd system-releases/rdfm-unmatched-demo
+    - chown -R builder:root .
+    - tuttest README.md fetch-sources,setup-yocto,target-renode,build-image | sudo -u builder XZ_MEMLIMIT=25% XZ_DEFAULTS=--memlimit-compress=25% BB_ENV_PASSTHROUGH_ADDITIONS="XZ_MEMLIMIT XZ_DEFAULTS" bash -eo pipefail -
+    - tuttest README.md copy-artifacts | bash -eo pipefail -
+  artifacts:
+    expire_in: 4 hours
+    paths:
+      - system-releases/rdfm-unmatched-demo/renode/rdfm-image-minimal-unmatched.rdfm
+      - system-releases/rdfm-unmatched-demo/renode/rdfm-image-upgraded-unmatched.rdfm
+      - system-releases/rdfm-unmatched-demo/renode/u-boot-spl.bin
+      - system-releases/rdfm-unmatched-demo/renode/u-boot.itb
+      - system-releases/rdfm-unmatched-demo/renode/sdcard.sdimg
+
+build-rdfm-artifact:
+  extends: .common
+  variables:
+    SCALENODE_CPU: 2
+    SCALENODE_RAM: 2048
+    SCALENODE_DISK: 5
+  stage: build
+  before_script:
+    - apt update
+    - apt -qqy install --no-install-recommends golang gcc make ca-certificates pkg-config git libc-dev liblzma-dev libssl-dev
+  script:
+    - git clone https://github.com/antmicro/rdfm.git
+    - make -C rdfm/tools/rdfm-artifact install GOBIN=$(pwd)
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - rdfm-artifact
+
+test-demo:
+  extends: .common
+  variables:
+    SCALENODE_CPU: 8
+    SCALENODE_RAM: 12288
+    SCALENODE_DISK: 25
+  stage: local-tests
+  before_script:
+    - apt update
+    - apt install -qqy iproute2 python3-venv python-is-python3 git wget sudo dirmngr ca-certificates gnupg &>/dev/null
+    - gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+    - echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/debian stable-buster main" > /etc/apt/sources.list.d/mono-official-stable.list
+    - wget --progress=dot:mega 'https://builds.renode.io/renode_1.15.0+20240319git9111b18ef_amd64.deb' -O renode.deb
+    - apt update && apt -qqy install mono-complete ./renode.deb
+    - python -m venv demo && source demo/bin/activate
+    - pip install 'pyrenode3[all] @ git+https://github.com/antmicro/pyrenode3.git' 'tuttest @ git+https://github.com/antmicro/tuttest.git'
+  script:
+    - export PATH="${PATH}:$(pwd)"
+    - source demo/bin/activate
+    - cd system-releases/rdfm-unmatched-demo/renode
+    - tuttest ../README.md create-delta,setup-tap,setup-host | bash -eo pipefail -
+    - (tuttest ../README.md start-server | bash -eo pipefail -) &
+    - (tail -F uart0.log 2>/dev/null) &
+    - python unmatched.py
+  artifacts:
+    when: always
+    paths:
+      - system-releases/rdfm-unmatched-demo/renode/uart0.log

@@ -43,10 +43,11 @@ virtio LoadImage $sd true
 
 # Networking
 emulation CreateSwitch "switch1"
-emulation CreateTap "tap0" "tap"
+emulation CreateTap "tap50" "tap"
 connector Connect sysbus.ethernet switch1
 connector Connect host.tap switch1
 
-# Ethernet peripheral is quite noisy, so silence the logs
+# Silence noisy logs
 logLevel 3 ethernet
-
+logLevel 3 sysbus.qspi2
+logLevel 3 virtio
