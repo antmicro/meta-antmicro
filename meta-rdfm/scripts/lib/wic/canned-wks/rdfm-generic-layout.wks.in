@@ -1,0 +1,11 @@
+# Description: Creates a partitioned SD card image. Boot files
+# are located in the first vfat partition. Rootfs will be in second and third ext4 partition.
+
+# This wks uses a fixed-size /boot parition. The partition size is controlled by RDFM_PARTITION_SIZE_BOOTFS.
+# By default that size is 128MiB.
+#
+# See the Yocto Project WIC documentation for more information.
+part  --source bootimg-partition --fixed-size=${RDFM_PARTITION_SIZE_BOOTFS}K  --fstype=vfat  --use-label  --label boot   --active  --align 4
+part  /      --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.flash_rootfsimg" --exclude-path=data/ --fixed-size=${RDFM_PARTITION_SIZE_ROOTFS}K    --fstype=ext4  --use-label  --label root_a           --align 4
+part  /      --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.flash_rootfsimg" --exclude-path=data/ --fixed-size=${RDFM_PARTITION_SIZE_ROOTFS}K    --fstype=ext4  --use-label  --label root_b           --align 4
+part  /data  --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.flash_datafsimg" --fstype=ext4  --use-label  --label data --align 4
