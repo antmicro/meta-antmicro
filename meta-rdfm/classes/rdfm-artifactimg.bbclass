@@ -1,4 +1,4 @@
-inherit mender-helpers
+inherit rdfm-helpers
 
 # ------------------------------ CONFIGURATION ---------------------------------
 

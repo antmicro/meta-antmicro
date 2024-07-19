@@ -27,8 +27,6 @@ _RDFM_SD_IMAGE_DEPENDS:append:mender-systemd-boot = " \
 do_image_flash_sdimg[depends] += "${_RDFM_SD_IMAGE_DEPENDS}"
 do_image_bootimg[depends] += " virtual/kernel:do_deploy"
 
-IMAGE_TYPEDEP:flash_sdimg:append = " ${ARTIFACTIMG_FSTYPE} dataimg bootimg"
-
 do_image_flash_sdimg[respect_exclude_path] = "0"
 
 ###############################################################################
