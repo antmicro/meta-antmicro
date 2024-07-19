@@ -46,10 +46,13 @@ IMAGE_CMD:rdfm() {
         bbfatal "Need to define RDFM_ARTIFACT_NAME variable."
     fi
 
-    rootfs_size=$(stat -Lc %s ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE})
-    calc_rootfs_size=$(expr ${MENDER_CALC_ROOTFS_SIZE} \* 1024)
-    if [ $rootfs_size -gt $calc_rootfs_size ]; then
-        bbfatal "Size of rootfs is greater than the calculated partition space ($rootfs_size > $calc_rootfs_size). This image won't fit on a device with the current storage configuration. Try reducing IMAGE_OVERHEAD_FACTOR if it is higher than 1.0, or raise MENDER_STORAGE_TOTAL_SIZE_MB if the device in fact has more storage."
+    for fstype in ${ARTIFACTIMG_FSTYPE}; do
+        if [ -f ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${fstype} ]; then
+            rootfs_size=$(stat -Lc %s ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${fstype})
+        fi
+    done
+    if [ $rootfs_size -gt $RDFM_PARTITION_SIZE_ROOTFS ]; then
+        bbfatal "The actual rootfs size is ${rootfs_size}B, but the partition size is smaller (${RDFM_PARTITION_SIZE_ROOTFS}KiB). Try increasing the size of the rootfs partition by changing the RDFM_PARTITION_SIZE_ROOTFS variable."
     fi
 
     if [ -z "${RDFM_DEVICE_TYPES_COMPATIBLE}" ]; then
