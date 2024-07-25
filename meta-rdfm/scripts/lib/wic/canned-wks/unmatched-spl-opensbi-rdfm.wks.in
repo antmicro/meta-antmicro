@@ -1,0 +1,23 @@
+# short-description: Create SD card image for HiFive Unmatched development board with U-Boot SPL and OpenSBI (FW_DYNAMIC)
+
+# Partition 1 (U-Boot SPL)
+part --source rawcopy --sourceparams="file=u-boot-spl.bin" --ondisk ${RDFM_ROOTFS_PART_BASE} --fixed-size 1M --align 17 --part-type 5b193300-fc78-40cd-8002-e86c45580b47
+
+# Partition 2 (U-Boot)
+part --source rawcopy --sourceparams="file=u-boot.itb" --ondisk ${RDFM_ROOTFS_PART_BASE} --fixed-size 4M --align 1 --part-type 2e54b353-1271-4842-806f-e436d6af6985
+
+# Partition 3&4 (U-Boot environment)
+part --ondisk $ondisk_dev --fixed-size 512K --align 1
+part --ondisk $ondisk_dev --fixed-size 512K --align 1
+
+# Partition 5 (U-Boot /boot partition)
+part --source bootimg-partition --sourceparams="loader=u-boot" --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=vfat --label boot --active --size=${RDFM_PARTITION_SIZE_BOOTFS}K --align 4096
+
+# Partition 6&7 (Rootfs A/B)
+part / --source rootfs --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=${ARTIFACTIMG_FSTYPE} --label root   --align 4096 --size ${RDFM_PARTITION_SIZE_ROOTFS}K
+part   --source rootfs --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=${ARTIFACTIMG_FSTYPE} --label root_b --align 4096 --size ${RDFM_PARTITION_SIZE_ROOTFS}K
+
+# Partition 8 (System /data)
+part --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=ext4 --label data --align 4096 --fixed-size=${RDFM_PARTITION_SIZE_DATAFS}K --part-type 8300
+
+bootloader --ptable gpt --configfile="unmatched-extlinux.conf"
