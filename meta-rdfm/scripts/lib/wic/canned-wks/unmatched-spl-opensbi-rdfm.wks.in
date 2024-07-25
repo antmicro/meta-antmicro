@@ -14,10 +14,10 @@ part --ondisk $ondisk_dev --fixed-size 512K --align 1
 part --source bootimg-partition --sourceparams="loader=u-boot" --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=vfat --label boot --active --size=${RDFM_PARTITION_SIZE_BOOTFS}K --align 4096
 
 # Partition 6&7 (Rootfs A/B)
-part / --source rootfs --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=${ARTIFACTIMG_FSTYPE} --label root   --align 4096 --size ${RDFM_PARTITION_SIZE_ROOTFS}K
-part   --source rootfs --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=${ARTIFACTIMG_FSTYPE} --label root_b --align 4096 --size ${RDFM_PARTITION_SIZE_ROOTFS}K
+part / --source rootfs --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=${ARTIFACTIMG_FSTYPE} --label root   --align 4096 --size ${RDFM_PARTITION_SIZE_ROOTFS}K --exclude-path data/
+part   --source rootfs --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=${ARTIFACTIMG_FSTYPE} --label root_b --align 4096 --size ${RDFM_PARTITION_SIZE_ROOTFS}K --exclude-path data/
 
 # Partition 8 (System /data)
-part --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=ext4 --label data --align 4096 --fixed-size=${RDFM_PARTITION_SIZE_DATAFS}K --part-type 8300
+part /data --source rootfs --ondisk ${RDFM_ROOTFS_PART_BASE} --fstype=ext4 --label data --align 4096 --fixed-size=${RDFM_PARTITION_SIZE_DATAFS}K --part-type 8300 --include-path "${IMAGE_ROOTFS}/data/"
 
 bootloader --ptable gpt --configfile="unmatched-extlinux.conf"
