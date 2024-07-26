@@ -36,3 +36,9 @@ RDFM_PARTITION_SIZE_ROOTFS ??= "4194304"
 # Regardless of this setting, the data partition is expanded on
 # first boot to fill the remaining space on the device.
 RDFM_PARTITION_SIZE_DATAFS ??= "524288"
+
+# Append our custom image types by default
+inherit rdfm-image-type-datafs
+inherit rdfm-image-type-rootfs
+inherit rdfm-image-type-sdimg
+IMAGE_FSTYPES += " rootfsimg datafsimg sdimg "
