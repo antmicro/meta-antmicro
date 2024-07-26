@@ -7,15 +7,8 @@ BBCLASSEXTEND = "native"
 RDEPENDS:${PN}:class-native = ""
 DEPENDS:class-native = ""
 
-RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd = " parted util-linux-fdisk"
-RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd:mender-partlabel = " util-linux-blkid"
-RDEPENDS:${PN}:append:mender-growfs-data:mender-systemd:mender-partuuid = " util-linux-blkid"
-
-MENDER_CLIENT ?= "mender-client"
 MENDER_SERVER_URL ?= "https://docker.mender.io"
-# Tenant token
 MENDER_TENANT_TOKEN ?= "dummy"
-SYSTEMD_AUTO_ENABLE ?= "enable"
 MENDER_UPDATE_POLL_INTERVAL_SECONDS ?= "1800"
 MENDER_INVENTORY_POLL_INTERVAL_SECONDS ?= "28800"
 MENDER_RETRY_POLL_INTERVAL_SECONDS ?= "300"
@@ -35,52 +28,12 @@ FILES:${PN} += "\
 
 SYSROOT_DIRS += "/data"
 
-SRC_URI:append:mender-image:mender-systemd = " \
-    file://mender-client-data-dir.service \
-"
-
-SRC_URI:append:mender-persist-systemd-machine-id = " \
-    file://mender-client-systemd-machine-id.service \
-    file://mender-client-set-systemd-machine-id.sh \
-"
-
-SRC_URI:append:mender-growfs-data:mender-systemd = " \
-    file://mender-client-resize-data-part.sh.in \
-    file://mender-grow-data.service \
-    file://mender-systemd-growfs-data.service \
-"
-
-FILES:${PN}:append:mender-image:mender-systemd = " \
-    ${systemd_unitdir}/system/${MENDER_CLIENT}-data-dir.service \
-    ${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/${MENDER_CLIENT}-data-dir.service \
-"
-
-FILES:${PN}:append:mender-growfs-data:mender-systemd = " \
-    ${bindir}/mender-client-resize-data-part \
-    ${systemd_unitdir}/system/mender-grow-data.service \
-    ${systemd_unitdir}/system/mender-systemd-growfs-data.service \
-    ${systemd_unitdir}/system/data.mount.wants/mender-grow-data.service \
-    ${systemd_unitdir}/system/data.mount.wants/mender-systemd-growfs-data.service \
-"
-
-FILES:${PN}:append:mender-persist-systemd-machine-id = " \
-    ${systemd_unitdir}/system/mender-client-systemd-machine-id.service \
-    ${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/mender-client-systemd-machine-id.service \
-    ${bindir}/mender-client-set-systemd-machine-id.sh \
-"
-
 # Go binaries produce unexpected effects that the Yocto QA mechanism doesn't
 # like. We disable those checks here.
 INSANE_SKIP:${PN} = "ldflags textrel"
 
 PACKAGECONFIG ?= ""
-PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-client-install', ' mender-client-install', '', d)}"
-PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-uboot', ' u-boot', '', d)}"
-PACKAGECONFIG:append = "${@bb.utils.contains('MENDER_FEATURES', 'mender-grub', ' grub', '', d)}"
 
-PACKAGECONFIG[mender-client-install] = ",,,rdfm-artifact-info ca-certificates"
-PACKAGECONFIG[u-boot] = ",,,libubootenv-bin"
-PACKAGECONFIG[grub] = ",,,grub-editenv grub-mender-grubenv"
 # The docker module depends on bash, and of course on docker. However, docker is
 # a very large requirement, which we will not mandate. Bash however, we require,
 # because otherwise the Yocto QA checks will complain.
@@ -139,7 +92,7 @@ do_compile() {
     # when do_rm_work is executed
     find ${B}/pkg/mod -exec chmod u+w {} \;
 
-    echo "device_type=${MENDER_DEVICE_TYPE}" > ${B}/device_type
+    echo "device_type=${RDFM_DEVICE_TYPE}" > ${B}/device_type
 }
 
 python do_prepare_mender_conf() {
@@ -179,8 +132,8 @@ python do_prepare_mender_conf() {
     conf_maybe_add("InventoryPollIntervalSeconds", "MENDER_INVENTORY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     # Mandatory variables - will always exist
     conf_maybe_add("RetryPollIntervalSeconds", "MENDER_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
-    conf_maybe_add("RootfsPartA", "MENDER_ROOTFS_PART_A", getvar=True, integer=False)
-    conf_maybe_add("RootfsPartB", "MENDER_ROOTFS_PART_B", getvar=True, integer=False)
+    conf_maybe_add("RootfsPartA", "RDFM_PARTITION_ROOTFS_A", getvar=True, integer=False)
+    conf_maybe_add("RootfsPartB", "RDFM_PARTITION_ROOTFS_B", getvar=True, integer=False)
     if d.getVar("RDFM_BOOT_UTILS_SETENV_OVERRIDE") != "":
         conf_maybe_add("BootUtilitiesSetActivePart", "RDFM_BOOT_UTILS_SETENV_OVERRIDE", getvar=True, integer=False)
     if d.getVar("RDFM_BOOT_UTILS_GETENV_OVERRIDE") != "":
@@ -206,8 +159,8 @@ do_prepare_mender_conf[vardeps] = " \
     MENDER_ARTIFACT_VERIFY_KEY \
     MENDER_INVENTORY_POLL_INTERVAL_SECONDS \
     MENDER_RETRY_POLL_INTERVAL_SECONDS \
-    MENDER_ROOTFS_PART_A \
-    MENDER_ROOTFS_PART_B \
+    RDFM_PARTITION_ROOTFS_A \
+    RDFM_PARTITION_ROOTFS_B \
     MENDER_SERVER_URL \
     MENDER_TENANT_TOKEN \
     MENDER_UPDATE_POLL_INTERVAL_SECONDS \
@@ -255,51 +208,8 @@ do_install() {
         install -m 444 ${B}/device_type ${D}/data/rdfm/
     fi
 
-    # Setup blacklist to ensure udev does not automatically mount Mender managed partitions
+    # Setup blacklist to ensure udev does not automatically mount RDFM managed partitions
     install -d ${D}${sysconfdir}/udev/mount.blacklist.d
-    echo ${MENDER_ROOTFS_PART_A} > ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
-    echo ${MENDER_ROOTFS_PART_B} >> ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
-}
-
-do_install:append:class-target:mender-image:mender-systemd() {
-    install -d -m 755 ${D}${systemd_unitdir}/system/
-    install -m 644 ${WORKDIR}/mender-client-data-dir.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}-data-dir.service
-    install -d -m 755 ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants
-    ln -sf ../mender-client-data-dir.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/${MENDER_CLIENT}-data-dir.service
-}
-
-do_install:append:class-target:mender-growfs-data:mender-systemd() {
-
-    if ${@bb.utils.contains('MENDER_FEATURES', 'mender-partlabel', 'true', 'false', d)}; then
-        sed -i "s#@MENDER_DATA_PART@#\$(blkid -L ${MENDER_DATA_PART_LABEL})#g" \
-            ${WORKDIR}/mender-client-resize-data-part.sh.in
-    elif ${@bb.utils.contains('MENDER_FEATURES', 'mender-partuuid', 'true', 'false', d)}; then
-        sed -i "s#@MENDER_DATA_PART@#\$(blkid | grep 'PARTUUID=\"${@mender_get_partuuid_from_device(d, '${MENDER_DATA_PART}')}\"' | awk -F: '{ print \$1 }')#g" \
-            ${WORKDIR}/mender-client-resize-data-part.sh.in
-    else
-        sed -i "s#@MENDER_DATA_PART@#${MENDER_DATA_PART}#g" \
-            ${WORKDIR}/mender-client-resize-data-part.sh.in
-    fi
-
-    sed -i "s#@MENDER_DATA_PART_NUMBER@#${MENDER_DATA_PART_NUMBER}#g" \
-        ${WORKDIR}/mender-client-resize-data-part.sh.in
-
-    install -m 0755 ${WORKDIR}/mender-client-resize-data-part.sh.in \
-        ${D}/${bindir}/mender-client-resize-data-part
-
-    install -d ${D}/${systemd_unitdir}/system
-    install -m 644 ${WORKDIR}/mender-grow-data.service ${D}/${systemd_unitdir}/system/
-    install -m 644 ${WORKDIR}/mender-systemd-growfs-data.service ${D}/${systemd_unitdir}/system/
-
-    install -d ${D}${systemd_unitdir}/system/data.mount.wants/
-    ln -sf ../mender-grow-data.service ${D}${systemd_unitdir}/system/data.mount.wants/
-    ln -sf ../mender-systemd-growfs-data.service ${D}${systemd_unitdir}/system/data.mount.wants/
-}
-
-do_install:append:class-target:mender-persist-systemd-machine-id() {
-    install -m 644 ${WORKDIR}/mender-client-systemd-machine-id.service ${D}${systemd_unitdir}/system/
-    install -d -m 755 ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants
-    ln -sf ../mender-client-systemd-machine-id.service ${D}${systemd_unitdir}/system/${MENDER_CLIENT}.service.wants/
-    install -d -m 755 ${D}${bindir}
-    install -m 755 ${WORKDIR}/mender-client-set-systemd-machine-id.sh ${D}${bindir}/
+    echo ${RDFM_PARTITION_ROOTFS_A} > ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
+    echo ${RDFM_PARTITION_ROOTFS_B} >> ${D}${sysconfdir}/udev/mount.blacklist.d/rdfm
 }

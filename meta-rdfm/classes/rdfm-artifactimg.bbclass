@@ -1,5 +1,3 @@
-inherit rdfm-helpers
-
 # ------------------------------ CONFIGURATION ---------------------------------
 
 # Extra arguments that should be passed to rdfm-artifact.
