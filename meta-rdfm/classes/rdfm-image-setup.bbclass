@@ -38,7 +38,8 @@ RDFM_PARTITION_SIZE_ROOTFS ??= "4194304"
 RDFM_PARTITION_SIZE_DATAFS ??= "524288"
 
 # Append our custom image types by default
+inherit rdfm-artifactimg
 inherit rdfm-image-type-datafs
 inherit rdfm-image-type-rootfs
 inherit rdfm-image-type-sdimg
-IMAGE_FSTYPES += " rootfsimg datafsimg sdimg "
+IMAGE_FSTYPES += " rootfsimg datafsimg sdimg rdfm "
