@@ -10,6 +10,9 @@ do_image_rdfm[depends] += "rdfm-artifact-native:do_populate_sysroot"
 ARTIFACTIMG_FSTYPE ??= "${ARTIFACTIMG_FSTYPE_DEFAULT}"
 ARTIFACTIMG_FSTYPE_DEFAULT = "ext4"
 
+ARTIFACTIMG_EXT ??= "${ARTIFACTIMG_EXT_DEFAULT}"
+ARTIFACTIMG_EXT_DEFAULT = "${RDFM_ROOTFSIMG_EXT}"
+
 ARTIFACTIMG_NAME ??= "${ARTIFACTIMG_NAME_DEFAULT}"
 ARTIFACTIMG_NAME_DEFAULT = "${IMAGE_LINK_NAME}"
 
@@ -97,7 +100,7 @@ IMAGE_CMD:rdfm() {
     rdfm-artifact write rootfs-image \
         --artifact-name ${RDFM_ARTIFACT_NAME} \
         $extra_args \
-        --file ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_FSTYPE} \
+        --file ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_EXT} \
         ${MENDER_ARTIFACT_EXTRA_ARGS} \
         --output-path ${RDFM_ARTIFACT_PATH}.rdfm
 }
