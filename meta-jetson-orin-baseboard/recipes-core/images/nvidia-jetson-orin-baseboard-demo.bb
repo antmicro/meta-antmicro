@@ -26,4 +26,5 @@ IMAGE_INSTALL:append = " \
     i2c-tools \
     devmem2 \
     python3-pip \
+    tps65988-flash \
 "
