@@ -1,18 +1,17 @@
-image: d2s://external/docker/debian:bookworm
+image: debian:bookworm
 
 stages:
   - build
   - local-tests
 
 .common:
-  tags: ['ace-x86_64']
+  only:
+    refs:
+      - master
+      - merge_requests
 
 build:
   extends: .common
-  variables:
-    SCALENODE_CPU: 16
-    SCALENODE_RAM: 16000
-    SCALENODE_DISK: 50
   stage: build
   before_script:
     - apt update
@@ -20,10 +19,10 @@ build:
     - curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && chmod a+rx /usr/bin/repo
     - PIPX_BIN_DIR=/usr/bin/ pipx install git+https://github.com/antmicro/tuttest
     - sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && locale-gen
-    - useradd -m builder
-  script:
     - export LANG=en_US.UTF-8
     - ln -sf /usr/share/zoneinfo/UTC0 /usr/share/zoneinfo/UTC
+    - useradd -m builder
+  script:
     - cd system-releases/rdfm-unmatched-demo
     - chown -R builder:root .
     - tuttest README.md fetch-sources,setup-yocto,target-renode,build-image | sudo -u builder XZ_MEMLIMIT=25% XZ_DEFAULTS=--memlimit-compress=25% BB_ENV_PASSTHROUGH_ADDITIONS="XZ_MEMLIMIT XZ_DEFAULTS" bash -eo pipefail -
@@ -39,10 +38,6 @@ build:
 
 build-rdfm-artifact:
   extends: .common
-  variables:
-    SCALENODE_CPU: 2
-    SCALENODE_RAM: 2048
-    SCALENODE_DISK: 5
   stage: build
   before_script:
     - apt update
@@ -57,11 +52,8 @@ build-rdfm-artifact:
 
 test-demo:
   extends: .common
-  variables:
-    SCALENODE_CPU: 8
-    SCALENODE_RAM: 12288
-    SCALENODE_DISK: 25
   stage: local-tests
+  dependencies: [ 'build', 'build-rdfm-artifact' ]
   before_script:
     - apt update
     - apt install -qqy iproute2 python3-venv python-is-python3 git wget sudo dirmngr ca-certificates gnupg &>/dev/null
