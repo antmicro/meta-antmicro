@@ -10,18 +10,24 @@ stages:
       - master
       - merge_requests
 
-build:
+.build:
   extends: .common
   stage: build
+  variables:
+    ENABLE_TRANSFORMERS: "--enable-transformers"
   before_script:
     - apt update
     - apt -qqy install --no-install-recommends gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 python3-subunit zstd liblz4-tool file locales libacl1 pipx curl openssh-client sudo gfortran &>/dev/null
+    - git config --global url."$CI_URL".insteadOf https://github.com/antmicro/
     - curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && chmod a+rx /usr/bin/repo
-    - PIPX_BIN_DIR=/usr/bin/ pipx install git+https://github.com/antmicro/tuttest
+    - PIPX_BIN_DIR=/usr/bin/ pipx install git+https://github.com/antmicro/tuttest@63160-snippet-transform
     - sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && locale-gen
     - export LANG=en_US.UTF-8
     - ln -sf /usr/share/zoneinfo/UTC0 /usr/share/zoneinfo/UTC
     - useradd -m builder
+
+build-rdfm:
+  extends: .build
   script:
     - cd system-releases/rdfm-unmatched-demo
     - chown -R builder:root .
@@ -35,6 +41,22 @@ build:
       - system-releases/rdfm-unmatched-demo/renode/u-boot-spl.bin
       - system-releases/rdfm-unmatched-demo/renode/u-boot.itb
       - system-releases/rdfm-unmatched-demo/renode/sdcard.sdimg
+
+build-jetson-orin:
+  extends: .build
+  script:
+    - |-
+        if [ $CI_COMMIT_REF_NAME == "master" ]; then
+          ENABLE_TRANSFORMERS=""
+        fi
+    - cd system-releases/nvidia-jetson-orin-baseboard-demo
+    - tuttest README.md fetch-repo $ENABLE_TRANSFORMERS | bash -
+    - chown -R builder:root .
+    - cd orin-baseboard-demo
+    - tuttest ../README.md build-bsp | sudo -u builder XZ_MEMLIMIT=25% XZ_DEFAULTS=--memlimit-compress=25% BB_ENV_PASSTHROUGH_ADDITIONS="XZ_MEMLIMIT XZ_DEFAULTS" bash -eo pipefail -
+  artifacts:
+    paths:
+      - system-releases/nvidia-jetson-orin-baseboard-demo/orin-baseboard-demo/build/tmp/deploy/images/p3509-a02-p3767-0000
 
 build-rdfm-artifact:
   extends: .common
@@ -50,10 +72,10 @@ build-rdfm-artifact:
     paths:
       - rdfm-artifact
 
-test-demo:
+test-rdfm-unmatched-demo:
   extends: .common
   stage: local-tests
-  dependencies: [ 'build', 'build-rdfm-artifact' ]
+  dependencies: [ 'build-rdfm', 'build-rdfm-artifact' ]
   before_script:
     - apt update
     - apt install -qqy iproute2 python3-venv python-is-python3 git wget sudo dirmngr ca-certificates gnupg &>/dev/null
