@@ -7,10 +7,11 @@ You can run this demo either on real hardware, or in a simulation using [Renode]
 ## Building the image
 
 You can fetch all the necessary code with:
-<!-- name="fetch-sources" -->
+
+<!-- name="fetch-sources"; transformer="echo "$TUTTEST_INPUT" | sed "/repo init/s/.*/& -b $CI_COMMIT_REF_NAME/" | sed "$ a repo forall meta-antmicro.git -c 'git checkout $CI_COMMIT_REF_NAME'"" -->
 ```sh
 mkdir -p rdfm-unmatched-demo && cd rdfm-unmatched-demo
-repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/rdfm-unmatched-demo/manifest.xml -b master
+repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/rdfm-unmatched-demo/manifest.xml
 repo sync -j`nproc`
 ```
 

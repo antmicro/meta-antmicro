@@ -29,9 +29,16 @@ stages:
 build-rdfm:
   extends: .build
   script:
+    - |-
+        if [ $CI_COMMIT_REF_NAME == "master" ]; then
+          ENABLE_TRANSFORMERS=""
+        fi
     - cd system-releases/rdfm-unmatched-demo
+    - tuttest README.md fetch-sources $ENABLE_TRANSFORMERS | bash -
     - chown -R builder:root .
-    - tuttest README.md fetch-sources,setup-yocto,target-renode,build-image | sudo -u builder XZ_MEMLIMIT=25% XZ_DEFAULTS=--memlimit-compress=25% BB_ENV_PASSTHROUGH_ADDITIONS="XZ_MEMLIMIT XZ_DEFAULTS" bash -eo pipefail -
+    - cd rdfm-unmatched-demo
+    - tuttest ../README.md setup-yocto,target-renode,build-image | sudo -u builder XZ_MEMLIMIT=25% XZ_DEFAULTS=--memlimit-compress=25% BB_ENV_PASSTHROUGH_ADDITIONS="XZ_MEMLIMIT XZ_DEFAULTS" bash -eo pipefail -
+    - cd ..
     - tuttest README.md copy-artifacts | bash -eo pipefail -
   artifacts:
     expire_in: 4 hours
