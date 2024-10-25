@@ -1,5 +1,20 @@
 DEPENDS:append:riscv64 = " python3"
 
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+
+SRC_URI:append:unmatched = " \
+    file://0001-unmatched-integrate-rdfm.patch \
+    file://unmatched.cfg \
+"
+
+SRC_URI:append:renodeunmatched = " \
+    file://0001-unmatched-integrate-rdfm.patch \
+    file://9999-renode-Remove-therm-sensor-initialization.patch \
+    file://9999-renode-Enable-VirtIO-on-unmatched.patch \
+    file://9999-renode-Add-generic-block-device-environment.patch \
+    file://renodeunmatched.cfg \
+"
+
 do_mender_uboot_auto_configure:riscv64() {
     mkdir ${STAGING_INCDIR}/python3.10/python3.10
     cp ${STAGING_INCDIR}/python3.10/pyconfig* ${STAGING_INCDIR}/python3.10/python3.10/
