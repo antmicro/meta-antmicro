@@ -7,6 +7,7 @@
 RDFM_ROOTFSIMG_TYPE ??= "ext4"
 # Extension given to the rootfs partition image in the deploy directory
 RDFM_ROOTFSIMG_EXT  ??= "flash_rootfsimg"
+ARTIFACTIMG_FSTYPE:append = " rootfsimg "
 
 IMAGE_CMD:rootfsimg() {
 	# If generating an empty image the size of the sparse block should be large
