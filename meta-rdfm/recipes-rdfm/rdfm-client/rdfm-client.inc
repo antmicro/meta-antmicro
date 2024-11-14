@@ -199,14 +199,12 @@ do_install() {
         install -m 0444 "${MENDER_ARTIFACT_VERIFY_KEY}" ${D}${sysconfdir}/rdfm/artifact-verify-key.pem
     fi
 
-    if ${@bb.utils.contains('MENDER_FEATURES', 'mender-image', 'true', 'false', d)}; then
-        # symlink /var/lib/rdfm to /data/rdfm
-        rm -rf ${D}/${localstatedir}/lib/rdfm
-        ln -s /data/rdfm ${D}/${localstatedir}/lib/rdfm
+    # symlink /var/lib/rdfm to /data/rdfm
+    rm -rf ${D}/${localstatedir}/lib/rdfm
+    ln -s /data/rdfm ${D}/${localstatedir}/lib/rdfm
 
-        install -m 755 -d ${D}/data/rdfm
-        install -m 444 ${B}/device_type ${D}/data/rdfm/
-    fi
+    install -m 755 -d ${D}/data/rdfm
+    install -m 444 ${B}/device_type ${D}/data/rdfm/
 
     # Setup blacklist to ensure udev does not automatically mount RDFM managed partitions
     install -d ${D}${sysconfdir}/udev/mount.blacklist.d
