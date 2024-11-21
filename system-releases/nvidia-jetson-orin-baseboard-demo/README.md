@@ -87,3 +87,42 @@ When flashed successfully, the board should boot up and you will be able to capt
 v4l2-ctl -d0 --stream-mmap --stream-count=1 --stream-to=cam0_image.raw
 v4l2-ctl -d1 --stream-mmap --stream-count=1 --stream-to=cam1_image.raw
 ```
+
+### Configuration
+Depending on your camera setup, you can specify a device tree to be used:
+```
+export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS KERNEL_DEVICETREE"
+$ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE=<specify device tree> bitbake nvidia-jetson-orin-baseboard-demo
+```
+Examine the table below for supported setups:
+
+| setup                                                     | device tree                                         |
+|-----------------------------------------------------------|-----------------------------------------------------|
+| 4xOV5640 cameras                                          | tegra234-p3767-0000-antmicro-job.dtb (default)      |
+| 4xOV9281 cameras                                          | tegra234-p3767-0000-antmicro-job-ov9281.dtb         |
+| GMSL Deserializer + GMSL Serializer + OV5640 camera       | tegra234-p3767-0003-antmicro-job-gmsl-ov5640.dtb    |
+
+Example:
+```
+$ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE="tegra234-p3767-0000-antmicro-job-ov9281.dtb" bitbake nvidia-jetson-orin-baseboard-demo
+```
+
+### GMSL demo
+
+Steps to setup hardware:
+1. Connect GMSL Deserializer Board to CSI A of Jetson Orin Baseboard.
+2. Connect GMSL Serializer Board to Ch A of GMSL Deserializer Board.
+3. Connect IMX219 to GMSL Serializer Board
+3. Plug in the power supply to GMSL Deserializer board
+
+Choose the GMSL device tree & build:
+```
+export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS KERNEL_DEVICETREE"
+$ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE="tegra234-p3767-0003-antmicro-job-gmsl-ov5640.dtb" bitbake nvidia-jetson-orin-baseboard-demo
+```
+Flash the board and boot it up. Capture the feed from camera using
+```
+v4l2-ctl --stream-mmap --stream-count=<number_of_frames> -d /dev/video0 --stream-to=gmsl_image.raw
+```
+
+See more detailed instructions for this demo [here](https://antmicro.github.io/jetson-orin-baseboard/gmsl.html)

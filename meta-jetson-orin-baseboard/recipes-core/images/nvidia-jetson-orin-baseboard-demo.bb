@@ -27,4 +27,5 @@ IMAGE_INSTALL:append = " \
     devmem2 \
     python3-pip \
     tps65988-flash \
+    gstreamer1.0 \
 "
