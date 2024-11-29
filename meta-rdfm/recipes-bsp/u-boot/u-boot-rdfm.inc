@@ -22,6 +22,7 @@ SRC_URI:append = " \
     file://0002-Generic-boot-code-for-Mender.patch \
     file://0004-Switch-to-using-Mender-boot-command.patch \
     file://0005-Add-additional-bootargs.patch \
+    file://0006-Add-support-for-boot-scripts.patch \
 "
 
 addtask do_provide_mender_defines after do_patch before do_configure
