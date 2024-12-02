@@ -20,6 +20,7 @@ SRC_URI:append:renodeunmatched = " \
 SRC_URI:append = " \
     file://0001-Add-missing-header-which-fails-on-recent-GCC.patch \
     file://0002-Generic-boot-code-for-Mender.patch \
+    file://0004-Switch-to-using-Mender-boot-command.patch \
 "
 
 addtask do_provide_mender_defines after do_patch before do_configure

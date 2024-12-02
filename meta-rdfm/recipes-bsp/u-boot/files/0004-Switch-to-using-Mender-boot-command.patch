@@ -1,0 +1,27 @@
+From ca8d852301a37c7c8a3d77afc7661dcdfd115aec Mon Sep 17 00:00:00 2001
+From: Krzysztof Sychla <ksychla@antmicro.com>
+Date: Tue, 19 Nov 2024 10:22:29 +0100
+Subject: [PATCH] Switch to using Mender boot command
+
+---
+ include/env_default.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/env_default.h b/include/env_default.h
+index bd086ea255..95bb6d5c95 100644
+--- a/include/env_default.h
++++ b/include/env_default.h
+@@ -40,8 +40,8 @@ MENDER_ENV_SETTINGS
+ #ifdef	CONFIG_USE_BOOTARGS
+ 	"bootargs="	CONFIG_BOOTARGS			"\0"
+ #endif
+-#ifdef	CONFIG_BOOTCOMMAND
+-	"bootcmd="	CONFIG_BOOTCOMMAND		"\0"
++#ifdef	CONFIG_MENDER_BOOTCOMMAND
++	"bootcmd="	CONFIG_MENDER_BOOTCOMMAND		"\0"
+ #endif
+ #if defined(CONFIG_BOOTDELAY)
+ 	"bootdelay="	__stringify(CONFIG_BOOTDELAY)	"\0"
+-- 
+2.46.2
+
