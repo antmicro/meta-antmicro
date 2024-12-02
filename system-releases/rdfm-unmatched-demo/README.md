@@ -49,12 +49,12 @@ that can be directly used with RDFM.
 
 ## Preparing board (Native)
 
-Produced `.flash.sdimg` image can be written to an s/uSD/microSD card and ran on board.
+Produced `.flash_sdimg` image can be written to an s/uSD/microSD card and ran on board.
 
 Unmount all mounted partitions from the card and write the image to it:
 ```sh
 cd build/tmp/deploy/images/unmatched
-sudo dd if=rdfm-image-minimal-unmatched.flash.sdimg of=/dev/sdX bs=512K iflag=fullblock oflag=direct conv=fsync status=progress
+sudo dd if=rdfm-image-minimal-unmatched.flash_sdimg of=/dev/sdX bs=512K iflag=fullblock oflag=direct conv=fsync status=progress
 ```
 > :warning: Be careful while picking /dev/sdX device! Look at dmesg, lsblk, blkid, GNOME Disks, etc.
 > before and after plugging in your s/uSD/microSD card to find the proper device.

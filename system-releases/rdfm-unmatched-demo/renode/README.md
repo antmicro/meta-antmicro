@@ -23,7 +23,7 @@ The script automatically copies the necessary files.
 In order to run it, you must be in a Yocto build environment.
 
 **Manual**: From the build directory, copy the `u-boot-spl.bin` and `u-boot.itb` files to this folder.
-Additionally, copy the `rdfm-image-minimal-renodeunmatched.flash.sdimg` file and rename it to `sdcard.sdimg`. 
+Additionally, copy the `rdfm-image-minimal-renodeunmatched.flash_sdimg` file and rename it to `sdcard.sdimg`.
 You only need to perform this step once, as you'll be updating the SD card image directly from the OS later.
 
 To start the demo, run the following in this directory:

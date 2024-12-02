@@ -15,7 +15,7 @@ cp -v "$art_dir/rdfm-image-minimal-renodeunmatched.rdfm" "$this_dir/rdfm-image-m
 cp -v "$art_dir/rdfm-image-upgraded-renodeunmatched.rdfm" "$this_dir/rdfm-image-upgraded-unmatched.rdfm"
 
 if [ ! -f ./sdcard.sdimg ]; then
-	cp -v "$art_dir/rdfm-image-minimal-renodeunmatched.flash.sdimg" "$this_dir/sdcard.sdimg"
+	cp -v "$art_dir/rdfm-image-minimal-renodeunmatched.flash_sdimg" "$this_dir/sdcard.sdimg"
 else
 	echo "SD card image already present, skipping copy"
 fi
