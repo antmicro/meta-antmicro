@@ -1,0 +1,25 @@
+From b949e8611774c1ba4b05d8269e1cc5d9f195deef Mon Sep 17 00:00:00 2001
+From: Krzysztof Sychla <ksychla@antmicro.com>
+Date: Mon, 2 Dec 2024 15:20:30 +0100
+Subject: [PATCH] Add additional bootargs
+
+---
+ include/env_mender.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/env_mender.h b/include/env_mender.h
+index 261775afd5..ba21c4dbc9 100644
+--- a/include/env_mender.h
++++ b/include/env_mender.h
+@@ -136,7 +136,7 @@
+     "ubifsload ${kernel_addr_r} /boot/${mender_kernel_name}; "
+ #else
+ # define MENDER_BOOTARGS                                                \
+-    "setenv bootargs root=${mender_kernel_root} ${bootargs}; "
++    "setenv bootargs root=${mender_kernel_root} " RDFM_ADDITIONAL_BOOTARGS " ${bootargs}; "
+ # define MENDER_LOAD_KERNEL_AND_FDT                                     \
+     "if test \"${fdt_addr_r}\" != \"\"; then "                          \
+     "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; " \
+-- 
+2.47.0
+
