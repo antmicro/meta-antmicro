@@ -92,7 +92,7 @@ v4l2-ctl -d1 --stream-mmap --stream-count=1 --stream-to=cam1_image.raw
 Depending on your camera setup, you can specify a device tree to be used:
 ```
 export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS KERNEL_DEVICETREE"
-$ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE=<specify device tree> bitbake nvidia-jetson-orin-baseboard-demo
+PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE=<specify device tree> bitbake nvidia-jetson-orin-baseboard-demo
 ```
 Examine the table below for supported setups:
 
@@ -100,29 +100,50 @@ Examine the table below for supported setups:
 |-----------------------------------------------------------|-----------------------------------------------------|
 | 4xOV5640 cameras                                          | tegra234-p3767-0000-antmicro-job.dtb (default)      |
 | 4xOV9281 cameras                                          | tegra234-p3767-0000-antmicro-job-ov9281.dtb         |
-| GMSL Deserializer + GMSL Serializer + OV5640 camera       | tegra234-p3767-0003-antmicro-job-gmsl-ov5640.dtb    |
+| GMSL Deserializer + GMSL Serializer + 2xOV5640 camera     | tegra234-p3767-0003-antmicro-job-gmsl-ov5640.dtb    |
 
 Example:
 ```
-$ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE="tegra234-p3767-0000-antmicro-job-ov9281.dtb" bitbake nvidia-jetson-orin-baseboard-demo
+PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE="tegra234-p3767-0000-antmicro-job-ov9281.dtb" bitbake nvidia-jetson-orin-baseboard-demo
 ```
 
 ### GMSL demo
 
 Steps to setup hardware:
-1. Connect GMSL Deserializer Board to CSI A of Jetson Orin Baseboard.
-2. Connect GMSL Serializer Board to Ch A of GMSL Deserializer Board.
-3. Connect IMX219 to GMSL Serializer Board
-3. Plug in the power supply to GMSL Deserializer board
+1. connect GMSL Deserializer to Jetson Orin Baseboard on CSI A
+2. connect GMSL Serializer #1 to GMSL Deserializer on Channel A
+3. connect GMSL Serializer #2 to GMSL Deserializer on Channel B
+4. connect GMSL Serializer #1 to the dual camera adapter
+5. connect GMSL Serializer #2 to the dual camera adapter
+6. connect OV5640 Dual Camera Board to the dual camera adapter
+7. plug in the power supply to the GMSL Deserializer
+8. power on the jetson orin baseboard
 
 Choose the GMSL device tree & build:
 ```
 export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS KERNEL_DEVICETREE"
-$ PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE="tegra234-p3767-0003-antmicro-job-gmsl-ov5640.dtb" bitbake nvidia-jetson-orin-baseboard-demo
+PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" KERNEL_DEVICETREE="tegra234-p3767-0003-antmicro-job-gmsl-ov5640.dtb" bitbake nvidia-jetson-orin-baseboard-demo
 ```
-Flash the board and boot it up. Capture the feed from camera using
+Flash the board and boot it up. Setup the formats using
 ```
-v4l2-ctl --stream-mmap --stream-count=<number_of_frames> -d /dev/video0 --stream-to=gmsl_image.raw
+media-ctl -d /dev/media0 --set-v4l2 '"ser_0_ch_0":1[fmt:YUYV8_1X16/1920x1080]'
+media-ctl -d /dev/media0 --set-v4l2 '"des_ch_0":0[fmt:YUYV8_1X16/1920x1080]'
+media-ctl -d /dev/media0 --set-v4l2 '"ser_1_ch_0":1[fmt:YUYV8_1X16/1920x1080]'
+media-ctl -d /dev/media0 --set-v4l2 '"des_ch_1":0[fmt:YUYV8_1X16/1920x1080]'
+```
+Capture the feed from cameras using
+```
+v4l2-ctl --stream-mmap --stream-count=<number_of_frames> -d /dev/video0 --stream-to=gmsl_image_cam1.raw
+v4l2-ctl --stream-mmap --stream-count=<number_of_frames> -d /dev/video1 --stream-to=gmsl_image_cam2.raw
+```
+or observe simultaneous feed from both cameras (external display required)
+```
+gst-launch-1.0 \
+v4l2src device=/dev/video1 ! \
+compositor name=mix sink_0::xpos=0 sink_0::ypos=0 sink_1::xpos=1280 sink_1::ypos=0 ! \
+videoconvert ! autovideosink \
+v4l2src device=/dev/video0 ! \
+mix.
 ```
 
 See more detailed instructions for this demo [here](https://antmicro.github.io/jetson-orin-baseboard/gmsl.html)
