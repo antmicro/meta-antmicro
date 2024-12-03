@@ -23,6 +23,7 @@ SRC_URI:append = " \
     file://0004-Switch-to-using-Mender-boot-command.patch \
     file://0005-Add-additional-bootargs.patch \
     file://0006-Add-support-for-boot-scripts.patch \
+    file://0007-Add-boot-prefix.patch \
 "
 
 addtask do_provide_mender_defines after do_patch before do_configure
@@ -31,6 +32,8 @@ addtask do_uboot_auto_configure after do_provide_mender_defines before do_config
 
 RDFM_UBOOT_ENV_STORAGE ?= "${RDFM_STORAGE_DEVICE}"
 RDFM_UBOOT_ENV_STORAGE_REDUND ?= "${RDFM_UBOOT_ENV_STORAGE}"
+RDFM_KERNEL_FILES_PARTITION ?= "\${mender_boot_part_hex}"
+RDFM_KERNEL_FILES_PREFIX ?= "/boot/"
 
 
 do_uboot_auto_configure() {
@@ -67,6 +70,8 @@ do_provide_mender_defines() {
 #define MENDER_ROOTFS_PART_B_NUMBER_HEX ${@to_hex(RDFM_ROOTFS_B_NUMBER)}
 #define MENDER_UBOOT_STORAGE_INTERFACE "${@storage_type(RDFM_STORAGE_DEVICE)}"
 #define MENDER_UBOOT_STORAGE_DEVICE ${@storage_device(RDFM_STORAGE_DEVICE)}
+#define RDFM_KERNEL_FILES_PARTITION "${RDFM_KERNEL_FILES_PARTITION}"
+#define RDFM_KERNEL_FILES_PREFIX "${RDFM_KERNEL_FILES_PREFIX}"
 
 /* BB variables. */
 #define MENDER_STORAGE_DEVICE "${RDFM_STORAGE_DEVICE}"

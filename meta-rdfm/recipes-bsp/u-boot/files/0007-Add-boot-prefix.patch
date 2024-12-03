@@ -1,0 +1,47 @@
+From b10fec17b393edb1877d4588b49166bb95394810 Mon Sep 17 00:00:00 2001
+From: Krzysztof Sychla <ksychla@antmicro.com>
+Date: Mon, 2 Dec 2024 15:27:21 +0100
+Subject: [PATCH] Add boot prefix
+
+---
+ include/env_mender.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/env_mender.h b/include/env_mender.h
+index ba21c4dbc9..6e73fcbfef 100644
+--- a/include/env_mender.h
++++ b/include/env_mender.h
+@@ -92,7 +92,7 @@
+     "setenv mender_boot_part_name " MENDER_ROOTFS_PART_B_NAME "; "                     \
+     "fi; "                                                                             \
+     "setenv mender_kernel_root_name ${mender_boot_part_name}; "         \
+-    "setenv mender_uboot_root " MENDER_UBOOT_STORAGE_INTERFACE " " __stringify(MENDER_UBOOT_STORAGE_DEVICE) ":${mender_boot_part_hex}; " \
++    "setenv mender_uboot_root " MENDER_UBOOT_STORAGE_INTERFACE " " __stringify(MENDER_UBOOT_STORAGE_DEVICE) ":" RDFM_KERNEL_FILES_PARTITION "; " \
+     "setenv mender_uboot_root_name ${mender_boot_part_name}; "          \
+     "setenv expand_bootargs \"setenv bootargs \\\\\"${bootargs}\\\\\"\"; "              \
+     "run expand_bootargs; "                                             \
+@@ -131,17 +131,17 @@
+     "ubi part ${mender_mtd_ubi_dev_name}; "                             \
+     "ubifsmount ${mender_uboot_root_name}; "                            \
+     "if test \"${fdt_addr_r}\" != \"\"; then "                          \
+-    "ubifsload ${fdt_addr_r} /boot/${mender_dtb_name}; "                \
++    "ubifsload ${fdt_addr_r} " RDFM_KERNEL_FILES_PREFIX "${mender_dtb_name}; "                \
+     "fi; "                                                              \
+-    "ubifsload ${kernel_addr_r} /boot/${mender_kernel_name}; "
++    "ubifsload ${kernel_addr_r} " RDFM_KERNEL_FILES_PREFIX "${mender_kernel_name}; "
+ #else
+ # define MENDER_BOOTARGS                                                \
+     "setenv bootargs root=${mender_kernel_root} " RDFM_ADDITIONAL_BOOTARGS " ${bootargs}; "
+ # define MENDER_LOAD_KERNEL_AND_FDT                                     \
+     "if test \"${fdt_addr_r}\" != \"\"; then "                          \
+-    "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; " \
++    "load ${mender_uboot_root} ${fdt_addr_r} " RDFM_KERNEL_FILES_PREFIX "${mender_dtb_name}; " \
+     "fi; "                                                              \
+-    "load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; "
++    "load ${mender_uboot_root} ${kernel_addr_r} " RDFM_KERNEL_FILES_PREFIX "${mender_kernel_name}; "
+ #endif
+ 
+ #define CONFIG_MENDER_BOOTCOMMAND                                       \
+-- 
+2.47.0
+
