@@ -37,13 +37,20 @@ RDFM_KERNEL_FILES_PREFIX ?= "/boot/"
 
 
 do_uboot_auto_configure() {
-    add_config_definition ${S}/configs/${UBOOT_MACHINE} "CONFIG_ENV_SIZE" "${BOOTENV_SIZE}"
-    add_config_definition ${S}/configs/${UBOOT_MACHINE} "CONFIG_ENV_OFFSET" ${RDFM_ENV_OFFSET}
-    add_config_definition ${S}/configs/${UBOOT_MACHINE} "CONFIG_ENV_OFFSET_REDUND" ${RDFM_ENV_OFFSET_REDUND}
-    add_config_definition ${S}/configs/${UBOOT_MACHINE} "CONFIG_ENV_IS_IN_MMC" "y"
-    add_config_definition ${S}/configs/${UBOOT_MACHINE} "CONFIG_BOOTCOUNT_LIMIT" "y"
-    add_config_definition ${S}/configs/${UBOOT_MACHINE} "CONFIG_BOOTCOUNT_ENV" "y"
-    add_config_definition ${S}/configs/${UBOOT_MACHINE} "CONFIG_SYS_REDUNDAND_ENVIRONMENT" "y"
+    if [ -f ${WORKDIR}/*.cfg ]; then
+        grep ".*=.*" ${WORKDIR}/*.cfg | while read -r line; do
+            definition=$(echo $line | tr "=" "\t" | cut -f 1)
+            value=$(echo $line | tr "=" "\t" | cut -f 2)
+
+            redefine ${S} ${S}/configs/${UBOOT_MACHINE} ${definition} "${value}"
+        done
+    fi
+    redefine ${S} ${S}/configs/${UBOOT_MACHINE} "CONFIG_ENV_SIZE" "${BOOTENV_SIZE}"
+    redefine ${S} ${S}/configs/${UBOOT_MACHINE} "CONFIG_ENV_OFFSET" "${RDFM_ENV_OFFSET}"
+    redefine ${S} ${S}/configs/${UBOOT_MACHINE} "CONFIG_ENV_OFFSET_REDUND" "${RDFM_ENV_OFFSET_REDUND}"
+    redefine ${S} ${S}/configs/${UBOOT_MACHINE} "CONFIG_BOOTCOUNT_LIMIT" "y"
+    redefine ${S} ${S}/configs/${UBOOT_MACHINE} "CONFIG_BOOTCOUNT_ENV" "y"
+    redefine ${S} ${S}/configs/${UBOOT_MACHINE} "CONFIG_SYS_REDUNDAND_ENVIRONMENT" "y"
 }
 
 do_create_uboot_env() {
@@ -62,24 +69,24 @@ do_provide_mender_defines() {
 #define HEADER_CONFIG_MENDER_DEFINES_H
 
 /* Shell variables */
-#define MENDER_BOOT_PART_NUMBER ${RDFM_BOOT_NUMBER}
-#define MENDER_BOOT_PART_NUMBER_HEX ${@to_hex(RDFM_BOOT_NUMBER)}
-#define MENDER_ROOTFS_PART_A_NUMBER ${RDFM_ROOTFS_A_NUMBER}
-#define MENDER_ROOTFS_PART_A_NUMBER_HEX ${@to_hex(RDFM_ROOTFS_A_NUMBER)}
-#define MENDER_ROOTFS_PART_B_NUMBER ${RDFM_ROOTFS_B_NUMBER}
-#define MENDER_ROOTFS_PART_B_NUMBER_HEX ${@to_hex(RDFM_ROOTFS_B_NUMBER)}
-#define MENDER_UBOOT_STORAGE_INTERFACE "${@storage_type(RDFM_STORAGE_DEVICE)}"
-#define MENDER_UBOOT_STORAGE_DEVICE ${@storage_device(RDFM_STORAGE_DEVICE)}
+#define MENDER_BOOT_PART_NUMBER ${RDFM_BOOT_PART_NUMBER}
+#define MENDER_BOOT_PART_NUMBER_HEX ${@to_hex(RDFM_BOOT_PART_NUMBER)}
+#define MENDER_ROOTFS_PART_A_NUMBER ${RDFM_ROOTFS_A_PART_NUMBER}
+#define MENDER_ROOTFS_PART_A_NUMBER_HEX ${@to_hex(RDFM_ROOTFS_A_PART_NUMBER)}
+#define MENDER_ROOTFS_PART_B_NUMBER ${RDFM_ROOTFS_B_PART_NUMBER}
+#define MENDER_ROOTFS_PART_B_NUMBER_HEX ${@to_hex(RDFM_ROOTFS_B_PART_NUMBER)}
+#define MENDER_UBOOT_STORAGE_INTERFACE "${@storage_type(d)}"
+#define MENDER_UBOOT_STORAGE_DEVICE ${@storage_device(d)[0]}
 #define RDFM_KERNEL_FILES_PARTITION "${RDFM_KERNEL_FILES_PARTITION}"
 #define RDFM_KERNEL_FILES_PREFIX "${RDFM_KERNEL_FILES_PREFIX}"
 
 /* BB variables. */
 #define MENDER_STORAGE_DEVICE "${RDFM_STORAGE_DEVICE}"
-#define MENDER_STORAGE_DEVICE_BASE "${RDFM_STORAGE_DEVICE}p"
+#define MENDER_STORAGE_DEVICE_BASE "${@storage_device(d)[1]}"
 #define MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_1 ${RDFM_ENV_OFFSET}
 #define MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_2 ${RDFM_ENV_OFFSET_REDUND}
-#define MENDER_ROOTFS_PART_A_NAME "${RDFM_STORAGE_DEVICE}p${RDFM_ROOTFS_A_NUMBER}"
-#define MENDER_ROOTFS_PART_B_NAME "${RDFM_STORAGE_DEVICE}p${RDFM_ROOTFS_B_NUMBER}"
+#define MENDER_ROOTFS_PART_A_NAME "${@storage_device(d)[1]}${RDFM_ROOTFS_A_PART_NUMBER}"
+#define MENDER_ROOTFS_PART_B_NAME "${@storage_device(d)[1]}${RDFM_ROOTFS_B_PART_NUMBER}"
 
 /* For sanity checks. */
 #define MENDER_BOOTENV_SIZE ${BOOTENV_SIZE}
@@ -87,8 +94,8 @@ do_provide_mender_defines() {
 #define MENDER_BOOT_KERNEL_TYPE "${@get_rdfm_kernel_type(d)[1]}"
 #define MENDER_KERNEL_NAME "${@get_rdfm_kernel_type(d)[0]}"
 #define MENDER_DTB_NAME "${@get_rdfm_devicetree(d)}"
-#define MENDER_UBOOT_PRE_SETUP_COMMANDS "${MENDER_UBOOT_PRE_SETUP_COMMANDS}"
-#define MENDER_UBOOT_POST_SETUP_COMMANDS "${MENDER_UBOOT_POST_SETUP_COMMANDS}"
+#define MENDER_UBOOT_PRE_SETUP_COMMANDS "${RDFM_UBOOT_PRE_SETUP_COMMANDS}"
+#define MENDER_UBOOT_POST_SETUP_COMMANDS "${RDFM_UBOOT_POST_SETUP_COMMANDS}"
 #define RDFM_ADDITIONAL_BOOTARGS "${RDFM_ADDITIONAL_BOOTARGS}"
 #endif /* !HEADER_CONFIG_MENDER_DEFINES_H */
 EOF

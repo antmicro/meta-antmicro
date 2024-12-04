@@ -1,7 +1,12 @@
 def get_rdfm_devicetree(d):
     if "RDFM_KERNEL_DEVICETREE" in d.keys():
         return d.getVar("RDFM_KERNEL_DEVICETREE")
-    return d.getVar("KERNEL_DEVICETREE").strip()
+    if "KERNEL_DEVICETREE" not in d.keys():
+        bb.error("Missing devicetree configuration")
+    devicetree = d.getVar("KERNEL_DEVICETREE").strip()
+    if "/" in devicetree:
+      devicetree = devicetree.split("/")[-1]
+    return devicetree
 
 def get_rdfm_kernel_type(d):
     image_type = d.getVar("KERNEL_IMAGETYPE")
@@ -16,20 +21,25 @@ def get_rdfm_kernel_type(d):
 def to_hex(value):
     return hex(int(value))
 
-def storage_type(storage):
-    if "mmc" in storage:
-        return "mmc"
-    return ""
+def storage_type(d):
+    if "RDFM_UBOOT_STORAGE_INTERFACE" in d.keys():
+        return d.getVar("RDFM_UBOOT_STORAGE_INTERFACE")
+    if "RDFM_STORAGE_DEVICE" not in d.keys():
+        bb.error("RDFM_STORAGE_DEVICE is not defined")
+    return "mmc" if "mmc" in d.getVar("RDFM_STORAGE_DEVICE") else ""
 
-def storage_device(storage):
-  if not storage.startswith("/dev/mmcblk"):
-    bb.error(f"Storage {storage} does not start with /dev/mmcblk")
-  import re
+def storage_device(d):
+    if "RDFM_STORAGE_DEVICE" not in d.keys():
+        bb.error("RDFM_STORAGE_DEVICE is not defined")
+    storage = d.getVar("RDFM_STORAGE_DEVICE")
+    if not storage.startswith("/dev/mmcblk"):
+        return "0", storage
+    import re
 
-  result = re.findall("/dev/mmcblk(\\d+)", storage)
-  if len(result) == 0:
-    bb.error(f"Failed extracting storage device number from {storage}")
-  return result[0]
+    result = re.findall("/dev/mmcblk(\\d+)", storage)
+    if len(result) == 0:
+        bb.error(f"Failed extracting storage device number from {storage}")
+    return result[0], f"{storage}p"
 
 add_config_definition() {
     CONFIG=$1
@@ -46,3 +56,23 @@ add_config_definition() {
     fi
 }
 
+remove_definition() {
+  DIRECTORY=$1
+  DEFINITION=$2
+
+  grep -rl -e "#define\s*$DEFINITION" -e "#undef\s*$DEFINITION" $DIRECTORY | while read -r file; do
+    sed -i -n "/#undef\s*$DEFINITION/!p" $file
+    sed -i -n "/#define\s*$DEFINITION/!p" $file
+  done
+}
+
+redefine() {
+    DIRECTORY=$1
+    CONFIG=$2
+    DEFINITION=$3
+    VALUE=$4
+
+    remove_definition $DIRECTORY $DEFINITION
+    add_config_definition $CONFIG $DEFINITION $VALUE
+
+}
