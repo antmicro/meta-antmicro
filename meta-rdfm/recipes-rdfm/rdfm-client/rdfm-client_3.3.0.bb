@@ -14,3 +14,4 @@ B = "${WORKDIR}/build"
 
 DEPENDS += "xz openssl"
 RDEPENDS:${PN} += "liblzma openssl"
+RDEPENDS:${PN} += " ${RDFM_BOOTLOADER} "
