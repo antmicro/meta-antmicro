@@ -9,6 +9,8 @@ inherit allarch
 
 PV = "0.1"
 
+do_compile[vardeps] += "RDFM_ARTIFACT_NAME"
+
 do_compile() {
     if [ -z "${RDFM_ARTIFACT_NAME}" ]; then
         bberror "Need to define RDFM_ARTIFACT_NAME variable."

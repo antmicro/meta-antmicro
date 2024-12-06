@@ -18,6 +18,8 @@ ARTIFACTIMG_NAME_DEFAULT = "${IMAGE_LINK_NAME}"
 
 RDFM_ARTIFACT_NAME_DEPENDS ?= ""
 
+RDFM_ARTIFACT_NAME ??= "${MACHINE}"
+
 RDFM_ARTIFACT_PROVIDES ?= ""
 RDFM_ARTIFACT_PROVIDES_GROUP ?= ""
 
@@ -101,7 +103,7 @@ IMAGE_CMD:rdfm() {
         --artifact-name ${RDFM_ARTIFACT_NAME} \
         $extra_args \
         --file ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_EXT} \
-        ${MENDER_ARTIFACT_EXTRA_ARGS} \
+        ${RDFM_ARTIFACT_EXTRA_ARGS} \
         --output-path ${RDFM_ARTIFACT_PATH}.rdfm
 }
 
