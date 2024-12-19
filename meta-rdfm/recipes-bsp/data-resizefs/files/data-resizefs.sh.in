@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "Resizing data partition"
+
+DATA_PART=@@RDFM_DATA_PART@@
+
+if [ -z "${DATA_PART}" ]; then
+  echo "Couldn't find data partition"
+  exit 1
+fi
+
+DATA_PART_BASE=$(basename $(readlink -f /sys/class/block/$(basename ${DATA_PART})/..))
+DATA_PART_NUMBER=$(cat /sys/class/block/$(basename ${DATA_PART})/partition)
+
+parted -s -a opt /dev/${DATA_PART_BASE} "resizepart ${DATA_PART_NUMBER} 100%"
+resize2fs $DATA_PART
