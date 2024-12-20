@@ -30,11 +30,6 @@ addtask do_provide_mender_defines after do_patch before do_configure
 addtask do_create_uboot_env after do_compile before do_install
 addtask do_uboot_auto_configure after do_provide_mender_defines before do_configure
 
-RDFM_UBOOT_ENV_STORAGE ?= "${RDFM_STORAGE_DEVICE}"
-RDFM_UBOOT_ENV_STORAGE_REDUND ?= "${RDFM_UBOOT_ENV_STORAGE}"
-RDFM_KERNEL_FILES_PARTITION ?= "\${mender_boot_part_hex}"
-RDFM_KERNEL_FILES_PREFIX ?= "/boot/"
-
 
 do_uboot_auto_configure() {
     if [ -f ${WORKDIR}/*.cfg ]; then
