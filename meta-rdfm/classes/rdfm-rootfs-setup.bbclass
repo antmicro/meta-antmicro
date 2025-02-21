@@ -6,3 +6,4 @@ inherit rdfm-rootfs-setup-daemon
 inherit rdfm-rootfs-setup-datadir
 inherit rdfm-rootfs-setup-fstab
 inherit rdfm-rootfs-setup-readonly
+inherit rdfm-rootfs-setup-telemetry-in-daemon
