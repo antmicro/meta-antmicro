@@ -1,0 +1,1 @@
+KERNEL_DEVICETREE = "tegra234-p3767-0004-antmicro-job.dtb"
