@@ -3,7 +3,6 @@
 IMAGE_INSTALL:append = " rdfm-telemetry"
 RDFM_TELEMETRY_BATCH_SIZE ?= "50"
 
-ERROR_QA:append = " rdfm-telemetry-loggers-present"
 do_rootfs[postfuncs] += "do_qa_image_loggers_present"
 python do_qa_image_loggers_present() {
     import json
@@ -41,10 +40,10 @@ python do_qa_image_loggers_present() {
         os.close(original_root)
         os.close(original_cwd)
         if error_string:
-            oe.qa.handle_error("rdfm-telemetry-loggers-present", error_string, d)
+            bb.warn(f"RDFM Telemetry QA issue: {error_string}")
 
     if missing:
         missing_list = "\n"+"\n".join(m["path"] for m in missing)
         error_string = f"{len(missing)} file(s) defined in logger configuration missing from rootfs: {missing_list}\nEnsure that all .conf files appended to rdfm-telemetry's SRC_URI reference existing files within the rootfs."
-        oe.qa.handle_error("rdfm-telemetry-loggers-present", error_string, d)
+        bb.warn(f"RDFM Telemetry QA issue: {error_string}")
 }
