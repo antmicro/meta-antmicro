@@ -17,7 +17,8 @@ stages:
     ENABLE_TRANSFORMERS: "--enable-transformers"
   before_script:
     - apt update
-    - apt -qqy install --no-install-recommends gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 python3-subunit zstd liblz4-tool file locales libacl1 pipx curl openssh-client sudo gfortran &>/dev/null
+    # Install xterm to pull in Xorg libraries required by Xilinx XSCT
+    - apt -qqy install --no-install-recommends gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 python3-subunit zstd liblz4-tool file locales libacl1 pipx curl openssh-client sudo gfortran procps libtinfo5 swig xterm &>/dev/null
     - git config --global url."$CI_URL".insteadOf https://github.com/antmicro/
     - curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && chmod a+rx /usr/bin/repo
     - PIPX_BIN_DIR=/usr/bin/ pipx install git+https://github.com/antmicro/tuttest@63160-snippet-transform
@@ -53,6 +54,34 @@ RDFM Unmatched Demo (HEAD):
 # meta-antmicro = manifest revision
 RDFM Unmatched Demo (Upstream):
   extends: .rdfm-unmatched-demo
+  variables:
+    ENABLE_TRANSFORMERS: ""
+
+.rdfm-zynqmp-demo:
+  extends: .build
+  script:
+    - cd demos/rdfm-zynqmp-demo
+    - tuttest README.md fetch-sources $ENABLE_TRANSFORMERS | bash -
+    - chown -R builder:root .
+    - cd rdfm-zynqmp-demo
+    - tuttest ../README.md setup-yocto,target-renode,build-image | sudo -u builder XZ_MEMLIMIT=25% XZ_DEFAULTS=--memlimit-compress=25% BB_ENV_PASSTHROUGH_ADDITIONS="XZ_MEMLIMIT XZ_DEFAULTS" bash -eo pipefail -
+    # We change directory here to match the directory in which user should be at this point of tutorial
+    - cd build
+    - tuttest ../../README.md copy-artifacts | bash -eo pipefail -
+  artifacts:
+    expire_in: 4 hours
+    paths:
+      - demos/rdfm-zynqmp-demo/build/tmp/deploy
+      - demos/rdfm-zynqmp-demo/rdfm-zynqmp-demo/renode
+
+# meta-antmicro = HEAD (for info purposes only - manifest is to be considered the ground truth for building demos)
+RDFM ZynqMP Demo (HEAD):
+  extends: .rdfm-zynqmp-demo
+  allow_failure: true
+
+# meta-antmicro = manifest revision
+RDFM ZynqMP Demo (Upstream):
+  extends: .rdfm-zynqmp-demo
   variables:
     ENABLE_TRANSFORMERS: ""
 

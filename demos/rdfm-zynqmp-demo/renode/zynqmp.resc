@@ -1,0 +1,39 @@
+:name: Zynqmp
+:description: This script runs Linux on Zynq UltraScale+ MPSoC.
+
+using sysbus
+$name?="ZynqUS+"
+mach create $name
+
+machine LoadPlatformDescription @platforms/boards/zynqmp-zcu102-revB.repl
+machine LoadPlatformDescriptionFromString 'virtio: Storage.VirtIOBlockDevice @ sysbus 0xfe400000 { IRQ->apuGic@32 }'
+virtio LoadImage @sdcard.sdimg
+
+emulation CreateSwitch "switch"
+connector Connect gem0 switch
+emulation CreateTap "tap50" "tap"
+connector Connect host.tap switch
+
+showAnalyzer uart0
+
+emulation SetGlobalSerialExecution true
+emulation SetGlobalAdvanceImmediately true
+
+$atf_elf?=      @arm-trusted-firmware.elf
+$uboot?=        @u-boot.bin
+$uboot_elf?=    @u-boot.elf
+
+macro reset
+"""
+    cluster0 IsHalted true
+    apu0 IsHalted false
+
+    cluster1 IsHalted true
+
+    sysbus LoadELF    $atf_elf cpu=apu0
+
+    sysbus LoadBinary $uboot  0x8000000
+    sysbus LoadSymbolsFrom $uboot_elf
+"""
+
+runMacro $reset

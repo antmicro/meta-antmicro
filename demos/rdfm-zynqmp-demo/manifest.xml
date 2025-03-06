@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <manifest>
+
+  <remote fetch="${REPO_URL}/../" name="antmicro"/>
+  <remote fetch="https://github.com/" name="github"/>
+  <remote fetch="git://git.yoctoproject.org" name="yocto"/>
+  <remote fetch="git://git.openembedded.org" name="oe"/>
+
+  <project name="meta-antmicro.git" remote="antmicro" revision="scarthgap" path="sources/meta-antmicro">
+      <linkfile dest="build/conf/bblayers.conf" src="demos/rdfm-zynqmp-demo/bblayers.conf"/>
+      <linkfile dest="build/conf/local.conf" src="demos/rdfm-zynqmp-demo/local.conf"/>
+      <copyfile dest="renode/prepare-demo.sh" src="demos/rdfm-zynqmp-demo/renode/prepare-demo.sh"/>
+      <copyfile dest="renode/zynqmp.resc" src="demos/rdfm-zynqmp-demo/renode/zynqmp.resc"/>
+  </project>
+  <project name="Xilinx/meta-arm.git" remote="github" revision="rel-v2024.2" path="sources/meta-arm"/>
+  <project name="Xilinx/meta-xilinx.git" remote="github" revision="rel-v2024.2" path="sources/meta-xilinx"/>
+  <project name="Xilinx/meta-xilinx-tools.git" remote="github" revision="rel-v2024.2" path="sources/meta-xilinx-tools"/>
+  <project name="Xilinx/meta-petalinux.git" remote="github" revision="rel-v2024.2" path="sources/meta-petalinux"/>
+  <project name="Xilinx/meta-qt5.git" remote="github" revision="rel-v2024.2" path="sources/meta-qt5"/>
+  <project name="Xilinx/meta-virtualization.git" remote="github" revision="rel-v2024.2" path="sources/meta-virtualization"/>
+  <project name="yoctoproject/poky" remote="github" revision="fa7bc4c1a8e1e59d57e6deeaf74f7784975ab9b4" path="sources/poky"/>
+  <project name="openembedded/meta-openembedded" remote="github" revision="scarthgap" path="sources/meta-openembedded"/>
+
+  </manifest>
