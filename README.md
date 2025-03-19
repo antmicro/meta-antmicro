@@ -1,6 +1,6 @@
 # `meta-antmicro` Yocto layer
 
-Copyright (c) 2021-2024 [Antmicro](https://www.antmicro.com)
+Copyright (c) 2021-2025 [Antmicro](https://www.antmicro.com)
 
 Antmicro's collection of Yocto layers for machine learning and computer vision applications.
 
@@ -29,49 +29,15 @@ sudo docker build -t yoctobuilder .
 
 This will create a Docker image that can be later used to create the BSP image.
 
-## `meta-antmicro` sample use case
+## Demos
 
 The [demos directory](demos) provides the Yocto build configuration files, as well as the [Google repo tool](https://gerrit.googlesource.com/git-repo/) manifests to quickly start testing and development of Yocto-based systems.
 
-For example, to build the system that will run the [darknet-imgui-visualization demo with camera feed](https://github.com/antmicro/darknet-imgui-visualization) for one of the Jetson platforms:
+The following demos are available:
+* [Darknet edge AI demo](demos/darknet-edgeai-demo)
+* [micro-ROS demo](demos/micro-ros-login-demo)
+* [micro-ROS demo (nologin)](demos/micro-ros-nologin-demo)
+* [NVIDIA Jetson Orin Baseboard demo](demos/nvidia-jetson-orin-baseboard-demo)
+* [HiFive Unmatched RDFM demo](demos/rdfm-unmatched-demo)
 
-* Create the Docker container, which will build the system image in the `<build-dir>` directory that needs to be specified by the user:
-  ```
-  docker run --rm -v <build-dir>:/data -u $(id -u):$(id -u) -it yoctobuilder
-  ```
-  **Note:** This command runs a Docker container that will be removed upon closing (`--rm`), mounts the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and builds the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.
-* Configure git settings and fetch the sources using the `repo` tool present in the Docker container (optionally, you can fetch the sources from your system to avoid git configuration):
-  ```
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-  cd /data
-  repo init -u https://github.com/antmicro/meta-antmicro.git -m demos/darknet-edgeai-demo/manifest.xml
-  repo sync -j`nproc`
-  ```
-* Initialize the build environment:
-  ```
-  source sources/poky/oe-init-build-env
-  ```
-* Build the system for one of the Jetson targets, e.g. `jetson-agx-xavier-devkit`:
-  ```
-  PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="jetson-agx-xavier-devkit" bitbake darknet-edgeai-demo
-  ```
-  (other available targets are listed in the [meta-tegra/conf/machine directory](https://github.com/OE4T/meta-tegra/tree/hardknott/conf/machine)).
-* After a successful build, go to the `build/tmp/deploy/images/jetson-agx-xavier-devkit` directory and untar the built tegraflash package:
-  ```
-  cd build/tmp/deploy/images/jetson-agx-xavier-devkit
-  mkdir flash-directory
-  cd flash-directory
-  tar xzvf ../darknet-edgeai-demo-jetson-agx-xavier-devkit.tegraflash.tar.gz
-  ```
-* Put the device in recovery mode.
-* Make sure that the device is available for flashing - run `lsusb | grep -i nvidia` and check if any line appears.
-  There should be something like:
-  ```
-  Bus 001 Device 006: ID 0955:7f21 NVIDIA Corp. APX
-  ```  
-* Flash the device:
-  ```
-  sudo ./doflash.sh
-  ```
-* After the device is successfully flashed, and a camera and screen are connected, you should see the object detection preview.
+Refer to the README files in the demo directories for building and running instructions of each demo.
