@@ -8,15 +8,15 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 The `meta-antmicro` Yocto layer consists of the following sublayers:
 
-* [meta-antmicro-common](meta-antmicro-common/README.md)
-* [meta-jetson-alvium](meta-jetson-alvium/README.md)
-* [meta-jetson](meta-jetson/README.md)
-* [meta-microros](meta-microros/README.md)
-* [meta-ml-tegra](meta-ml-tegra/README.md)
-* [meta-ml](meta-ml/README.md)
-* [meta-rdfm-tegra](meta-rdfm-tegra/README.md)
-* [meta-rdfm](meta-rdfm/README.md)
-* [meta-antmicro-demo-base](meta-antmicro-demo-base/README.md)
+* [meta-antmicro-common](meta-antmicro-common)
+* [meta-jetson-alvium](meta-jetson-alvium)
+* [meta-jetson](meta-jetson)
+* [meta-microros](meta-microros)
+* [meta-ml-tegra](meta-ml-tegra)
+* [meta-ml](meta-ml)
+* [meta-rdfm-tegra](meta-rdfm-tegra)
+* [meta-rdfm](meta-rdfm)
+* [meta-antmicro-demo-base](meta-antmicro-demo-base)
 
 ## Yocto BSP build dependencies
 
