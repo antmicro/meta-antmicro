@@ -1,6 +1,6 @@
 # `HiFive Unmatched RDFM` demo
 
-The `rdfm-unmatched-demo` release is an Over-The-Air update demo that uses [`RDFM`](https://github.com/antmicro/rdfm) for the `HiFive Unmatched` board.
+`rdfm-unmatched-demo` is an Over-The-Air update demo that uses [`RDFM`](https://github.com/antmicro/rdfm) for the `HiFive Unmatched` board.
 
 You can run this demo either on real hardware, or in a simulation using [Renode](https://github.com/renode/renode).
 
@@ -11,7 +11,7 @@ You can fetch all the necessary code with:
 <!-- name="fetch-sources"; transformer="echo "$TUTTEST_INPUT" | sed "/repo init/s/.*/& -b $CI_COMMIT_REF_NAME/" | sed "$ a repo forall meta-antmicro.git -c 'git checkout $CI_COMMIT_REF_NAME'"" -->
 ```sh
 mkdir -p rdfm-unmatched-demo && cd rdfm-unmatched-demo
-repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/rdfm-unmatched-demo/manifest.xml
+repo init -u https://github.com/antmicro/meta-antmicro.git -m demos/rdfm-unmatched-demo/manifest.xml
 repo sync -j`nproc`
 ```
 

@@ -1,6 +1,6 @@
 # `HiFive Unmatched RDFM` Renode demo
 
-You can run the `rdfm-unmatched-demo` system release in simulated hardware using the [Renode](https://renode.io/) framework.
+You can run `rdfm-unmatched-demo` in simulated hardware using the [Renode](https://renode.io/) framework.
 
 ## Installing Renode
 

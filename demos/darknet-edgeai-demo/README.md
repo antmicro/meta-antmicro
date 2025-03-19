@@ -1,6 +1,6 @@
 # `Darknet` edge AI demo
 
-The `darknet-edgeai-demo` release is an object detection demo using `darknet` and `ImGui`.
+`darknet-edgeai-demo` is an object detection demo using `darknet` and `ImGui`.
 YOLOv4 is used as an inference model, and is implemented in the [darknet](https://github.com/AlexeyAB/darknet) framework.
 Inference is run in a separate thread, which allows for smooth display from a video or camera, while objects are being detected.
 
@@ -11,7 +11,7 @@ Details regarding the demo can be found in the project’s [README.md](https://g
 You can fetch all the necessary code with:
 ```
 mkdir darknet-demo && cd darknet-demo
-repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/darknet-edgeai-demo/manifest.xml
+repo init -u https://github.com/antmicro/meta-antmicro.git -m demos/darknet-edgeai-demo/manifest.xml
 repo sync -j`nproc`
 ```
 

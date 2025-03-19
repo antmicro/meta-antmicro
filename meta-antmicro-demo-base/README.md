@@ -6,7 +6,7 @@ Antmicro's collection of Yocto layers for machine learning and computer vision a
 
 ## Description
 
-The `meta-antmicro-demo-base` Yocto layer contains recipes and system settings that are target-independent and used in our demonstration systems introduced in the [system-releases directory](../system-releases).
+The `meta-antmicro-demo-base` Yocto layer contains recipes and system settings that are target-independent and used in our demonstration systems introduced in the [demos directory](../demos).
 
 This layer defines two users (`username:password`) in `conf/layer.conf`:
 * `root:root` - The superuser account used for administrative purposes.

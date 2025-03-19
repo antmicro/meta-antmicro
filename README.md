@@ -31,7 +31,7 @@ This will create a Docker image that can be later used to create the BSP image.
 
 ## `meta-antmicro` sample use case
 
-The [system-releases directory](system-releases) provides the Yocto build configuration files, as well as the [Google repo tool](https://gerrit.googlesource.com/git-repo/) to quickly start testing and development of Yocto-based systems.
+The [demos directory](demos) provides the Yocto build configuration files, as well as the [Google repo tool](https://gerrit.googlesource.com/git-repo/) manifests to quickly start testing and development of Yocto-based systems.
 
 For example, to build the system that will run the [darknet-imgui-visualization demo with camera feed](https://github.com/antmicro/darknet-imgui-visualization) for one of the Jetson platforms:
 
@@ -45,7 +45,7 @@ For example, to build the system that will run the [darknet-imgui-visualization 
   git config --global user.email "you@example.com"
   git config --global user.name "Your Name"
   cd /data
-  repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/darknet-edgeai-demo/manifest.xml
+  repo init -u https://github.com/antmicro/meta-antmicro.git -m demos/darknet-edgeai-demo/manifest.xml
   repo sync -j`nproc`
   ```
 * Initialize the build environment:

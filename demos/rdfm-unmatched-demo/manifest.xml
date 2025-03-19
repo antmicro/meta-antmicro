@@ -7,8 +7,8 @@
   <remote fetch="git://git.openembedded.org" name="oe"/>
 
   <project name="meta-antmicro.git" remote="antmicro" revision="master" path="sources/meta-antmicro">
-      <linkfile dest="build/conf/bblayers.conf" src="system-releases/rdfm-unmatched-demo/bblayers.conf"/>
-      <linkfile dest="build/conf/local.conf" src="system-releases/rdfm-unmatched-demo/local.conf"/>
+      <linkfile dest="build/conf/bblayers.conf" src="demos/rdfm-unmatched-demo/bblayers.conf"/>
+      <linkfile dest="build/conf/local.conf" src="demos/rdfm-unmatched-demo/local.conf"/>
   </project>
   <project name="riscv/meta-riscv.git" remote="github" revision="96b34d09763126b337df363e091d364ebb140bef" path="sources/meta-riscv"/>
   <project name="sifive/meta-sifive.git" remote="github" revision="2022.04" path="sources/meta-sifive"/>

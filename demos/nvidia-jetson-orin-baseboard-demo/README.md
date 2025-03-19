@@ -2,7 +2,7 @@
 
 Copyright (c) 2022-2024 [Antmicro](https://www.antmicro.com)
 
-This `nvidia-jetson-orin-baseboard-demo` release lets you build a Board Support Package demo you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard).
+`nvidia-jetson-orin-baseboard-demo` lets you build a Board Support Package you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard).
 
 ## Quick guide
 
@@ -11,7 +11,7 @@ You can fetch all necessary code with:
 <!-- name="fetch-repo"; transformer="echo "$TUTTEST_INPUT" | sed "/repo init/s/.*/& -b $CI_COMMIT_REF_NAME/" | sed "$ a repo forall meta-antmicro -c 'git checkout $CI_COMMIT_REF_NAME'"" -->
 ```
 mkdir orin-baseboard-demo && cd orin-baseboard-demo
-repo init -u https://github.com/antmicro/meta-antmicro.git -m system-releases/nvidia-jetson-orin-baseboard-demo/manifest.xml
+repo init -u https://github.com/antmicro/meta-antmicro.git -m demos/nvidia-jetson-orin-baseboard-demo/manifest.xml
 repo sync -j`nproc`
 ```
 

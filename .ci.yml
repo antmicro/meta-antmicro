@@ -33,7 +33,7 @@ build-rdfm:
         if [ $CI_COMMIT_REF_NAME == "master" ]; then
           ENABLE_TRANSFORMERS=""
         fi
-    - cd system-releases/rdfm-unmatched-demo
+    - cd demos/rdfm-unmatched-demo
     - tuttest README.md fetch-sources $ENABLE_TRANSFORMERS | bash -
     - chown -R builder:root .
     - cd rdfm-unmatched-demo
@@ -43,11 +43,11 @@ build-rdfm:
   artifacts:
     expire_in: 4 hours
     paths:
-      - system-releases/rdfm-unmatched-demo/renode/rdfm-image-minimal-unmatched.rdfm
-      - system-releases/rdfm-unmatched-demo/renode/rdfm-image-upgraded-unmatched.rdfm
-      - system-releases/rdfm-unmatched-demo/renode/u-boot-spl.bin
-      - system-releases/rdfm-unmatched-demo/renode/u-boot.itb
-      - system-releases/rdfm-unmatched-demo/renode/sdcard.sdimg
+      - demos/rdfm-unmatched-demo/renode/rdfm-image-minimal-unmatched.rdfm
+      - demos/rdfm-unmatched-demo/renode/rdfm-image-upgraded-unmatched.rdfm
+      - demos/rdfm-unmatched-demo/renode/u-boot-spl.bin
+      - demos/rdfm-unmatched-demo/renode/u-boot.itb
+      - demos/rdfm-unmatched-demo/renode/sdcard.sdimg
 
 build-jetson-orin:
   extends: .build
@@ -56,14 +56,14 @@ build-jetson-orin:
         if [ $CI_COMMIT_REF_NAME == "master" ]; then
           ENABLE_TRANSFORMERS=""
         fi
-    - cd system-releases/nvidia-jetson-orin-baseboard-demo
+    - cd demos/nvidia-jetson-orin-baseboard-demo
     - tuttest README.md fetch-repo $ENABLE_TRANSFORMERS | bash -
     - chown -R builder:root .
     - cd orin-baseboard-demo
     - tuttest ../README.md build-bsp | sudo -u builder XZ_MEMLIMIT=25% XZ_DEFAULTS=--memlimit-compress=25% BB_ENV_PASSTHROUGH_ADDITIONS="XZ_MEMLIMIT XZ_DEFAULTS" bash -eo pipefail -
   artifacts:
     paths:
-      - system-releases/nvidia-jetson-orin-baseboard-demo/orin-baseboard-demo/build/tmp/deploy/images/p3509-a02-p3767-0000
+      - demos/nvidia-jetson-orin-baseboard-demo/orin-baseboard-demo/build/tmp/deploy/images/p3509-a02-p3767-0000
 
 build-rdfm-artifact:
   extends: .common
@@ -95,7 +95,7 @@ test-rdfm-unmatched-demo:
   script:
     - export PATH="${PATH}:$(pwd)"
     - source demo/bin/activate
-    - cd system-releases/rdfm-unmatched-demo/renode
+    - cd demos/rdfm-unmatched-demo/renode
     - tuttest ../README.md create-delta,setup-tap,setup-host | bash -eo pipefail -
     - (tuttest ../README.md start-server | bash -eo pipefail -) &
     - (tail -F uart0.log 2>/dev/null) &
@@ -103,4 +103,4 @@ test-rdfm-unmatched-demo:
   artifacts:
     when: always
     paths:
-      - system-releases/rdfm-unmatched-demo/renode/uart0.log
+      - demos/rdfm-unmatched-demo/renode/uart0.log

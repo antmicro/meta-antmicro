@@ -10,7 +10,7 @@ The `meta-microros` Yocto layer contains recipes for adding `micro-ROS` support 
 
 This layer extends the functionality of the [meta-ros2-galactic](https://github.com/ros/meta-ros/tree/master/meta-ros2-galactic) layer.
 
-The [system releases directory](../system-releases) provides micro-ROS system releases implementing the [Renode micro-ROS demo](https://github.com/antmicro/renode-microros-demo).
+The [demos directory](../demos) provides micro-ROS demos implementing the [Renode micro-ROS demo](https://github.com/antmicro/renode-microros-demo).
 
 ## Layer dependencies
 
