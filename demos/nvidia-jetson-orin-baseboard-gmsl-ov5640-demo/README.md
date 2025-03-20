@@ -1,7 +1,8 @@
 # `Jetson Orin Baseboard GMSL OV5640` demo
 
 Copyright (c) 2022-2025 [Antmicro](https://www.antmicro.com)
-`nvidia-jetson-orin-baseboard-gmsl-ov5640-demo` lets you build a Board Support Package you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard). It supports a dual camera over GMSL setup consisting of:
+
+`nvidia-jetson-orin-baseboard-gmsl-ov5640-demo` allows you to build a Board Support Package that you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard). It supports a dual camera over GMSL setup consisting of:
 * Two OV5640 cameras on a [Antmicro OV5640 Dual Camera board](https://github.com/antmicro/ov5640-dual-camera-board),
 * [Dual Camera to GMSL Serializer CSI Adapter](https://github.com/antmicro/dual-gmsl-serializer-adapter),
 * Two [GMSL Serializer boards](https://github.com/antmicro/gmsl-serializer)
@@ -43,7 +44,7 @@ In addition to that, the following hardware will be needed to complete the demo 
 
 ![](img/gmsl_hardware_topology.png)
 
-To prepare the Jetson Orin Baseboard for GMSL usage, connect the hardware like in the diagram above, that is:
+To prepare the Jetson Orin Baseboard for GMSL usage, connect the hardware as shown in the diagram above, that is:
 
 1. Connect GMSL Deserializer to Jetson Orin Baseboard on CSI A
 2. Connect GMSL Serializer #1 to GMSL Deserializer on Channel A
@@ -66,13 +67,13 @@ To flash the image, please follow the [Flash the BSP image](https://antmicro.git
 
 The BSP comes with pre-installed software to test video streaming from the cameras. GMSL sensors require some initial configuration which is detailed in this section.
 
-### Verify that GMSL was initialized
+### Verifying that GMSL was initialized
 
 Run the following command on the device to verify that the GMSL hardware was detected:
 ```
 $ media-ctl -p
 ```
-It's output should reflect the GMSL devices' topology:
+Its output should reflect the GMSL devices' topology:
 ```
 ...
 - entity 1: nvcsi0 (2 pads, 2 links)
@@ -160,7 +161,7 @@ It's output should reflect the GMSL devices' topology:
 
 ### Setting up formats
 
-Deserializer and serializer need to be informed what packet types to forward, otherwise all packets will be filtered:
+The deserializer and serializer need to be informed what packet types to forward, otherwise all packets will be filtered:
 ```sh
 # first sensor
 media-ctl -d /dev/media0 --set-v4l2 '"ser_0_ch_0":1[fmt:YUYV8_1X16/1920x1080]'
@@ -172,7 +173,7 @@ media-ctl -d /dev/media0 --set-v4l2 '"des_ch_1":0[fmt:YUYV8_1X16/1920x1080]'
 
 ### Capturing frames
 
-To test capturing frames from the camera just run:
+To test capturing frames from the camera, run:
 
 ```sh
 camera_number="0"
@@ -186,7 +187,7 @@ number_of_frames="10"
 gst-launch-1.0 v4l2src device=$camera_device num-buffers=$number_of_frames ! filesink location=frames.raw
 ```
 
-For OV5640 number of frames should be at least 3, since this sensor needs a few frames to roll out before the stream stabilizes.
+For OV5640, the number of frames should be at least 3, since this sensor needs a few frames to roll out before the stream stabilizes.
 
 ### Live preview
 

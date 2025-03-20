@@ -2,7 +2,7 @@
 
 Copyright (c) 2022-2025 [Antmicro](https://www.antmicro.com)
 
-`nvidia-jetson-orin-baseboard-ov5640-demo` lets you build a Board Support Package you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard). It supports four OV5640 cameras on two [Antmicro OV5640 Dual Camera boards](https://github.com/antmicro/ov5640-dual-camera-board).
+`nvidia-jetson-orin-baseboard-ov5640-demo` allows you to build a Board Support Package that you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard). It supports four OV5640 cameras on two [Antmicro OV5640 Dual Camera boards](https://github.com/antmicro/ov5640-dual-camera-board).
 
 ## Building the image
 

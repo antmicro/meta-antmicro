@@ -2,7 +2,7 @@
 
 Copyright (c) 2022-2025 [Antmicro](https://www.antmicro.com)
 
-`nvidia-jetson-orin-baseboard-demo` lets you build a Board Support Package you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard).
+`nvidia-jetson-orin-baseboard-demo` allows you to build a Board Support Package that you can run on [the open hardware Jetson Orin Baseboard](https://github.com/antmicro/jetson-orin-baseboard).
 
 ## Building the image
 
