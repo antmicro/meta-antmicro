@@ -38,6 +38,7 @@ The following demos are available:
 * [micro-ROS demo](demos/micro-ros-login-demo)
 * [micro-ROS demo (nologin)](demos/micro-ros-nologin-demo)
 * [NVIDIA Jetson Orin Baseboard demo](demos/nvidia-jetson-orin-baseboard-demo)
+* [NVIDIA Jetson Orin Baseboard OV5640 demo](demos/nvidia-jetson-orin-baseboard-ov5640-demo)
 * [HiFive Unmatched RDFM demo](demos/rdfm-unmatched-demo)
 
 Refer to the README files in the demo directories for building and running instructions of each demo.
