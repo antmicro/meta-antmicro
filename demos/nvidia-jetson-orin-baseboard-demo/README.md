@@ -20,7 +20,7 @@ To start building the BSP, run the following commands:
 <!-- name="build-bsp" -->
 ```sh
 source sources/poky/oe-init-build-env
-PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="p3509-a02-p3767-0000" bitbake nvidia-jetson-orin-baseboard-demo
+MACHINE="p3509-a02-p3767-0000" bitbake nvidia-jetson-orin-baseboard-demo
 ```
 
 When the build process is complete, the resulting image will be stored at  `build/tmp/deploy/images/p3509-a02-p3767-0000/nvidia-jetson-orin-baseboard-demo-p3509-a02-p3767-0000.tegraflash.tar.gz`.

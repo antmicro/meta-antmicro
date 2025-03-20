@@ -11,7 +11,7 @@ Follow the installation instructions in the Renode [documentation](https://renod
 A compatible demo can be built in the same way as described in the `rdfm-unmatched-demo` [README](../README.md). Use the `renodeunmatched` machine type when building the system image, for example:
 
 ```
-PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="renodeunmatched" bitbake rdfm-image-minimal rdfm-image-upgraded
+MACHINE="renodeunmatched" bitbake rdfm-image-minimal rdfm-image-upgraded
 ```
 
 You can find the built system images and pregenerated artifacts in the `build/tmp/deploy/images/renodeunmatched` directory.

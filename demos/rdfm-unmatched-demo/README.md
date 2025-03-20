@@ -39,7 +39,7 @@ target="renodeunmatched"
 Finally, to build the image, run:
 <!-- name="build-image" -->
 ```sh
-PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE=$target bitbake rdfm-image-minimal rdfm-image-upgraded
+MACHINE=$target bitbake rdfm-image-minimal rdfm-image-upgraded
 ```
 
 When the build process is complete, the resulting image will be stored in `build/tmp/deploy/images/$target` directory.

@@ -30,7 +30,7 @@ cp arch/arm/boot/dts/zynq-zed-virtio.dtb ../sources/zedboard.dtb
 To start building the image, run the following commands:
 ```
 source sources/poky/oe-init-build-env
-SERIAL_CONSOLES="" PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="zedboard-zynq7" bitbake ros-image-core
+SERIAL_CONSOLES="" MACHINE="zedboard-zynq7" bitbake ros-image-core
 ```
 
 When the build process is complete, the resulting tarball will be stored in `build/tmp/deploy/images/**/ros-image-core-galactic-zedboard-zynq7-*rootfs.tar.gz`

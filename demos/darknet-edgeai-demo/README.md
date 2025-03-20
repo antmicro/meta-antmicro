@@ -18,7 +18,7 @@ repo sync -j`nproc`
 To start building the BSP, run the following commands:
 ```
 source sources/poky/oe-init-build-env
-PARALLEL_MAKE="-j $(nproc)" BB_NUMBER_THREADS="$(nproc)" MACHINE="jetson-xavier-nx-devkit-emmc" bitbake darknet-edgeai-demo
+MACHINE="jetson-xavier-nx-devkit-emmc" bitbake darknet-edgeai-demo
 ```
 
 When the build process is complete, the resulting image will be stored in `build/tmp/deploy/images/jetson-xavier-nx-devkit-emmc` directory.
