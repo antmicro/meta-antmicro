@@ -29,6 +29,14 @@ sudo docker build -t yoctobuilder .
 
 This will create a Docker image that can be later used to create the BSP image.
 
+To create a Docker container, which can be used to build a system image in the specified `<build-dir>` directory, run:
+
+```
+docker run --rm -v <build-dir>:/data -u $(id -u):$(id -u) -it yoctobuilder
+```
+
+**Note:** This command runs a Docker container that will be removed upon closing (`--rm`), mounts the build directory in the `/data` partition in the container (`-v <build-dir>:/data`) and builds the system as the `oe-builder` user (`$(id -u):$(id -u)`), since Yocto does not allow `root` builds.
+
 ## Demos
 
 The [demos directory](demos) provides the Yocto build configuration files, as well as the [Google repo tool](https://gerrit.googlesource.com/git-repo/) manifests to quickly start testing and development of Yocto-based systems.
