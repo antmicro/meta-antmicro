@@ -1,0 +1,42 @@
+From c54fffc9141351b89331ded7dc8c0aa52df5a422 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
+Date: Tue, 25 Mar 2025 15:31:08 +0100
+Subject: [PATCH] drivers: timer-tegra186: Allow modifying default timeout of
+ the watchdog
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+watchdog_init_timeout allows overriding the watchdog's timeout value via
+device tree timeout-sec property, but due to timeout_parm being always
+positive this can never happen as it takes precedence over any values
+specified in device tree.
+
+Changed the default timeout behavior to match best practices from
+watchdog-kernel-api.txt. This allows overriding the watchdog timeout
+value from DTS, while still specifying a fallback value in case an
+explicit override is not present.
+
+Signed-off-by: Łukasz Kędziora <lkedziora@antmicro.com>
+---
+ drivers/clocksource/timer-tegra186.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clocksource/timer-tegra186.c b/drivers/clocksource/timer-tegra186.c
+index cc9972996c1e..5cf448335e5d 100644
+--- a/drivers/clocksource/timer-tegra186.c
++++ b/drivers/clocksource/timer-tegra186.c
+@@ -319,8 +319,9 @@ static struct tegra186_wdt *tegra186_wdt_create(struct tegra186_timer *tegra,
+ 	wdt->base.min_timeout = 1;
+ 	wdt->base.max_timeout = 255;
+ 	wdt->base.parent = tegra->dev;
++	wdt->base.timeout = 100;
+ 
+-	err = watchdog_init_timeout(&wdt->base, 5, tegra->dev);
++	err = watchdog_init_timeout(&wdt->base, 0, tegra->dev);
+ 	if (err < 0) {
+ 		dev_err(tegra->dev, "failed to initialize timeout: %d\n", err);
+ 		return ERR_PTR(err);
+-- 
+2.49.0
+
