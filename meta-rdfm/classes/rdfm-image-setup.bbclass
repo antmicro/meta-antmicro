@@ -72,5 +72,9 @@ RDFM_UBOOT_POST_SETUP_COMMANDS ??= ""
 inherit rdfm-artifactimg
 inherit rdfm-image-type-datafs
 inherit rdfm-image-type-rootfs
+IMAGE_FSTYPES += " rootfsimg datafsimg rdfm "
+
+# Enable SDimg only in configurations that enable the WIC image class.
+# Example: Tegra RDFM does not use WIC.
 inherit rdfm-image-type-sdimg
-IMAGE_FSTYPES += " rootfsimg datafsimg sdimg rdfm "
+IMAGE_FSTYPES += " ${@bb.utils.contains('IMAGE_CLASSES', 'wic', 'sdimg', '', d)} "
