@@ -26,13 +26,9 @@ stages:
     - ln -sf /usr/share/zoneinfo/UTC0 /usr/share/zoneinfo/UTC
     - useradd -m builder
 
-build-rdfm:
+.rdfm-unmatched-demo:
   extends: .build
   script:
-    - |-
-        if [ $CI_COMMIT_REF_NAME == "master" ]; then
-          ENABLE_TRANSFORMERS=""
-        fi
     - cd demos/rdfm-unmatched-demo
     - tuttest README.md fetch-sources $ENABLE_TRANSFORMERS | bash -
     - chown -R builder:root .
@@ -49,13 +45,20 @@ build-rdfm:
       - demos/rdfm-unmatched-demo/renode/u-boot.itb
       - demos/rdfm-unmatched-demo/renode/sdcard.sdimg
 
-build-jetson-orin:
+# meta-antmicro = HEAD (for info purposes only - manifest is to be considered the ground truth for building demos)
+RDFM Unmatched Demo (HEAD):
+  extends: .rdfm-unmatched-demo
+  allow_failure: true
+
+# meta-antmicro = manifest revision
+RDFM Unmatched Demo (Upstream):
+  extends: .rdfm-unmatched-demo
+  variables:
+    ENABLE_TRANSFORMERS: ""
+
+.jetson-orin-baseboard-demo:
   extends: .build
   script:
-    - |-
-        if [ $CI_COMMIT_REF_NAME == "master" ]; then
-          ENABLE_TRANSFORMERS=""
-        fi
     - cd demos/nvidia-jetson-orin-baseboard-demo
     - tuttest README.md fetch-repo $ENABLE_TRANSFORMERS | bash -
     - chown -R builder:root .
@@ -64,6 +67,17 @@ build-jetson-orin:
   artifacts:
     paths:
       - demos/nvidia-jetson-orin-baseboard-demo/orin-baseboard-demo/build/tmp/deploy/images/p3509-a02-p3767-0000
+
+# meta-antmicro = HEAD (for info purposes only - manifest is to be considered the ground truth for building demos)
+Jetson Orin Baseboard Demo (HEAD):
+  extends: .jetson-orin-baseboard-demo
+  allow_failure: true
+
+# meta-antmicro = manifest revision
+Jetson Orin Baseboard Demo (Upstream):
+  extends: .jetson-orin-baseboard-demo
+  variables:
+    ENABLE_TRANSFORMERS: ""
 
 build-rdfm-artifact:
   extends: .common
@@ -82,7 +96,7 @@ build-rdfm-artifact:
 test-rdfm-unmatched-demo:
   extends: .common
   stage: local-tests
-  dependencies: [ 'build-rdfm', 'build-rdfm-artifact' ]
+  dependencies: [ 'RDFM Unmatched Demo (Upstream)', 'build-rdfm-artifact' ]
   before_script:
     - apt update
     - apt install -qqy iproute2 python3-venv python-is-python3 git wget sudo dirmngr ca-certificates gnupg &>/dev/null
