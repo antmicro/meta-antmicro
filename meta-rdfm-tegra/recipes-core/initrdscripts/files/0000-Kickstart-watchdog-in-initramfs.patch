@@ -1,8 +1,8 @@
---- a/init-boot.sh	2024-02-28 11:58:05.124871914 +0100
-+++ b/init-boot.sh	2024-02-28 11:58:13.534775854 +0100
-@@ -5,6 +5,12 @@
- mount -t sysfs sysfs -o nosuid,nodev,noexec /sys
- mount -t efivarfs efivarfs -o nosuid,nodev,noexec /sys/firmware/efi/efivars
+--- a/init-boot.sh	2025-03-25 12:29:30.049843574 +0100
++++ b/init-boot.sh	2025-03-25 12:29:21.393169964 +0100
+@@ -12,6 +12,12 @@
+ 
+ modprobe -v nvme
  
 +# Start the watchdog immediately
 +# If a bad rootfs update is installed, the initramfs will get
