@@ -1,4 +1,4 @@
-From 1ebdc26ec4501f13bf12c43bd181270e5c63e11b Mon Sep 17 00:00:00 2001
+From f0931960ce75c12d17326ba8345a40068db8376d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
 Date: Thu, 22 Feb 2024 11:52:31 +0100
 Subject: [PATCH] BootChainDxe: Don't fail boot chain updates for status simply
@@ -9,10 +9,10 @@ Subject: [PATCH] BootChainDxe: Don't fail boot chain updates for status simply
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Silicon/NVIDIA/Drivers/BootChainDxe/BootChainDxe.c b/Silicon/NVIDIA/Drivers/BootChainDxe/BootChainDxe.c
-index cfaf6872..ab5b2a5f 100644
+index 6385f9cb..171a3d9e 100644
 --- a/Silicon/NVIDIA/Drivers/BootChainDxe/BootChainDxe.c
 +++ b/Silicon/NVIDIA/Drivers/BootChainDxe/BootChainDxe.c
-@@ -336,7 +336,7 @@ BootChainExecuteUpdate (
+@@ -347,7 +347,7 @@ BootChainExecuteUpdate (
          BCStatus = STATUS_ERROR_BOOT_CHAIN_FAILED;
          goto SetStatusAndBootOs;
        }
@@ -22,5 +22,5 @@ index cfaf6872..ab5b2a5f 100644
        goto FinishUpdateAndBootOs;
      }
 -- 
-2.42.0
+2.46.1
 
