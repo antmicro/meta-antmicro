@@ -68,6 +68,9 @@ RDFM_UBOOT_PRE_SETUP_COMMANDS ??= ""
 # String of U-Boot commands that should run after RDFM U-Boot setup
 RDFM_UBOOT_POST_SETUP_COMMANDS ??= ""
 
+# Bootloader integration for the RDFM client.
+RDFM_BOOTLOADER ??= ""
+
 # Append our custom image types by default
 inherit rdfm-artifactimg
 inherit rdfm-image-type-datafs
