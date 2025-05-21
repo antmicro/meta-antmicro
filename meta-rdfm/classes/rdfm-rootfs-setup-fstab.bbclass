@@ -11,6 +11,8 @@ create_additional_parts_fstab () {
     fi
 
     printf "\n%s    /data    %s    defaults    0 2 \n" ${RDFM_PARTITION_DATAFS} ${RDFM_DATAFSIMG_TYPE} > ${WORKDIR}/.tmpfstab
-    printf "\n%s    %s    %s    defaults    0 2 \n" ${RDFM_PARTITION_BOOTFS} ${RDFM_BOOT_MOUNTPOINT} "auto" >> ${WORKDIR}/.tmpfstab
+    if [ ! -z "${RDFM_PARTITION_BOOTFS}" ]; then
+        printf "\n%s    %s    %s    defaults    0 2 \n" ${RDFM_PARTITION_BOOTFS} ${RDFM_BOOT_MOUNTPOINT} "auto" >> ${WORKDIR}/.tmpfstab
+    fi
     cat ${WORKDIR}/.tmpfstab >> ${IMAGE_ROOTFS}/etc/fstab
 }
