@@ -16,4 +16,5 @@
     <project name="poky.git" remote="yoctoproject" revision="7dad83c7e5e9637c0ff5d5712409611fd4a14946" path="sources/poky"/>
     <project name="meta-openembedded.git" remote="meta-openembedded" revision="4f11a12b2352bbdfafb6b7d956bf424af4992977" path="sources/meta-openembedded"/>
     <project name="meta-tegra.git" remote="meta-tegra" revision="f2ba39101b960dc67d0739a6f31ddbf62fa435c7" path="sources/meta-tegra" />
+    <project name="meta-tegra-community.git" remote="meta-tegra" revision="241d1073ba8e610ef8da3fe8470b0a4d0567521f" path="sources/meta-tegra-community" />
 </manifest>
