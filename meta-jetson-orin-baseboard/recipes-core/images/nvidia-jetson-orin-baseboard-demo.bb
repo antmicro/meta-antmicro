@@ -29,4 +29,9 @@ IMAGE_INSTALL:append = " \
     tps65988-flash \
     gstreamer1.0 \
     stress-ng \
+    dtc \
+    libgpiod-tools \
+    evtest \
+    python3-jetson-stats \
+    gpu-burn \
 "
