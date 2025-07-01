@@ -1,0 +1,30 @@
+From cf32ff3a93f303d1fc5e1e6e50db1fddda3900dd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miko=C5=82aj=20Rosowski?= <mrosowski@antmicro.com>
+Date: Wed, 2 Jul 2025 11:20:29 +0200
+Subject: [PATCH] Prevent crash when nvpmodel power mode not set
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+---
+ jtop/core/nvpmodel.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/jtop/core/nvpmodel.py b/jtop/core/nvpmodel.py
+index cb2e81f..3b518e8 100644
+--- a/jtop/core/nvpmodel.py
++++ b/jtop/core/nvpmodel.py
+@@ -85,7 +85,8 @@ def nvpmodel_query():
+             parsed_line = match.groupdict()
+             # Extract NV Power Mode
+             return {'name': parsed_line['name'], 'id': int(lines[idx + 1])}
+-
++        logger.warning("nvpmodel power mode isn't set")
++        return {'name': "Not set", 'id': -1}
+ 
+ def set_nvpmodel_level(level):
+     """ Set nvpmodel to a new status """
+-- 
+2.50.0
+

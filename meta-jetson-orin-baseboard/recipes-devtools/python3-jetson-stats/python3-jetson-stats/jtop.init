@@ -1,0 +1,65 @@
+#! /bin/sh
+NAME=jtop
+DESC="jtop service"
+
+DAEMON=/usr/bin/jtop
+ARGS="--force"
+PIDFILE="/var/run/$NAME.pid"
+
+export JTOP_SERVICE=True
+
+# source function library
+. /etc/init.d/functions
+
+test -x $DAEMON || exit 0
+
+start() {
+    echo -n "Starting $DESC"
+
+    start-stop-daemon \
+        -S \
+        -q \
+        -b \
+        -m \
+        -p "${PIDFILE}" \
+        -x ${DAEMON} \
+        -- ${ARGS}
+
+    [ $? == 0 ] && echo ": [OK]" || echo ": [FAIL]"
+}
+
+stop() {
+    echo -n "Stopping $DESC"
+
+    start-stop-daemon \
+        -K \
+        -q \
+        -p "${PIDFILE}"
+
+    [ $? == 0 ] && echo ": [OK]" || echo ": [FAIL]"
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+case "$1" in
+start)
+    start
+    ;;
+stop)
+    stop
+    ;;
+restart | force-reload)
+    restart
+    ;;
+*)
+    N=/etc/init.d/$NAME
+    echo "Usage: $N {start|stop|restart}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
