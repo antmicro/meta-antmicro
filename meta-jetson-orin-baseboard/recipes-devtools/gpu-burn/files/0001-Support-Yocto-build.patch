@@ -1,0 +1,94 @@
+From cde02e64f0b8713e645461478217409648fdf5f7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miko=C5=82aj=20Rosowski?= <mrosowski@antmicro.com>
+Date: Tue, 1 Jul 2025 14:45:19 +0200
+Subject: [PATCH 1/2] Support Yocto build
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+---
+ Makefile | 52 ++++++++++++++++++++++------------------------------
+ 1 file changed, 22 insertions(+), 30 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 8880583..887b2b7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,51 +1,43 @@
+-ifneq ("$(wildcard /usr/bin/nvcc)", "")
+-CUDAPATH ?= /usr
+-else ifneq ("$(wildcard /usr/local/cuda/bin/nvcc)", "")
+-CUDAPATH ?= /usr/local/cuda
+-endif
+-
+-IS_JETSON   ?= $(shell if grep -Fwq "Jetson" /proc/device-tree/model 2>/dev/null; then echo true; else echo false; fi)
+-NVCC        :=  ${CUDAPATH}/bin/nvcc
++IS_JETSON   ?= false
++NVCC        ?= nvcc
+ CCPATH      ?=
+ 
+-override CFLAGS   ?=
+-override CFLAGS   += -O3
+-override CFLAGS   += -Wno-unused-result
+-override CFLAGS   += -I${CUDAPATH}/include
+-override CFLAGS   += -std=c++11
+-override CFLAGS   += -DIS_JETSON=${IS_JETSON}
++CFLAGS   ?=
++CFLAGS   += -O3
++CFLAGS   += -Wno-unused-result
++CFLAGS   += -I${CUDAPATH}/include
++CFLAGS   += -std=c++11
++CFLAGS   += -DIS_JETSON=${IS_JETSON}
+ 
+-override LDFLAGS  ?=
+-override LDFLAGS  += -lcuda
+-override LDFLAGS  += -L${CUDAPATH}/lib64
+-override LDFLAGS  += -L${CUDAPATH}/lib64/stubs
+-override LDFLAGS  += -L${CUDAPATH}/lib
+-override LDFLAGS  += -L${CUDAPATH}/lib/stubs
+-override LDFLAGS  += -Wl,-rpath=${CUDAPATH}/lib64
+-override LDFLAGS  += -Wl,-rpath=${CUDAPATH}/lib
+-override LDFLAGS  += -lcublas
+-override LDFLAGS  += -lcudart
++LDFLAGS  ?=
++LDFLAGS  += -lcuda
++LDFLAGS  += -L${CUDAPATH}/lib64
++LDFLAGS  += -L${CUDAPATH}/lib64/stubs
++LDFLAGS  += -L${CUDAPATH}/lib
++LDFLAGS  += -L${CUDAPATH}/lib/stubs
++LDFLAGS  += -lcublas
++LDFLAGS  += -lcudart
+ 
+ COMPUTE      ?= 50
+ CUDA_VERSION ?= 11.8.0
+ IMAGE_DISTRO ?= ubi8
+ 
+-override NVCCFLAGS ?=
+-override NVCCFLAGS += -I${CUDAPATH}/include
+-override NVCCFLAGS += -arch=compute_$(subst .,,${COMPUTE})
++NVCCFLAGS ?=
++NVCCFLAGS += -I${CUDAPATH}/include
++NVCCFLAGS += -arch=compute_$(subst .,,${COMPUTE})
+ 
+ IMAGE_NAME ?= gpu-burn
+ 
+ .PHONY: clean
+ 
+ gpu_burn: gpu_burn-drv.o compare.ptx
+-	g++ -o $@ $< -O3 ${LDFLAGS}
++	${CXX} -o $@ $< -O3 ${LDFLAGS}
+ 
+ %.o: %.cpp
+-	g++ ${CFLAGS} -c $<
++	${CXX} ${CFLAGS} -c $<
+ 
+ %.ptx: %.cu
+-	PATH="${PATH}:${CCPATH}:." ${NVCC} ${NVCCFLAGS} -ptx $< -o $@
++	${NVCC} ${NVCCFLAGS} -ptx $< -o $@
+ 
+ clean:
+ 	$(RM) *.ptx *.o gpu_burn
+-- 
+2.50.0
+

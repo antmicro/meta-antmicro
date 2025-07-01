@@ -1,0 +1,64 @@
+From aa54dbc44f3a2bfb19f507a2b963ec7008b098e2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miko=C5=82aj=20Rosowski?= <mrosowski@antmicro.com>
+Date: Tue, 1 Jul 2025 14:47:39 +0200
+Subject: [PATCH 2/2] Specify alternate kernel path
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+---
+ Makefile         | 10 ++++++----
+ gpu_burn-drv.cpp |  2 ++
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 887b2b7..25f08ee 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,4 +1,9 @@
++COMPARE_KERNEL ?= compare.ptx
++COMPUTE        ?= 50
++CUDA_VERSION   ?= 11.8.0
++IMAGE_DISTRO   ?= ubi8
+ IS_JETSON   ?= false
++
+ NVCC        ?= nvcc
+ CCPATH      ?=
+ 
+@@ -8,6 +13,7 @@ CFLAGS   += -Wno-unused-result
+ CFLAGS   += -I${CUDAPATH}/include
+ CFLAGS   += -std=c++11
+ CFLAGS   += -DIS_JETSON=${IS_JETSON}
++CFLAGS   += -DCOMPARE_KERNEL=\"${COMPARE_KERNEL}\"
+ 
+ LDFLAGS  ?=
+ LDFLAGS  += -lcuda
+@@ -18,10 +24,6 @@ LDFLAGS  += -L${CUDAPATH}/lib/stubs
+ LDFLAGS  += -lcublas
+ LDFLAGS  += -lcudart
+ 
+-COMPUTE      ?= 50
+-CUDA_VERSION ?= 11.8.0
+-IMAGE_DISTRO ?= ubi8
+-
+ NVCCFLAGS ?=
+ NVCCFLAGS += -I${CUDAPATH}/include
+ NVCCFLAGS += -arch=compute_$(subst .,,${COMPUTE})
+diff --git a/gpu_burn-drv.cpp b/gpu_burn-drv.cpp
+index f29410b..ebf5ee7 100644
+--- a/gpu_burn-drv.cpp
++++ b/gpu_burn-drv.cpp
+@@ -30,7 +30,9 @@
+ // Matrices are SIZE*SIZE..  POT should be efficiently implemented in CUBLAS
+ #define SIZE 8192ul
+ #define USEMEM 0.9 // Try to allocate 90% of memory
++#ifndef COMPARE_KERNEL
+ #define COMPARE_KERNEL "compare.ptx"
++#endif
+ 
+ // Used to report op/s, measured through Visual Profiler, CUBLAS from CUDA 7.5
+ // (Seems that they indeed take the naive dim^3 approach)
+-- 
+2.50.0
+
