@@ -16,6 +16,7 @@ test -x $DAEMON || exit 0
 start() {
     echo -n "Starting $DESC"
 
+    sleep 5
     start-stop-daemon \
         -S \
         -q \
