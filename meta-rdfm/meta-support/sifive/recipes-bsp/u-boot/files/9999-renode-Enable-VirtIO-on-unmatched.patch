@@ -1,0 +1,101 @@
+From 901fb36560cd0bebc7008aa137f83b7058295309 Mon Sep 17 00:00:00 2001
+From: Kacper Zienkiewicz <kzienkiewicz@internships.antmicro.com>
+Date: Tue, 15 Jul 2025 14:24:38 +0200
+Subject: [PATCH 1/1] Enable virtio on Hifive Unmatched
+
+Upstream-Status: Inappropriate [Renode purposes]
+---
+ arch/riscv/dts/hifive-unmatched-a00.dts |  9 +++++++++
+ board/sifive/unmatched/Kconfig          |  4 ++++
+ board/sifive/unmatched/spl.c            | 14 +-------------
+ board/sifive/unmatched/unmatched.c      |  3 +++
+ include/configs/sifive-unmatched.h      |  1 +
+ 5 files changed, 18 insertions(+), 13 deletions(-)
+
+diff --git a/arch/riscv/dts/hifive-unmatched-a00.dts b/arch/riscv/dts/hifive-unmatched-a00.dts
+index c4ed9efdff0..406e73d4764 100644
+--- a/arch/riscv/dts/hifive-unmatched-a00.dts
++++ b/arch/riscv/dts/hifive-unmatched-a00.dts
+@@ -26,6 +26,15 @@
+ 		reg = <0x0 0x80000000 0x4 0x00000000>;
+ 	};
+ 
++	soc {
++		virtio@100d0000 {
++			compatible = "virtio,mmio";
++			reg = <0x00 0x100d0000 0x00 0x150>;
++			interrupts = <54>;
++			interrupt-parent = <&plic0>;
++		};
++	};
++
+ 	hfclk: hfclk {
+ 		#clock-cells = <0>;
+ 		compatible = "fixed-clock";
+diff --git a/board/sifive/unmatched/Kconfig b/board/sifive/unmatched/Kconfig
+index bc1f33bde30..4b97e21feab 100644
+--- a/board/sifive/unmatched/Kconfig
++++ b/board/sifive/unmatched/Kconfig
+@@ -49,5 +49,9 @@ config BOARD_SPECIFIC_OPTIONS # dummy
+ 	imply SYSRESET
+ 	imply SYSRESET_GPIO
+ 	imply CMD_I2C
++	imply VIRTIO_MMIO
++	imply VIRTIO_BLK
++	imply SPL_RAM_DEVICE
++	imply SPL_RAM_SUPPORT
+ 
+ endif
+diff --git a/board/sifive/unmatched/spl.c b/board/sifive/unmatched/spl.c
+index 7c0beedc083..21640e88075 100644
+--- a/board/sifive/unmatched/spl.c
++++ b/board/sifive/unmatched/spl.c
+@@ -120,19 +120,7 @@ end:
+ 
+ u32 spl_boot_device(void)
+ {
+-	u32 mode_select = readl((void *)MODE_SELECT_REG);
+-	u32 boot_device = mode_select & MODE_SELECT_MASK;
+-
+-	switch (boot_device) {
+-	case MODE_SELECT_SPI:
+-		return BOOT_DEVICE_SPI;
+-	case MODE_SELECT_SD:
+-		return BOOT_DEVICE_MMC1;
+-	default:
+-		debug("Unsupported boot device 0x%x but trying MMC1\n",
+-		      boot_device);
+-		return BOOT_DEVICE_MMC1;
+-	}
++	return BOOT_DEVICE_RAM;
+ }
+ 
+ #ifdef CONFIG_SPL_LOAD_FIT
+diff --git a/board/sifive/unmatched/unmatched.c b/board/sifive/unmatched/unmatched.c
+index c8696270ba2..08e8cf30c0a 100644
+--- a/board/sifive/unmatched/unmatched.c
++++ b/board/sifive/unmatched/unmatched.c
+@@ -26,5 +26,8 @@ int board_init(void)
+ 	/* enable all cache ways */
+ 	enable_caches();
+ 
++	/* discover virtio devices */
++	virtio_init();
++
+ 	return 0;
+ }
+diff --git a/include/configs/sifive-unmatched.h b/include/configs/sifive-unmatched.h
+index de8bfc1123b..8a3efd8efc8 100644
+--- a/include/configs/sifive-unmatched.h
++++ b/include/configs/sifive-unmatched.h
+@@ -16,6 +16,7 @@
+ /* Environment options */
+ 
+ #define BOOT_TARGET_DEVICES(func) \
++	func(VIRTIO, virtio, 0) \
+ 	func(NVME, nvme, 0) \
+ 	func(NVME, nvme, 1) \
+ 	func(USB, usb, 0) \
+-- 
+2.39.5
+
