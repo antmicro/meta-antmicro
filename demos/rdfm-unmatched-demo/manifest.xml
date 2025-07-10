@@ -6,13 +6,16 @@
   <remote fetch="git://git.yoctoproject.org" name="yocto"/>
   <remote fetch="git://git.openembedded.org" name="oe"/>
 
-  <project name="meta-antmicro.git" remote="antmicro" revision="kirkstone" path="sources/meta-antmicro">
+  <project name="meta-antmicro.git" remote="antmicro" revision="scarthgap" path="sources/meta-antmicro">
       <linkfile dest="build/conf/bblayers.conf" src="demos/rdfm-unmatched-demo/bblayers.conf"/>
       <linkfile dest="build/conf/local.conf" src="demos/rdfm-unmatched-demo/local.conf"/>
   </project>
-  <project name="riscv/meta-riscv.git" remote="github" revision="96b34d09763126b337df363e091d364ebb140bef" path="sources/meta-riscv"/>
-  <project name="sifive/meta-sifive.git" remote="github" revision="2022.04" path="sources/meta-sifive"/>
-  <project name="poky" remote="yocto" revision="5a02b6f6c8c9b16fcc3f15ff0253689a0fc00fa4" path="sources/poky"/>
-  <project name="meta-openembedded" remote="oe" revision="kirkstone" path="sources/meta-openembedded"/>
+  <!-- Current meta-riscv version: scarthgap -->
+  <project name="riscv/meta-riscv.git" remote="github" revision="76727db91108f53afc8a5b72651167c4446b5fcb" path="sources/meta-riscv"/>
+  <!-- Current meta-sifive version: 2024.03-lts -->
+  <project name="sifive/meta-sifive.git" remote="github" revision="4b50b9c21248432427e2491462180e7d5df61ae8" path="sources/meta-sifive"/>
+  <!-- Current Yocto version: scarthgap-5.0.11. Please use exact commits or tags when setting revisions, do NOT use branch names! -->
+  <project name="poky" remote="yocto" revision="ae2d52758fc2fcb0ed996aa234430464ebf4b310" path="sources/poky"/>
+  <project name="meta-openembedded" remote="oe" revision="e8fd97d86af86cdcc5a6eb3f301cbaf6a2084943" path="sources/meta-openembedded"/>
 
   </manifest>
