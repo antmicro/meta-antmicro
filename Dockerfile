@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bookworm
 
 RUN apt-get update \
     && env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -38,15 +38,15 @@ RUN apt-get update \
     mesa-common-dev \
     patch \
     perl \
-    pylint3 \
-    python \
-    python-pip \
+    pylint \
     python3 \
+    python3-pip \
     python3-git \
     python3-jinja2 \
     python3-pexpect \
     python3-pip \
     python3-subunit \
+    python-is-python3 \
     rsync \
     socat \
     ssh \
