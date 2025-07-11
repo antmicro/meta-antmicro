@@ -3,7 +3,7 @@ DESCRIPTION = "RDFM Artifact manipulation tool"
 HOMEPAGE = "https://github.com/antmicro/rdfm"
 
 SRC_URI = "git://github.com/antmicro/rdfm.git;protocol=https;branch=main;destsuffix=git/src"
-SRCREV = "1900f263ca30ad88d0b2d80ee5b5174ab8f659b0"
+SRCREV = "c78681233a565058521821d798bc3bddba5c9c29"
 LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/git/src/LICENSE;md5=2a944942e1496af1886903d274dedb13"
 
@@ -12,7 +12,7 @@ inherit go pkgconfig
 do_compile[network] = "1"
 
 S = "${WORKDIR}/git"
-DEPENDS += "xz openssl"
+DEPENDS += "xz openssl go-xdelta"
 GOPATHDIR = "${B}/src/tools/rdfm-artifact"
 GOPATH = "${B}:${STAGING_LIBDIR}/${TARGET_SYS}/go"
 GO_IMPORT = ""

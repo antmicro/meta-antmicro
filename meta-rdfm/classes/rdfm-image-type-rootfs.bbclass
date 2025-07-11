@@ -36,7 +36,8 @@ IMAGE_CMD:rootfsimg() {
 	rsync -avz ${IMAGE_ROOTFS}/ $cleandir --exclude "data/*"
 
 	bbdebug 1 Executing "mkfs.${RDFM_ROOTFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_ROOTFSIMG_EXT} -d $cleandir"
-	mkfs.${RDFM_ROOTFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_ROOTFSIMG_EXT} -d $cleandir
+	mkfs.${RDFM_ROOTFSIMG_TYPE} ${@d.getVar('EXTRA_IMAGECMD:' + d.getVar('RDFM_ROOTFSIMG_TYPE')) or ''} \
+		${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_ROOTFSIMG_EXT} -d $cleandir
 	# Error codes 0-3 indicate successfull operation of fsck (no errors or errors corrected)
 	fsck.${RDFM_ROOTFSIMG_TYPE} -pvfD ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_ROOTFSIMG_EXT} || [ $? -le 3 ]
 

@@ -102,6 +102,15 @@ rdfm-artifact write delta-rootfs-image \
     --output-path "base-to-target.rdfm"
 ```
 
+If you want to generate a smaller delta image, use `--delta-algorithm xdelta`:
+```
+rdfm-artifact write delta-rootfs-image \
+    --base-artifact "base.rdfm" \
+    --target-artifact "target.rdfm" \
+    --output-path "base-to-target.rdfm" \
+    --delta-algorithm "xdelta"
+```
+
 The freshly generated image with the delta update will be located in the specified output file and can be installed the same way it was described in the [Installing an update section](#installing-an-update).
 
 **Important note:** before a delta update can be installed on the device, a full rootfs update must have been previously installed at least once. A freshly flashed system will not be able to install delta updates. To fix this, simply install a new update artifact at least once, or just install an artifact of the same system version that is currently running.
