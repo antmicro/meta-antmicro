@@ -10,7 +10,7 @@
       <linkfile dest="build/conf/local.conf" src="demos/nvidia-jetson-orin-baseboard-gmsl-ov5640-demo/local.conf"/>
     </project>
     <project name="antmicro-jetson-orin-baseboard-nvidia-kernel-oot" remote="antmicro" revision="antmicro-r36.4" path="sources/nvidia-kernel-oot" sync-s="true" />
-    <project name="antmicro-jetson-orin-baseboard-kernel-5-15" remote="antmicro" revision="antmicro-r36.4" path="sources/linux-jammy-nvidia-tegra"/>
+    <project name="antmicro-jetson-orin-baseboard-kernel" remote="antmicro" revision="antmicro-r36.4" path="sources/linux-jammy-nvidia-tegra"/>
 
     <!-- Current Yocto version: scarthgap-5.0.7. Please use exact commits or tags when setting revisions, do NOT use branch names! -->
     <project name="poky.git" remote="yoctoproject" revision="7dad83c7e5e9637c0ff5d5712409611fd4a14946" path="sources/poky"/>
