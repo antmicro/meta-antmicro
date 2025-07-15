@@ -17,6 +17,11 @@ SRC_URI:append:renodeunmatched = " \
     file://renodeunmatched.cfg \
 "
 
+SRC_URI:append:renodezynqmp = " \
+    file://9999-renode-Enable-VirtIO-on-zynqmp.patch \
+    file://renodezynqmp.cfg \
+"
+
 SRC_URI:append = " \
     file://0001-Add-missing-header-which-fails-on-recent-GCC.patch \
     file://0002-Generic-boot-code-for-Mender.patch \

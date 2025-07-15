@@ -1,0 +1,14 @@
+diff --git a/common/board_r.c b/common/board_r.c
+index a7967849dc0..248892090e5 100644
+--- a/common/board_r.c
++++ b/common/board_r.c
+@@ -425,6 +425,9 @@ static int should_load_env(void)
+ 
+ static int initr_env(void)
+ {
++	/* discover virtio devices */
++	virtio_init();
++
+ 	/* initialize environment */
+ 	if (should_load_env())
+ 		env_relocate();

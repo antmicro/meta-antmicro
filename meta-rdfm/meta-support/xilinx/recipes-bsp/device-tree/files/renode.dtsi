@@ -1,0 +1,14 @@
+/ {
+    axi {
+        virtio@fe400000 {
+            compatible = "virtio,mmio";
+            reg = <0x00 0xfe400000 0x00 0x150>;
+            interrupt-parent = <&gic>;
+            interrupts = <0x00 0x20 0x04>;
+        };
+    };
+};
+
+&gem0 {
+    status = "okay";
+};
