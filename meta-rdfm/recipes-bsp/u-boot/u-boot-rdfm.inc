@@ -37,8 +37,11 @@ addtask do_uboot_auto_configure after do_provide_mender_defines before do_config
 
 
 do_uboot_auto_configure() {
-    if [ -f ${WORKDIR}/*.cfg ]; then
-        grep ".*=.*" ${WORKDIR}/*.cfg | while read -r line; do
+    config_files=$(find ${WORKDIR} -maxdepth 1 -name "*.cfg")
+    ${S}/scripts/kconfig/merge_config.sh -O ${WORKDIR} -m ${config_files}
+
+    if [ -f ${WORKDIR}/.config ]; then
+        grep ".*=.*" ${WORKDIR}/.config | while read -r line; do
             definition=$(echo $line | tr "=" "\t" | cut -f 1)
             value=$(echo $line | tr "=" "\t" | cut -f 2)
 
