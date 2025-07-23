@@ -22,7 +22,7 @@ This can be done with the following snippet:
 <!-- name="fetch-sources"; transformer="echo "$TUTTEST_INPUT" | sed "/repo init/s/.*/& -b $CI_COMMIT_REF_NAME/" | sed "$ a repo forall meta-antmicro.git -c 'git checkout $CI_COMMIT_REF_NAME'"" -->
 ```sh
 mkdir -p rdfm-zynqmp-demo && cd rdfm-zynqmp-demo
-repo init -u https://github.com/antmicro/meta-antmicro.git -m demos/rdfm-zynqmp-demo/manifest.xml
+repo init -u https://github.com/antmicro/meta-antmicro.git -b scarthgap -m demos/rdfm-zynqmp-demo/manifest.xml
 repo sync -j`nproc`
 ```
 
