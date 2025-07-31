@@ -105,6 +105,8 @@ IMAGE_CMD:rdfm() {
         --file ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_EXT} \
         ${RDFM_ARTIFACT_EXTRA_ARGS} \
         --output-path ${RDFM_ARTIFACT_PATH}.rdfm
+
+    ln -sfn "$(basename ${RDFM_ARTIFACT_PATH}).rdfm" "$(dirname ${RDFM_ARTIFACT_PATH})/${IMAGE_LINK_NAME}.rdfm"
 }
 
 IMAGE_CMD:rdfm[vardepsexclude] += "IMAGE_ID"
