@@ -130,9 +130,10 @@ python do_prepare_mender_conf() {
     if key_in_src_uri or key_in_var:
         conf_maybe_add("ArtifactVerifyKey", "%s/rdfm/artifact-verify-key.pem" % d.getVar("sysconfdir"), getvar=False, integer=False)
     conf_maybe_add("InventoryPollIntervalSeconds", "MENDER_INVENTORY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
-    if "rdfm-telemetry" in d.getVar("IMAGE_INSTALL"):
+    if bb.utils.contains("IMAGE_INSTALL", "rdfm-telemetry-config", True, False, d):
         conf_maybe_add("TelemetryEnable", True, getvar=False, integer=False)
         conf_maybe_add("TelemetryBatchSize", "RDFM_TELEMETRY_BATCH_SIZE", getvar=True, integer=True)
+        conf_maybe_add("TelemetryLogLevel", "RDFM_TELEMETRY_LOG_LEVEL", getvar=True, integer=False)
     # Mandatory variables - will always exist
     conf_maybe_add("RetryPollIntervalSeconds", "MENDER_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     conf_maybe_add("RootfsPartA", "RDFM_PARTITION_ROOTFS_A", getvar=True, integer=False)
