@@ -1,8 +1,13 @@
 # Enable telemetry in the RDFM daemon
 
-IMAGE_INSTALL:append = " rdfm-telemetry"
-RDFM_TELEMETRY_BATCH_SIZE ?= "50"
+IMAGE_INSTALL:append = "${@bb.utils.contains('DISTRO_FEATURES', 'rdfm-telemetry', ' rdfm-telemetry-config', '', d)}"
+IMAGE_INSTALL:append = "${@bb.utils.contains('DISTRO_FEATURES', 'rdfm-telemetry', ' rdfm-telemetry-default', '', d)}"
 
+RDFM_TELEMETRY_BATCH_SIZE ?= "512"
+RDFM_TELEMETRY_LOG_LEVEL ?= "WARN"
+RDFM_LOGGERS_BINDIR ?= "/opt/rdfm"
+
+WARN_QA:append = " rdfm-telemetry-loggers-present"
 do_rootfs[postfuncs] += "do_qa_image_loggers_present"
 python do_qa_image_loggers_present() {
     import json
