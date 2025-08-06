@@ -113,8 +113,18 @@ build-rdfm-artifact:
   stage: build
   before_script:
     - apt update
-    - apt -qqy install --no-install-recommends golang gcc make ca-certificates pkg-config git libc-dev liblzma-dev libssl-dev
+    - apt -qqy install --no-install-recommends golang gcc make ca-certificates pkg-config git libc-dev liblzma-dev libssl-dev wget cmake g++
+    # Install go-xdelta (required by rdfm-artifact)
+    - git clone https://github.com/antmicro/go-xdelta
+    - cd go-xdelta/
+    - cmake -B build/ -DENCODER=ON -DCGO_INTEGRATION=ON
+    - cmake --build build/
+    - cmake --install build/
+    - cd ../
   script:
+    # Currently CI ships Go 1.19, while the rdfm-artifact needs 1.20+
+    - wget --quiet -O - "https://go.dev/dl/go1.22.3.linux-amd64.tar.gz" | tar xz
+    - export PATH=`pwd`/go/bin:$PATH
     - git clone https://github.com/antmicro/rdfm.git
     - make -C rdfm/tools/rdfm-artifact install GOBIN=$(pwd)
   artifacts:
