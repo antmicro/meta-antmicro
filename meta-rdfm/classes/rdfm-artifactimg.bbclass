@@ -28,6 +28,8 @@ RDFM_ARTIFACT_DEPENDS_GROUPS ?= ""
 
 RDFM_ARTIFACT_PATH = "${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}"
 
+RDFM_ARTIFACT_TYPE ?= "rootfs-image"
+
 apply_arguments () {
     #
     # $1 -- the command line flag to apply to each element
@@ -101,7 +103,7 @@ IMAGE_CMD:rdfm() {
     fi
 
 
-    rdfm-artifact write rootfs-image \
+    rdfm-artifact write ${RDFM_ARTIFACT_TYPE} \
         --artifact-name ${RDFM_ARTIFACT_NAME} \
         $extra_args \
         --file ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${ARTIFACTIMG_EXT} \
@@ -112,5 +114,8 @@ IMAGE_CMD:rdfm() {
 }
 
 IMAGE_CMD:rdfm[vardepsexclude] += "IMAGE_ID"
-# We need to have the filesystem image generated already.
-IMAGE_TYPEDEP:rdfm:append = " ${ARTIFACTIMG_FSTYPE}"
+# If we're building a rootfs image, we need to have the filesystem image generated already.
+python () {
+    if d.getVar('RDFM_ARTIFACT_TYPE') == 'rootfs-image':
+        d.appendVar('IMAGE_TYPEDEP:rdfm', ' ' + d.getVar('ARTIFACTIMG_FSTYPE'))
+}
