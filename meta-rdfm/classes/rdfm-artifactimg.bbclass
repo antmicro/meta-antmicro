@@ -44,9 +44,7 @@ apply_arguments () {
     cmd=$res
 }
 
-IMAGE_CMD:rdfm() {
-    set -x
-
+rdfm_artifactimg_do_package () {
     if [ -z "${RDFM_ARTIFACT_NAME}" ]; then
         bbfatal "Need to define RDFM_ARTIFACT_NAME variable."
     fi
@@ -111,6 +109,11 @@ IMAGE_CMD:rdfm() {
         --output-path ${RDFM_ARTIFACT_PATH}.rdfm
 
     ln -sfn "$(basename ${RDFM_ARTIFACT_PATH}).rdfm" "$(dirname ${RDFM_ARTIFACT_PATH})/${IMAGE_LINK_NAME}.rdfm"
+}
+
+IMAGE_CMD:rdfm() {
+    set -x
+    rdfm_artifactimg_do_package
 }
 
 IMAGE_CMD:rdfm[vardepsexclude] += "IMAGE_ID"
