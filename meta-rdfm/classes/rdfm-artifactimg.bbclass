@@ -49,13 +49,15 @@ IMAGE_CMD:rdfm() {
         bbfatal "Need to define RDFM_ARTIFACT_NAME variable."
     fi
 
-    for fstype in ${ARTIFACTIMG_FSTYPE}; do
-        if [ -f ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${fstype} ]; then
-            rootfs_size=$(stat -Lc %s ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${fstype})
+    if [ "${RDFM_ARTIFACT_TYPE}" = "rootfs-image" ]; then
+        for fstype in ${ARTIFACTIMG_FSTYPE}; do
+            if [ -f ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${fstype} ]; then
+                rootfs_size=$(stat -Lc %s ${IMGDEPLOYDIR}/${ARTIFACTIMG_NAME}.${fstype})
+            fi
+        done
+        if [ $rootfs_size -gt $RDFM_PARTITION_SIZE_ROOTFS ]; then
+            bbfatal "The actual rootfs size is ${rootfs_size}B, but the partition size is smaller (${RDFM_PARTITION_SIZE_ROOTFS}KiB). Try increasing the size of the rootfs partition by changing the RDFM_PARTITION_SIZE_ROOTFS variable."
         fi
-    done
-    if [ $rootfs_size -gt $RDFM_PARTITION_SIZE_ROOTFS ]; then
-        bbfatal "The actual rootfs size is ${rootfs_size}B, but the partition size is smaller (${RDFM_PARTITION_SIZE_ROOTFS}KiB). Try increasing the size of the rootfs partition by changing the RDFM_PARTITION_SIZE_ROOTFS variable."
     fi
 
     if [ -z "${RDFM_DEVICE_TYPES_COMPATIBLE}" ]; then
