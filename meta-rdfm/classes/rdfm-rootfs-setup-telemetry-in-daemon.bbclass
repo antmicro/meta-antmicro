@@ -7,8 +7,8 @@ RDFM_TELEMETRY_BATCH_SIZE ?= "512"
 RDFM_TELEMETRY_LOG_LEVEL ?= "WARN"
 RDFM_LOGGERS_BINDIR ?= "/opt/rdfm"
 
-WARN_QA:append = " rdfm-telemetry-loggers-present"
-do_rootfs[postfuncs] += "do_qa_image_loggers_present"
+WARN_QA:append = "${@bb.utils.contains('DISTRO_FEATURES', 'rdfm-telemetry', ' rdfm-telemetry-loggers-present', '', d)}"
+do_rootfs[postfuncs] += "${@bb.utils.contains('DISTRO_FEATURES', 'rdfm-telemetry', 'do_qa_image_loggers_present', '', d)}"
 python do_qa_image_loggers_present() {
     import json
     import os
