@@ -136,6 +136,7 @@ python do_prepare_mender_conf() {
         conf_maybe_add("TelemetryEnable", True, getvar=False, integer=False)
         conf_maybe_add("TelemetryBatchSize", "RDFM_TELEMETRY_BATCH_SIZE", getvar=True, integer=True)
         conf_maybe_add("TelemetryLogLevel", "RDFM_TELEMETRY_LOG_LEVEL", getvar=True, integer=False)
+        conf_maybe_add("TelemetryBootstrapServers", "RDFM_TELEMETRY_BOOTSTRAP_SERVERS", getvar=True, integer=False)
     # Mandatory variables - will always exist
     conf_maybe_add("RetryPollIntervalSeconds", "MENDER_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     conf_maybe_add("RootfsPartA", "RDFM_PARTITION_ROOTFS_A", getvar=True, integer=False)
@@ -175,6 +176,7 @@ do_prepare_mender_conf[vardeps] = " \
     RDFM_BOOT_UTILS_SETENV_OVERRIDE \
     RDFM_BOOT_UTILS_GETENV_OVERRIDE \
     RDFM_SERVER_CERTIFICATE_BSP_PATH \
+    RDFM_TELEMETRY_BOOTSTRAP_SERVERS \
 "
 
 do_install() {
