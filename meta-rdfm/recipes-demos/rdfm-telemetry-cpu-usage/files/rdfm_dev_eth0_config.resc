@@ -1,0 +1,7 @@
+uart0 WriteLine "ip link set dev eth0 down"
+sleep 0.5
+uart0 WriteLine "ip addr add @DEVICE_HOST@/24 dev eth0"
+sleep 0.5
+uart0 WriteLine "ip link set dev eth0 up"
+sleep 0.5
+uart0 WriteLine "date -s '2025-09-10 13:37:00'"
