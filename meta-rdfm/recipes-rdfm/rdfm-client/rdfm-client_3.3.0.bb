@@ -12,7 +12,7 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/git/LICENSE;md5=2a944942e1496af1886903d274
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 
-DEPENDS += "xz openssl go-xdelta"
+DEPENDS += "xz openssl go-xdelta protobuf-native go-protoc-native"
 RDEPENDS:${PN} += "liblzma openssl"
 RDEPENDS:${PN} += "data-resizefs"
 RDEPENDS:${PN} += " ${RDFM_BOOTLOADER} "
