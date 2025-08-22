@@ -18,6 +18,8 @@ RDFM_BOOT_UTILS_GETENV_OVERRIDE ?= ""
 # Override the default helper used for setting the bootloader environment
 RDFM_BOOT_UTILS_SETENV_OVERRIDE ?= ""
 
+RDFM_SERVER_CERTIFICATE_BSP_PATH ?= ""
+
 inherit go pkgconfig systemd
 
 FILES:${PN} += "\
@@ -143,6 +145,7 @@ python do_prepare_mender_conf() {
     if d.getVar("RDFM_BOOT_UTILS_GETENV_OVERRIDE") != "":
         conf_maybe_add("BootUtilitiesGetNextActivePart", "RDFM_BOOT_UTILS_GETENV_OVERRIDE", getvar=True, integer=False)
     conf_maybe_add("ServerURL", "MENDER_SERVER_URL", getvar=True, integer=False)
+    conf_maybe_add("ServerCertificate", "RDFM_SERVER_CERTIFICATE_BSP_PATH", getvar=True, integer=False)
     conf_maybe_add("UpdatePollIntervalSeconds", "MENDER_UPDATE_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
 
     # Tenant-token is optional, but falls back to a default-value set in config.go
@@ -171,6 +174,7 @@ do_prepare_mender_conf[vardeps] = " \
     MENDER_PERSISTENT_CONFIGURATION_VARS \
     RDFM_BOOT_UTILS_SETENV_OVERRIDE \
     RDFM_BOOT_UTILS_GETENV_OVERRIDE \
+    RDFM_SERVER_CERTIFICATE_BSP_PATH \
 "
 
 do_install() {
