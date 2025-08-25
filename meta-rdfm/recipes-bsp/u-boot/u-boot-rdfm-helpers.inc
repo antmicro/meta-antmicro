@@ -42,23 +42,23 @@ def storage_device(d):
     return result[0], f"{storage}p"
 
 add_config_definition() {
-    CONFIG=$1
-    DEFINITION=$2
-    VALUE=$3
+    CONFIG="$1"
+    DEFINITION="$2"
+    VALUE="$3"
     replace=0
 
-    grep -q $DEFINITION $CONFIG && replace=1
+    grep -q "$DEFINITION" "$CONFIG" && replace=1
 
     if [[ $replace ]]; then
-        sed -i "s@${DEFINITION}=.*@${DEFINITION}=${VALUE}@" ${CONFIG}
+        sed -i "s@${DEFINITION}=.*@${DEFINITION}=${VALUE}@" "${CONFIG}"
     else
-        echo "${DEFINITION}=${VALUE}" >> ${CONFIG}
+        echo "${DEFINITION}=${VALUE}" >> "${CONFIG}"
     fi
 }
 
 remove_definition() {
-  DIRECTORY=$1
-  DEFINITION=$2
+  DIRECTORY="$1"
+  DEFINITION="$2"
 
   grep -rl -e "#define\s*$DEFINITION" -e "#undef\s*$DEFINITION" $DIRECTORY | while read -r file; do
     sed -i -n "/#undef\s*$DEFINITION/!p" $file
@@ -72,7 +72,7 @@ redefine() {
     DEFINITION=$3
     VALUE=$4
 
-    remove_definition $DIRECTORY $DEFINITION
-    add_config_definition $CONFIG $DEFINITION $VALUE
+    remove_definition "$DIRECTORY" "$DEFINITION"
+    add_config_definition "$CONFIG" "$DEFINITION" "$VALUE"
 
 }
