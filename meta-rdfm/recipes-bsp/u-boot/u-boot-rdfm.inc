@@ -42,8 +42,8 @@ do_uboot_auto_configure() {
 
     if [ -f ${WORKDIR}/.config ]; then
         grep ".*=.*" ${WORKDIR}/.config | while read -r line; do
-            definition=$(echo $line | tr "=" "\t" | cut -f 1)
-            value=$(echo $line | tr "=" "\t" | cut -f 2)
+            definition=$(echo "$line" | cut -d '=' -f 1)
+            value="$(echo "$line" | cut -d '=' -f 2-)"
 
             redefine ${S} ${S}/configs/${UBOOT_MACHINE} ${definition} "${value}"
         done
