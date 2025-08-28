@@ -10,7 +10,7 @@ require nvidia-kernel-oot_git.inc
 FILESEXTRAPATHS:prepend := "${TOPDIR}/../sources:"
 SRC_URI = "file://nvidia-kernel-oot/"
 S = "${WORKDIR}/nvidia-kernel-oot"
-PV = "36.4.0-antmicro-job+git"
+PV = "36.4.4-antmicro-job+git"
 
 TEGRA_OOT_CAMERA_DRIVERS:append = " ${KERNEL_MODULE_PACKAGE_PREFIX}kernel-module-rtl8852ce "
 TEGRA_OOT_CAMERA_DRIVERS:append = " ${KERNEL_MODULE_PACKAGE_PREFIX}kernel-module-nv-ov5640 "
