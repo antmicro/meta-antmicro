@@ -10,7 +10,7 @@ machine LoadPlatformDescriptionFromString 'virtio: Storage.VirtIOBlockDevice @ s
 virtio LoadImage @sdcard.sdimg
 
 emulation CreateSwitch "switch"
-connector Connect gem0 switch
+connector Connect gem3 switch
 emulation CreateTap "tap50" "tap"
 connector Connect host.tap switch
 
