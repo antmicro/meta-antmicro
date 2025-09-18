@@ -33,6 +33,8 @@ macro reset
 
     cluster1 ForEach IsHalted true
 
+    cluster0 ForEach RNDRSupported true
+
     sysbus LoadELF    $atf_elf cpu=apu0
 
     sysbus LoadBinary $uboot  0x8000000
