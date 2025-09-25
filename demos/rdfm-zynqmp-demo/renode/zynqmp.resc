@@ -28,10 +28,10 @@ $uboot_elf?=    @u-boot.elf
 
 macro reset
 """
-    cluster0 IsHalted true
+    cluster0 ForEach IsHalted true
     apu0 IsHalted false
 
-    cluster1 IsHalted true
+    cluster1 ForEach IsHalted true
 
     sysbus LoadELF    $atf_elf cpu=apu0
 
