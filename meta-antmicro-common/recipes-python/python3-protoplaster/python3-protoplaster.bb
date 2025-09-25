@@ -21,4 +21,4 @@ RDEPENDS:${PN} = " \
     python3-jinja2 \
 "
 
-inherit setuptools3
+inherit python_poetry_core
