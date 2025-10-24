@@ -1,0 +1,14 @@
+[Unit]
+Description=Resize data partition at boot.
+After=data.mount
+Before=local-fs.target
+DefaultDependencies=no
+
+[Service]
+Restart=no
+Type=oneshot
+RemainAfterExit=Yes
+ExecStart=/sbin/data-resizefs
+
+[Install]
+WantedBy=local-fs.target

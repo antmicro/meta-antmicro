@@ -13,4 +13,9 @@ DATA_PART_BASE=$(basename $(readlink -f /sys/class/block/$(basename ${DATA_PART}
 DATA_PART_NUMBER=$(cat /sys/class/block/$(basename ${DATA_PART})/partition)
 
 parted -s -a opt /dev/${DATA_PART_BASE} "resizepart ${DATA_PART_NUMBER} 100%"
-resize2fs $DATA_PART
+
+if [ $(blkid @@RDFM_DATA_PART@@ -s TYPE -o value) != "btrfs" ]; then
+  resize2fs $DATA_PART
+else
+  btrfs filesystem resize max /data
+fi

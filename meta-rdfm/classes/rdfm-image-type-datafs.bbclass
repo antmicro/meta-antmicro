@@ -25,8 +25,14 @@ IMAGE_CMD:datafsimg() {
 	bbdebug 1 "Actual Datafs size:  `du -s ${IMAGE_ROOTFS}/data`"
 	bbdebug 1 "Actual Datafs Partition size: `stat -c '%s' ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT}`"
 
-	bbdebug 1 Executing "mkfs.${RDFM_DATAFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} -d ${IMAGE_ROOTFS}/data"
-	mkfs.${RDFM_DATAFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} -d ${IMAGE_ROOTFS}/data
+	# root dir argument for btrfs is under -r flag while ext filesystem uses -d flag for this purpose
+	if [ ${RDFM_DATAFSIMG_TYPE} = "btrfs" ]; then
+		bbdebug 1 Executing "mkfs.${RDFM_DATAFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} -r ${IMAGE_ROOTFS}/data"
+		mkfs.${RDFM_DATAFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} -r ${IMAGE_ROOTFS}/data
+	else
+		bbdebug 1 Executing "mkfs.${RDFM_DATAFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} -d ${IMAGE_ROOTFS}/data"
+		mkfs.${RDFM_DATAFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} -d ${IMAGE_ROOTFS}/data
+	fi
 	# Error codes 0-3 indicate successfull operation of fsck (no errors or errors corrected)
 	fsck.${RDFM_DATAFSIMG_TYPE} -pvfD ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} || [ $? -le 3 ]
 

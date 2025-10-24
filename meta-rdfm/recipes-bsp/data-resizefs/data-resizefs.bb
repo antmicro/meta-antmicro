@@ -11,8 +11,11 @@ FILES:${PN} += " \
     ${systemd_unitdir}/system/data-resizefs.service \
 "
 
+# btrfs requires the filesystem to be mounted in order to resize it, in comparison to ext that we resize before mounting it
+RDFM_DATA_RESIZEFS_SERVICE = "${@oe.utils.conditional('RDFM_DATAFSIMG_TYPE', 'btrfs', 'data-resizefs-btrfs.service', 'data-resizefs.service', d)}"
+
 SRC_URI = " \
-    file://data-resizefs.service \
+    file://${RDFM_DATA_RESIZEFS_SERVICE} \
     file://data-resizefs.sh.in \
 "
 
@@ -31,5 +34,5 @@ do_install() {
     install -d ${D}/${base_sbindir}
     install -m 0744 ${WORKDIR}/data-resizefs.sh ${D}/${base_sbindir}/data-resizefs
     install -d ${D}/${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/data-resizefs.service ${D}/${systemd_unitdir}/system
+    install -m 0644 ${WORKDIR}/${RDFM_DATA_RESIZEFS_SERVICE} ${D}/${systemd_unitdir}/system/data-resizefs.service
 }
