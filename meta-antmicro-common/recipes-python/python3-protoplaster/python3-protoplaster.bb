@@ -20,6 +20,7 @@ RDEPENDS:${PN} = " \
     python3-colorama \
     python3-jinja2 \
     python3-pyudev \
+    python3-flask \
 "
 
 inherit python_poetry_core
