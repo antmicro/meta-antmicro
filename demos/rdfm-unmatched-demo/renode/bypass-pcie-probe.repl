@@ -1,0 +1,7 @@
+flipflop: Python.PythonPeripheral @ {
+    sysbus 0x100d0898;
+    sysbus 0x100d08d8
+}
+    size: 0x8
+    initable: true
+    filename: "scripts/pydev/flipflop.py"

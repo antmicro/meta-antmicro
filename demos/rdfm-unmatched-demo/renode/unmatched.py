@@ -19,6 +19,7 @@ spl = str(this_dir / "u-boot-spl.bin")
 itb = str(this_dir / "u-boot.itb")
 sd = str(this_dir / "sdcard.sdimg")
 repl = str(this_dir / "sifive-fu740.repl")
+pcie = str(this_dir / "bypass-pcie-probe.repl")
 
 snippets = get_snippets(
     readme,
@@ -44,6 +45,7 @@ def errExit(text: str):
 def setup_machine() -> Machine:
     hifive = e.add_mach("unmatched")
     hifive.load_repl(repl)
+    hifive.load_repl(pcie)
     hifive.LoadPlatformDescriptionFromString(
         "virtio: Storage.VirtIOBlockDevice @ sysbus 0x100d0000 { IRQ -> plic@54 }"
     )
