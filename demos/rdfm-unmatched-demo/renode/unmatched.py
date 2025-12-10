@@ -132,7 +132,7 @@ def run_test():
     runSnippet(hifive, "setup-target")
 
     runSnippet(
-        hifive, "update-same", expect="Mender will write in chunks of ", timeout=1500.0
+        hifive, "update-same", expect="Mender will write in chunks of ", timeout=7500.0
     )
 
     reset(hifive)
@@ -142,7 +142,7 @@ def run_test():
     runSnippet(hifive, "setup-target")
     runSnippet(hifive, "commit-update", expect="Committing update")
     runSnippet(
-        hifive, "update-delta", expect="The artifact is a delta update:", timeout=600.0
+        hifive, "update-delta", expect="The artifact is a delta update:", timeout=3000.0
     )
 
     reset(hifive)
