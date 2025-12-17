@@ -21,6 +21,9 @@ RDEPENDS:${PN} = " \
     python3-jinja2 \
     python3-pyudev \
     python3-flask \
+    python3-flask-cors \
+    python3-waitress \
+    python3-requests \
 "
 
 inherit python_poetry_core
