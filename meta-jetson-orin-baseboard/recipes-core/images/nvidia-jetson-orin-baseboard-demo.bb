@@ -34,4 +34,5 @@ IMAGE_INSTALL:append = " \
     evtest \
     python3-jetson-stats \
     gpu-burn \
+    kernel-module-i40e \
 "
