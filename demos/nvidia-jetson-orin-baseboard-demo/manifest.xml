@@ -5,16 +5,16 @@
     <remote fetch="https://github.com/openembedded/" name="meta-openembedded"/>
     <remote fetch="https://github.com/OE4T/" name="meta-tegra"/>
 
-    <project name="meta-antmicro" remote="antmicro" revision="d1d9f1ea1e302284a3ec398fb030ce0c96366394" path="sources/meta-antmicro">
+    <project name="meta-antmicro" remote="antmicro" revision="b673c60d7a0a37354275c80e565532268107e024" path="sources/meta-antmicro">
       <linkfile dest="build/conf/bblayers.conf" src="demos/nvidia-jetson-orin-baseboard-demo/bblayers.conf"/>
       <linkfile dest="build/conf/local.conf" src="demos/nvidia-jetson-orin-baseboard-demo/local.conf"/>
     </project>
     <project name="antmicro-jetson-orin-baseboard-nvidia-kernel-oot" remote="antmicro" revision="antmicro-r36.4" path="sources/nvidia-kernel-oot" sync-s="true" />
-    <project name="antmicro-jetson-orin-baseboard-kernel" remote="antmicro" revision="89454-add-intel-x710-driver" path="sources/linux-jammy-nvidia-tegra"/>
+    <project name="antmicro-jetson-orin-baseboard-kernel" remote="antmicro" revision="antmicro-r36.4" path="sources/linux-jammy-nvidia-tegra"/>
 
     <!-- Current Yocto version: scarthgap-5.0.7. Please use exact commits or tags when setting revisions, do NOT use branch names! -->
     <project name="poky.git" remote="yoctoproject" revision="7dad83c7e5e9637c0ff5d5712409611fd4a14946" path="sources/poky"/>
     <project name="meta-openembedded.git" remote="meta-openembedded" revision="4f11a12b2352bbdfafb6b7d956bf424af4992977" path="sources/meta-openembedded"/>
-    <project name="meta-tegra.git" remote="meta-tegra" revision="f2ba39101b960dc67d0739a6f31ddbf62fa435c7" path="sources/meta-tegra" />
+    <project name="meta-tegra.git" remote="meta-tegra" revision="ddd28164f4c1475694e7404f361e8b15c0c6d345" path="sources/meta-tegra" />
     <project name="meta-tegra-community.git" remote="meta-tegra" revision="241d1073ba8e610ef8da3fe8470b0a4d0567521f" path="sources/meta-tegra-community" />
 </manifest>
