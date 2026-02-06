@@ -14,6 +14,7 @@ S = "${WORKDIR}/git"
 
 RDEPENDS:${PN} = " \
     python3-smbus2 \
+    python3-spidev \
     python3-pytest \
     python3-pyrav4l2 \
     python3-pyyaml \
