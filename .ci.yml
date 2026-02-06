@@ -4,6 +4,9 @@ stages:
   - build
   - local-tests
 
+variables:
+  SCALENODE_KERNEL: "legacy"
+
 .common:
   only:
     refs:
