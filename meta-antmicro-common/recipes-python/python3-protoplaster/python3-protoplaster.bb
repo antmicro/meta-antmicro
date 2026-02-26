@@ -25,6 +25,7 @@ RDEPENDS:${PN} = " \
     python3-flask-cors \
     python3-waitress \
     python3-requests \
+    python3-dac-eyescan-test \
 "
 
 inherit python_poetry_core
