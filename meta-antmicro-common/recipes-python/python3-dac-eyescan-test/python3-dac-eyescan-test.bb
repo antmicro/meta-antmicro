@@ -4,7 +4,7 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 SRC_URI = "git://github.com/antmicro/dac-eyescan-test.git;branch=main;protocol=https"
-SRCREV = "9e49c224c6a034d31217a92fd6f861710798ca63"
+SRCREV = "aafb171e2b20b0a52cf4e725e30fefc713b5819d"
 
 S = "${WORKDIR}/git"
 
