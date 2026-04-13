@@ -1,0 +1,7 @@
+[Unit]
+Description=RDFM's Linux client daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=rdfm daemonize

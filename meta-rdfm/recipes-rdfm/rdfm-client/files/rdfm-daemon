@@ -1,0 +1,42 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Default-Start:     1 2 3 4 5
+# Default-Stop:      0 6
+# Short-Description: Start RDFM daemon
+# Description:       Enable RDFM linux-client daemon at boot
+### END INIT INFO
+
+name="rdfm-daemon"
+pid_file=/var/run/$name.pid
+log_file="/var/log/$name.log"
+
+case "$1" in
+    start)
+        echo -n "Starting $name: "
+        start-stop-daemon --start --quiet --background --make-pidfile --pidfile $pid_file --startas /bin/bash -- -c "exec rdfm daemonize > $log_file 2>&1"
+        RET=$?
+        if [ "$RET" = "0" ]; then
+          echo "done."
+        else
+          echo "FAILED!"
+        fi
+        exit $RET
+    ;;
+    stop)
+        echo -n "Stopping $name: "
+        start-stop-daemon --stop --quiet --oknodo --pidfile $pid_file && echo "done." || echo "FAILED!"
+    ;;
+    restart)
+        $0 stop
+        $0 start
+    ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+    ;;
+esac
+
+exit 0
