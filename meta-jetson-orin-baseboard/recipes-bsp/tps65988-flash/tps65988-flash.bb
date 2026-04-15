@@ -18,7 +18,7 @@ RDEPENDS:${PN} = " \
 
 do_install() {
     install -d ${D}/opt/antmicro/TPS65988-flash
-    cp -r ${WORKDIR}/git/. ${D}/opt/antmicro/TPS65988-flash/
+    cp -r ${WORKDIR}/git/* ${D}/opt/antmicro/TPS65988-flash/
 }
 
 FILES:${PN} += "/opt/antmicro/TPS65988-flash/"
