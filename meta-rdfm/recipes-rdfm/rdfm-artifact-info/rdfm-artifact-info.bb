@@ -10,6 +10,7 @@ inherit allarch
 PV = "0.1"
 
 do_compile[vardeps] += "RDFM_ARTIFACT_NAME"
+do_install[vardeps] += "RDFM_PROVIDES_INFO_LINK"
 
 do_compile() {
     if [ -z "${RDFM_ARTIFACT_NAME}" ]; then
@@ -20,13 +21,12 @@ do_compile() {
     cat > ${B}/artifact_info << END
 artifact_name=${RDFM_ARTIFACT_NAME}
 END
-    touch ${B}/provides_info
 }
 
 do_install() {
     install -d ${D}${sysconfdir}/rdfm
     install -m 0644 -t ${D}${sysconfdir}/rdfm ${B}/artifact_info
-    install -m 0644 -t ${D}${sysconfdir}/rdfm ${B}/provides_info
+    ln -s ${RDFM_PROVIDES_INFO_LINK} ${D}${sysconfdir}/rdfm/provides_info
 }
 
 FILES:${PN} += " \

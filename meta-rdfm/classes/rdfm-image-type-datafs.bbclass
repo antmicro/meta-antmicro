@@ -25,6 +25,11 @@ IMAGE_CMD:datafsimg() {
 	bbdebug 1 "Actual Datafs size:  `du -s ${IMAGE_ROOTFS}/data`"
 	bbdebug 1 "Actual Datafs Partition size: `stat -c '%s' ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT}`"
 
+	if ${@bb.utils.contains('IMAGE_FEATURES', 'read-only-rootfs', 'true', 'false', d)}; then
+		RDFM_ROOTFS_HASH=`sha256sum "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.${RDFM_ROOTFSIMG_EXT}" | cut -d " " -f 1`
+		echo "rootfs-image.checksum=${RDFM_ROOTFS_HASH}" > ${IMAGE_ROOTFS}/${RDFM_PROVIDES_INFO_LINK}
+	fi
+
 	# root dir argument for btrfs is under -r flag while ext filesystem uses -d flag for this purpose
 	if [ ${RDFM_DATAFSIMG_TYPE} = "btrfs" ]; then
 		bbdebug 1 Executing "mkfs.${RDFM_DATAFSIMG_TYPE} ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT} -r ${IMAGE_ROOTFS}/data"
@@ -43,6 +48,9 @@ do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'ex
 do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'ext3', 'e2fsprogs-native:do_populate_sysroot', '', d)} "
 do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'ext4', 'e2fsprogs-native:do_populate_sysroot', '', d)} "
 do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'btrfs', 'btrfs-tools-native:do_populate_sysroot', '', d)} "
+do_image_datafsimg[depends] += " ${PN}:do_image_rootfsimg "
+
+do_image_datafsimg[vardeps] += " RDFM_PROVIDES_INFO_LINK "
 
 # Ensure datafsimg is generated before WIC tasks that may use them
 IMAGE_TYPEDEP:wic:append = " datafsimg "

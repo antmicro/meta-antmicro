@@ -71,6 +71,8 @@ RDFM_UBOOT_POST_SETUP_COMMANDS ??= ""
 # Bootloader integration for the RDFM client.
 RDFM_BOOTLOADER ??= ""
 
+RDFM_PROVIDES_INFO_LINK ??= "/data/rdfm/provides_info"
+
 # Append our custom image types by default
 inherit rdfm-artifactimg
 inherit rdfm-image-type-datafs
