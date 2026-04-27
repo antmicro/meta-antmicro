@@ -1,17 +1,1 @@
-INHERIT += "tegra-rdfm-helpers"
-
-# Configuration for Orin with external NVMe flash
-TNSPEC_BOOTDEV ?= "nvme0n1p1"
-ROOTFSPART_SIZE ?= "5368709120"
-# Minimal data partition size - data partition will be extended to fit the
-# remaining space on the disk.
-DATASIZE ?= "1073741824"
-
-RDFM_ROOTFS_PART_BASE = "nvme0n1p"
-RDFM_PARTITION_BOOTFS = ""
-RDFM_ROOTFS_A_PART_NUMBER = "1"
-RDFM_ROOTFS_B_PART_NUMBER = "2"
-RDFM_DATA_PART_NUMBER = "15"
-RDFM_PARTITION_SIZE_BOOTFS = "0"
-RDFM_PARTITION_SIZE_ROOTFS = "${@rdfm_tegra_default_rootfs_size(d)}"
-RDFM_PARTITION_SIZE_DATAFS = "${@rdfm_tegra_default_datafs_size(d)}"
+include ${LAYERDIR}/conf/machine/include/tegra234-nvme.inc
