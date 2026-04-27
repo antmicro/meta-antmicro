@@ -5,7 +5,7 @@
     <remote fetch="https://github.com/openembedded/" name="meta-openembedded"/>
     <remote fetch="https://github.com/OE4T/" name="meta-tegra"/>
 
-    <project name="meta-antmicro" remote="antmicro" revision="b673c60d7a0a37354275c80e565532268107e024" path="sources/meta-antmicro">
+    <project name="meta-antmicro" remote="antmicro" revision="118f9739264a4f92b50225301b053eee10d92156" path="sources/meta-antmicro">
       <linkfile dest="build/conf/bblayers.conf" src="demos/nvidia-jetson-orin-baseboard-demo/bblayers.conf"/>
       <linkfile dest="build/conf/local.conf" src="demos/nvidia-jetson-orin-baseboard-demo/local.conf"/>
     </project>
