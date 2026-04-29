@@ -55,6 +55,7 @@ do_image_rootfsimg[depends] += " \
 	rsync-native:do_populate_sysroot \
 	e2fsprogs-native:do_populate_sysroot \
 "
+do_image_rootfsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'btrfs', 'btrfs-tools-native:do_populate_sysroot', '', d)} "
 
 # Ensure datafsimg is generated before WIC tasks that may use them
 IMAGE_TYPEDEP:wic:append = " rootfsimg "

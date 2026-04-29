@@ -42,6 +42,7 @@ IMAGE_CMD:datafsimg() {
 do_image_datafsimg[depends] += " \
 	e2fsprogs-native:do_populate_sysroot \
 "
+do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'btrfs', 'btrfs-tools-native:do_populate_sysroot', '', d)} "
 
 # Ensure datafsimg is generated before WIC tasks that may use them
 IMAGE_TYPEDEP:wic:append = " datafsimg "
