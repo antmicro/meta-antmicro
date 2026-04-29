@@ -39,9 +39,9 @@ IMAGE_CMD:datafsimg() {
 	ln -sfn "${IMAGE_NAME}.${RDFM_DATAFSIMG_EXT}" "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.${RDFM_DATAFSIMG_EXT}"
 }
 
-do_image_datafsimg[depends] += " \
-	e2fsprogs-native:do_populate_sysroot \
-"
+do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'ext2', 'e2fsprogs-native:do_populate_sysroot', '', d)} "
+do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'ext3', 'e2fsprogs-native:do_populate_sysroot', '', d)} "
+do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'ext4', 'e2fsprogs-native:do_populate_sysroot', '', d)} "
 do_image_datafsimg[depends] += " ${@bb.utils.contains('RDFM_ROOTFSIMG_TYPE', 'btrfs', 'btrfs-tools-native:do_populate_sysroot', '', d)} "
 
 # Ensure datafsimg is generated before WIC tasks that may use them
