@@ -21,6 +21,5 @@ adapt_uda_partition_for_datafsimg() {
 }
 
 do_install:append() {
-    adapt_uda_partition_for_datafsimg "${PARTITION_LAYOUT_TEMPLATE}"
     adapt_uda_partition_for_datafsimg "${PARTITION_LAYOUT_EXTERNAL}"
 }
