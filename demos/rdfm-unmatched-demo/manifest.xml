@@ -3,8 +3,8 @@
   
   <remote fetch="${REPO_URL}/../" name="antmicro"/>
   <remote fetch="https://github.com/" name="github"/>
-  <remote fetch="git://git.yoctoproject.org" name="yocto"/>
-  <remote fetch="git://git.openembedded.org" name="oe"/>
+  <remote fetch="https://git.yoctoproject.org/" name="yocto"/>
+  <remote fetch="https://git.openembedded.org/" name="oe"/>
 
   <project name="meta-antmicro.git" remote="antmicro" revision="scarthgap" path="sources/meta-antmicro">
       <linkfile dest="build/conf/bblayers.conf" src="demos/rdfm-unmatched-demo/bblayers.conf"/>
