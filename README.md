@@ -1,6 +1,6 @@
 # `meta-antmicro` Yocto layer
 
-Copyright (c) 2021-2025 [Antmicro](https://www.antmicro.com)
+Copyright (c) 2021-2026 [Antmicro](https://www.antmicro.com)
 
 Antmicro's collection of Yocto layers for machine learning and computer vision applications.
 
