@@ -13,6 +13,8 @@ MENDER_UPDATE_POLL_INTERVAL_SECONDS ?= "1800"
 MENDER_INVENTORY_POLL_INTERVAL_SECONDS ?= "28800"
 MENDER_RETRY_POLL_INTERVAL_SECONDS ?= "300"
 
+RDFM_SHELL_PATH ?= "/bin/login"
+
 # Override the default helper used for fetching the bootloader environment
 RDFM_BOOT_UTILS_GETENV_OVERRIDE ?= ""
 # Override the default helper used for setting the bootloader environment
@@ -148,6 +150,7 @@ python do_prepare_mender_conf() {
     conf_maybe_add("ServerURL", "MENDER_SERVER_URL", getvar=True, integer=False)
     conf_maybe_add("ServerCertificate", "RDFM_SERVER_CERTIFICATE_BSP_PATH", getvar=True, integer=False)
     conf_maybe_add("UpdatePollIntervalSeconds", "MENDER_UPDATE_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
+    conf_maybe_add("ShellPath", "RDFM_SHELL_PATH", getvar=True, integer=False)
 
     # Tenant-token is optional, but falls back to a default-value set in config.go
     conf_maybe_add("TenantToken", "MENDER_TENANT_TOKEN", getvar=True, integer=False)
@@ -177,6 +180,7 @@ do_prepare_mender_conf[vardeps] = " \
     RDFM_BOOT_UTILS_GETENV_OVERRIDE \
     RDFM_SERVER_CERTIFICATE_BSP_PATH \
     RDFM_TELEMETRY_BOOTSTRAP_SERVERS \
+    RDFM_SHELL_PATH \
 "
 
 do_install() {
