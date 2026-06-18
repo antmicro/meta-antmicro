@@ -8,3 +8,6 @@ IMAGE_INSTALL:append = " \
     nano \
     htop \
 " 
+
+# Rootfs size 256MB
+RDFM_PARTITION_SIZE_ROOTFS:renodeunmatched = "262144"
