@@ -6,7 +6,7 @@
   <remote fetch="https://git.yoctoproject.org/" name="yocto"/>
   <remote fetch="https://git.openembedded.org/" name="oe"/>
 
-  <project name="meta-antmicro.git" remote="antmicro" revision="scarthgap" path="sources/meta-antmicro">
+  <project name="meta-antmicro.git" remote="antmicro" revision="725a8b7ec2cb4fa48b6aad38a83d63fc8e506f52" path="sources/meta-antmicro">
       <linkfile dest="build/conf/bblayers.conf" src="demos/rdfm-unmatched-demo/bblayers.conf"/>
       <linkfile dest="build/conf/local.conf" src="demos/rdfm-unmatched-demo/local.conf"/>
   </project>
