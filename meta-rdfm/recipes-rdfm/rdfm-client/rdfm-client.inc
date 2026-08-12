@@ -7,11 +7,9 @@ BBCLASSEXTEND = "native"
 RDEPENDS:${PN}:class-native = ""
 DEPENDS:class-native = ""
 
-MENDER_SERVER_URL ?= "https://docker.mender.io"
-MENDER_TENANT_TOKEN ?= "dummy"
-MENDER_UPDATE_POLL_INTERVAL_SECONDS ?= "1800"
-MENDER_INVENTORY_POLL_INTERVAL_SECONDS ?= "28800"
-MENDER_RETRY_POLL_INTERVAL_SECONDS ?= "300"
+RDFM_UPDATE_POLL_INTERVAL_SECONDS ?= "1800"
+RDFM_INVENTORY_POLL_INTERVAL_SECONDS ?= "28800"
+RDFM_RETRY_POLL_INTERVAL_SECONDS ?= "300"
 
 RDFM_SHELL_PATH ?= "/bin/login"
 
@@ -50,11 +48,11 @@ PACKAGECONFIG[inventory-network-scripts] = ",,,"
 PACKAGECONFIG[split-mender-config] = ",,,"
 PACKAGECONFIG:append = " split-mender-config"
 
-_MENDER_TAGS = "${@bb.utils.contains('PACKAGECONFIG', 'dbus', '', 'nodbus', d)}"
-EXTRA_OEMAKE:append = " TAGS='${_MENDER_TAGS}'"
+_RDFM_TAGS = "${@bb.utils.contains('PACKAGECONFIG', 'dbus', '', 'nodbus', d)}"
+EXTRA_OEMAKE:append = " TAGS='${_RDFM_TAGS}'"
 # Changes to tags are not automatically picked up by the Makefile, so repopulate
 # the build directory from scratch if changing this.
-do_unpack[vardeps] += "_MENDER_TAGS"
+do_unpack[vardeps] += "_RDFM_TAGS"
 
 do_configure:prepend () {
     # Remove all the src present in build if it is not a symbolic link to ${S}
@@ -127,37 +125,25 @@ python do_prepare_mender_conf() {
             else:
                 transient_conf[key] = value
 
-    key_in_src_uri = os.path.exists(os.path.join(d.getVar("WORKDIR"), "artifact-verify-key.pem"))
-    key_in_var = d.getVar("MENDER_ARTIFACT_VERIFY_KEY") not in [None, ""]
-
     # Add new variable -> config assignments here.
-    if key_in_src_uri or key_in_var:
-        conf_maybe_add("ArtifactVerifyKey", "%s/rdfm/artifact-verify-key.pem" % d.getVar("sysconfdir"), getvar=False, integer=False)
-    conf_maybe_add("InventoryPollIntervalSeconds", "MENDER_INVENTORY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
+    conf_maybe_add("InventoryPollIntervalSeconds", "RDFM_INVENTORY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     if bb.utils.contains("IMAGE_INSTALL", "rdfm-telemetry-config", True, False, d):
         conf_maybe_add("TelemetryEnable", True, getvar=False, integer=False)
         conf_maybe_add("TelemetryBatchSize", "RDFM_TELEMETRY_BATCH_SIZE", getvar=True, integer=True)
         conf_maybe_add("TelemetryLogLevel", "RDFM_TELEMETRY_LOG_LEVEL", getvar=True, integer=False)
         conf_maybe_add("TelemetryBootstrapServers", "RDFM_TELEMETRY_BOOTSTRAP_SERVERS", getvar=True, integer=False)
     # Mandatory variables - will always exist
-    conf_maybe_add("RetryPollIntervalSeconds", "MENDER_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
+    conf_maybe_add("RetryPollIntervalSeconds", "RDFM_RETRY_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     conf_maybe_add("RootfsPartA", "RDFM_PARTITION_ROOTFS_A", getvar=True, integer=False)
     conf_maybe_add("RootfsPartB", "RDFM_PARTITION_ROOTFS_B", getvar=True, integer=False)
     if d.getVar("RDFM_BOOT_UTILS_SETENV_OVERRIDE") != "":
         conf_maybe_add("BootUtilitiesSetActivePart", "RDFM_BOOT_UTILS_SETENV_OVERRIDE", getvar=True, integer=False)
     if d.getVar("RDFM_BOOT_UTILS_GETENV_OVERRIDE") != "":
         conf_maybe_add("BootUtilitiesGetNextActivePart", "RDFM_BOOT_UTILS_GETENV_OVERRIDE", getvar=True, integer=False)
-    conf_maybe_add("ServerURL", "MENDER_SERVER_URL", getvar=True, integer=False)
+    conf_maybe_add("ServerURL", "RDFM_SERVER_URL", getvar=True, integer=False)
     conf_maybe_add("ServerCertificate", "RDFM_SERVER_CERTIFICATE_BSP_PATH", getvar=True, integer=False)
-    conf_maybe_add("UpdatePollIntervalSeconds", "MENDER_UPDATE_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
+    conf_maybe_add("UpdatePollIntervalSeconds", "RDFM_UPDATE_POLL_INTERVAL_SECONDS", getvar=True, integer=True)
     conf_maybe_add("ShellPath", "RDFM_SHELL_PATH", getvar=True, integer=False)
-
-    # Tenant-token is optional, but falls back to a default-value set in config.go
-    conf_maybe_add("TenantToken", "MENDER_TENANT_TOKEN", getvar=True, integer=False)
-
-    # Add the update control configurations if set
-    conf_maybe_add("UpdateControlMapExpirationTimeSeconds", "MENDER_UPDATE_CONTROL_MAP_EXPIRATION_TIME_SECONDS", getvar=True, integer=True)
-    conf_maybe_add("UpdateControlMapBootExpirationTimeSeconds", "MENDER_UPDATE_CONTROL_MAP_BOOT_EXPIRATION_TIME_SECONDS", getvar=True, integer=True)
 
     dst_conf = os.path.join(d.getVar("B"), "transient_mender.conf")
     fd = open(dst_conf, "w")
@@ -167,20 +153,29 @@ python do_prepare_mender_conf() {
 }
 addtask do_prepare_mender_conf after do_compile before do_install
 do_prepare_mender_conf[vardeps] = " \
-    MENDER_ARTIFACT_VERIFY_KEY \
-    MENDER_INVENTORY_POLL_INTERVAL_SECONDS \
-    MENDER_RETRY_POLL_INTERVAL_SECONDS \
+    RDFM_INVENTORY_POLL_INTERVAL_SECONDS \
+    RDFM_RETRY_POLL_INTERVAL_SECONDS \
     RDFM_PARTITION_ROOTFS_A \
     RDFM_PARTITION_ROOTFS_B \
-    MENDER_SERVER_URL \
-    MENDER_TENANT_TOKEN \
-    MENDER_UPDATE_POLL_INTERVAL_SECONDS \
-    MENDER_PERSISTENT_CONFIGURATION_VARS \
+    RDFM_SERVER_URL \
+    RDFM_UPDATE_POLL_INTERVAL_SECONDS \
     RDFM_BOOT_UTILS_SETENV_OVERRIDE \
     RDFM_BOOT_UTILS_GETENV_OVERRIDE \
     RDFM_SERVER_CERTIFICATE_BSP_PATH \
     RDFM_TELEMETRY_BOOTSTRAP_SERVERS \
     RDFM_SHELL_PATH \
+"
+
+python do_check_for_required_datastore_variables() {
+    this =  "do_" + d.getVar("BB_CURRENTTASK")
+
+    for vardep in d.getVarFlags(this)["vardeps"].split():
+        if not d.getVar(vardep):
+            bb.fatal(f"Required value {vardep} not present in datastore")
+}
+addtask do_check_for_required_datastore_variables before do_fetch
+do_check_for_required_datastore_variables[vardeps] = " \
+    RDFM_SERVER_URL \
 "
 
 do_install() {
@@ -202,16 +197,6 @@ do_install() {
     fi
 
     install -d ${D}/${localstatedir}/lib/rdfm
-
-    # install artifact verification key, if any.
-    if [ -e ${WORKDIR}/artifact-verify-key.pem ]; then
-        if [ -n "${MENDER_ARTIFACT_VERIFY_KEY}" ]; then
-            bbfatal "You can not specify both MENDER_ARTIFACT_VERIFY_KEY and have artifact-verify-key.pem in SRC_URI."
-        fi
-        install -m 0444 ${WORKDIR}/artifact-verify-key.pem ${D}${sysconfdir}/rdfm
-    elif [ -n "${MENDER_ARTIFACT_VERIFY_KEY}" ]; then
-        install -m 0444 "${MENDER_ARTIFACT_VERIFY_KEY}" ${D}${sysconfdir}/rdfm/artifact-verify-key.pem
-    fi
 
     # symlink /var/lib/rdfm to /data/rdfm
     rm -rf ${D}/${localstatedir}/lib/rdfm
