@@ -12,6 +12,9 @@ from Antmicro.Renode.Testing import TerminalTesterResult
 from Antmicro.Renode.Utilities import WriteFilePath
 from Antmicro.Renode.Peripherals.CPU import PrivilegeLevel
 
+import clr
+from System import String
+
 this_dir = Path(__file__).parent.absolute()
 
 readme = str(this_dir / "../README.md")
@@ -87,13 +90,13 @@ def reset(hifive: Machine):
 def login(hifive: Machine):
     tt = TerminalTester(hifive.sysbus.uart0, 300.0)
 
-    if tt.WaitFor("renodeunmatched login: ", includeUnfinishedLine=True) is None:
+    if tt.WaitFor(String("renodeunmatched login: "), includeUnfinishedLine=True) is None:
         errExit("Timeout during machine boot")
 
     tt.WriteLine("root")
     print("Logging in")
 
-    if tt.WaitFor("root@renodeunmatched:~#", includeUnfinishedLine=True) is None:
+    if tt.WaitFor(String("root@renodeunmatched:~#"), includeUnfinishedLine=True) is None:
         errExit("Failed to login")
 
 
@@ -112,10 +115,10 @@ def runSnippet(
     print(f"Running '{name}' snippet")
 
     if expect is not None:
-        if tt.WaitFor(expect) is None:
+        if tt.WaitFor(String(expect)) is None:
             errExit(f"Timeout in {name}: expected '{expect}' not found")
 
-    if tt.WaitFor("root@renodeunmatched:~#", includeUnfinishedLine=True) is None:
+    if tt.WaitFor(String("root@renodeunmatched:~#"), includeUnfinishedLine=True) is None:
         errExit(f"Timeout in {name}: snippet did not finish in time")
 
     time.sleep(5)
