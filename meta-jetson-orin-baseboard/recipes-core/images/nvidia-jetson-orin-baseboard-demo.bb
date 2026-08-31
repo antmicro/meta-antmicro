@@ -35,4 +35,5 @@ IMAGE_INSTALL:append = " \
     python3-jetson-stats \
     gpu-burn \
     kernel-module-i40e \
+    kernel-module-lan78xx \
 "
