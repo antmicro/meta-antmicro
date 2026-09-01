@@ -9,7 +9,7 @@ SRC_URI = " \
     file://rdfm-daemon.service \
     file://rdfm-daemon \
 "
-SRCREV = "f74f362decaef348f22dd3da9c8893f52a1452fd"
+SRCREV = "cb6d7428fe97496ca7e63c96cfea2fe69ee71eb0"
 
 LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT & OLDAP-2.8 & OpenSSL"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/git/LICENSE;md5=2a944942e1496af1886903d274dedb13"
