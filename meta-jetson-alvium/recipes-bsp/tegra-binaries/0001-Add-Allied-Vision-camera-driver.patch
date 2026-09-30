@@ -4,6 +4,7 @@ Date: Thu, 18 Aug 2022 10:02:57 +0000
 Subject: [PATCH] Add Allied Vision camera driver
 
 Signed-off-by: Anna Panfil <apanfil@internships.antmicro.com>
+Upstream-Status: Inappropriate
 ---
  arch/arm64/configs/tegra_defconfig            |   69 +-
  drivers/media/i2c/Kconfig                     |    9 +

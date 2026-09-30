@@ -6,6 +6,8 @@ Subject: [PATCH] Removed cmake package building
 'CMAKE_BUILD_DIR' uses path from enviroment variable.
 Removes all cmake buildings.
 Console scripts are using non-native python.
+
+Upstream-Status: Inappropriate
 ---
  setup.py | 18 ++++++------------
  1 file changed, 6 insertions(+), 12 deletions(-)

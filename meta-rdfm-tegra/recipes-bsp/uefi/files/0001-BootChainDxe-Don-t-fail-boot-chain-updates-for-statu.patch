@@ -4,6 +4,7 @@ Date: Thu, 22 Feb 2024 11:52:31 +0100
 Subject: [PATCH] BootChainDxe: Don't fail boot chain updates for status simply
  existing
 
+Upstream-Status: Inappropriate
 ---
  Silicon/NVIDIA/Drivers/BootChainDxe/BootChainDxe.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

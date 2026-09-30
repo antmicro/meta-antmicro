@@ -10,8 +10,6 @@ SRC_URI = " \
 "
 SRCREV = "${AUTOREV}"
 
-S = "${WORKDIR}/git"
-
 RDEPENDS:${PN} = " \
     python3-smbus2 \
     python3-spidev \

@@ -3,6 +3,7 @@ From: Krzysztof Sychla <ksychla@antmicro.com>
 Date: Mon, 2 Dec 2024 15:20:30 +0100
 Subject: [PATCH] Add additional bootargs
 
+Upstream-Status: Inappropriate
 ---
  include/env_mender.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

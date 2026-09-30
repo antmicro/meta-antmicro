@@ -3,6 +3,7 @@ From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
 Date: Wed, 27 Apr 2022 13:29:22 +0200
 Subject: [PATCH] Removed hardcoded protobuf pathes
 
+Upstream-Status: Inappropriate
 ---
  CMakeLists.txt | 19 -------------------
  1 file changed, 19 deletions(-)

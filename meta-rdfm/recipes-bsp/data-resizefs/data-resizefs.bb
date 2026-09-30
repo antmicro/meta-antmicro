@@ -27,12 +27,12 @@ RDEPENDS:${PN} += " \
 "
 
 do_compile() {
-    sed -e 's:@@RDFM_DATA_PART@@:${RDFM_PARTITION_DATAFS}:' ${WORKDIR}/data-resizefs.sh.in > ${WORKDIR}/data-resizefs.sh
+    sed -e 's:@@RDFM_DATA_PART@@:${RDFM_PARTITION_DATAFS}:' ${UNPACKDIR}/data-resizefs.sh.in > ${UNPACKDIR}/data-resizefs.sh
 }
 
 do_install() {
     install -d ${D}/${base_sbindir}
-    install -m 0744 ${WORKDIR}/data-resizefs.sh ${D}/${base_sbindir}/data-resizefs
+    install -m 0744 ${UNPACKDIR}/data-resizefs.sh ${D}/${base_sbindir}/data-resizefs
     install -d ${D}/${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/${RDFM_DATA_RESIZEFS_SERVICE} ${D}/${systemd_unitdir}/system/data-resizefs.service
+    install -m 0644 ${UNPACKDIR}/${RDFM_DATA_RESIZEFS_SERVICE} ${D}/${systemd_unitdir}/system/data-resizefs.service
 }

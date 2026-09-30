@@ -7,6 +7,7 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+Upstream-Status: Inappropriate
 ---
  Makefile         | 10 ++++++----
  gpu_burn-drv.cpp |  2 ++

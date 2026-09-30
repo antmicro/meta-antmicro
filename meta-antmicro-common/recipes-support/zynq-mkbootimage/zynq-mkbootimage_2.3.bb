@@ -7,9 +7,6 @@ LICENSE = "BSD-2-Clause"
 SRCREV = "872363ce32c249f8278cf107bc6d3bdeb38d849f"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=0c9c77a4b70683658eb47e5486e20148"
 
-S = "${WORKDIR}/git"
-B = "${WORKDIR}/build"
-
 DEPENDS += " \
     elfutils \
 "

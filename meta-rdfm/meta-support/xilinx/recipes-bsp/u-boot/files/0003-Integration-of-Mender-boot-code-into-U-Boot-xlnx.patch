@@ -3,6 +3,7 @@ From: Krzysztof Sychla <ksychla@antmicro.com>
 Date: Fri, 8 Nov 2024 08:48:29 +0100
 Subject: [PATCH] Integration of Mender boot code into U-Boot
 
+Upstream-Status: Inappropriate
 ---
  include/env_default.h     | 2 ++
  scripts/Makefile.autoconf | 3 ++-

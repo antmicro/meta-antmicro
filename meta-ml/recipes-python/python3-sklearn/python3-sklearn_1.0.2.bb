@@ -9,7 +9,6 @@ SRC_URI += "gitsm://github.com/scikit-learn/scikit-learn;protocol=https;branch=1
 SRC_URI[sha256sum] = "7881fd47985325c47b5ca995248d402c7f58a874377bee7651e607d49ceae940"
 SRC_URI[md5sum] = "e9c24b695a72c32ce64c21ca8965a435"
 SRCREV = "7e1e6d09bcc2eaeba98f7e737aac2ac782f0e5f1"
-S = "${WORKDIR}/git"
 
 DEPENDS += " \
     python3-numpy-native \

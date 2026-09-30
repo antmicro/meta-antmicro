@@ -10,8 +10,6 @@ LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=d31204a91ddce3a76a81d09c6bf72614;"
 
 inherit setuptools3 native
 
-S = "${WORKDIR}/git"
-
 # Lapack building requires fortran support.
 # Define next lines in your local.conf file:
 #

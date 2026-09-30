@@ -10,7 +10,6 @@ SRC_URI = " \
 "
 
 SRC_URI[sha256sum] = "47344ae4dc9739256bf362a21be864060ab4e2638ffcdef063f6aefe1523c35d"
-S = "${WORKDIR}/git"
 
 SECURITY_STRINGFORMAT = ""
 

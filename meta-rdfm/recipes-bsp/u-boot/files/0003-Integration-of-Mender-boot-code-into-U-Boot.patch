@@ -6,6 +6,7 @@ Subject: [PATCH 3/3] Integration of Mender boot code into U-Boot.
 Signed-off-by: Kristian Amlie <kristian.amlie@mender.io>
 Signed-off-by: Maciej Borzecki <maciej.borzecki@rndity.com>
 Signed-off-by: Marcin Pasinski <marcin.pasinski@northern.tech>
+Upstream-Status: Inappropriate
 ---
  include/env_default.h     | 3 +++
  scripts/Makefile.autoconf | 3 ++-

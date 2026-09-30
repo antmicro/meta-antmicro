@@ -3,6 +3,7 @@ From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
 Date: Mon, 17 Jul 2023 08:45:55 +0200
 Subject: [PATCH] [DEV] Enable virtio for Hifive Unmatched
 
+Upstream-Status: Inappropriate
 ---
  arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)

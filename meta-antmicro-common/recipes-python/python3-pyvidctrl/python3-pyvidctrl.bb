@@ -8,8 +8,6 @@ SRC_URI = " \
     git://github.com/antmicro/pyvidctrl.git;protocol=https;branch=master \
 "
 
-S = "${WORKDIR}/git"
-
 RDEPENDS:${PN} = "python3-v4l2"
 
 inherit setuptools3

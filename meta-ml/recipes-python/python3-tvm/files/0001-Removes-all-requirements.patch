@@ -3,6 +3,7 @@ From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
 Date: Wed, 20 Apr 2022 12:57:25 +0200
 Subject: [PATCH] Removes all requirements
 
+Upstream-Status: Inappropriate
 ---
  python/setup.py | 1 -
  1 file changed, 1 deletion(-)

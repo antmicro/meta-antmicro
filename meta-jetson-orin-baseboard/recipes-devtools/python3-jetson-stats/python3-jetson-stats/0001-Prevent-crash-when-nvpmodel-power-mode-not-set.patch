@@ -7,24 +7,28 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+Upstream-Status: Inappropriate
 ---
- jtop/core/nvpmodel.py | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ jtop/core/nvpmodel.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/jtop/core/nvpmodel.py b/jtop/core/nvpmodel.py
-index cb2e81f..3b518e8 100644
 --- a/jtop/core/nvpmodel.py
 +++ b/jtop/core/nvpmodel.py
-@@ -85,7 +85,8 @@ def nvpmodel_query():
+@@ -94,6 +94,8 @@
              parsed_line = match.groupdict()
              # Extract NV Power Mode
              return {'name': parsed_line['name'], 'id': int(lines[idx + 1])}
--
 +        logger.warning("nvpmodel power mode isn't set")
-+        return {'name': "Not set", 'id': -1}
++        return {'name': 'Not set', 'id': -1}
  
- def set_nvpmodel_level(level):
-     """ Set nvpmodel to a new status """
--- 
-2.50.0
-
+ 
+ def set_nvpmodel_level(level, force):
+@@ -460,7 +462,7 @@
+             current_mask = self._nvp_masks[self._nvpmodel_now['id']]
+             # list of all nvpmodel status that can be changed from the current
+             self._nvp_status = [current_mask == mask for idx, mask in enumerate(self._nvp_masks)]
+-        except (OSError, Command.CommandException):
++        except (OSError, JtopException, Command.CommandException):
+             self._is_nvpmodel = False
+             logger.warning("nvpmodel not available")

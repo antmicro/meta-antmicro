@@ -3,6 +3,7 @@ From: Kristian Amlie <kristian.amlie@mender.io>
 Date: Mon, 15 Feb 2016 15:57:32 +0100
 Subject: [PATCH 1/4] Add missing header which fails on recent GCC.
 
+Upstream-Status: Inappropriate
 ---
  tools/env/fw_env.c | 1 +
  1 file changed, 1 insertion(+)

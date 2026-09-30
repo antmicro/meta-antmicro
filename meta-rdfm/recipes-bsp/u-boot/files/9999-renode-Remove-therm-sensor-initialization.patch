@@ -3,6 +3,7 @@ From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
 Date: Mon, 12 Jun 2023 15:18:48 +0200
 Subject: [PATCH] [DEV] Remove therm sensor initialization for Renode compat
 
+Upstream-Status: Inappropriate
 ---
  board/sifive/unmatched/spl.c | 6 ------
  1 file changed, 6 deletions(-)

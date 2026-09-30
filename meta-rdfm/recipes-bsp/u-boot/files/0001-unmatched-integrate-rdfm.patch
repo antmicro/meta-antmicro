@@ -5,6 +5,7 @@ Subject: [PATCH] unmatched-integrate-rdfm
 
 Defines u-boot environment to be on 'mmc' device.
 
+Upstream-Status: Inappropriate
 ---
  include/configs/sifive-unmatched.h | 3 +++
  1 file changed, 3 insertions(+)

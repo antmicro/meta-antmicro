@@ -3,6 +3,7 @@ From: Maksymilian Czudziak <mczudziak@internships.antmicro.com>
 Date: Thu, 15 Jul 2021 07:01:44 +0000
 Subject: [PATCH] CMakeLists.txt patched by locations and stb line
 
+Upstream-Status: Inappropriate
 ---
  CMakeLists.txt | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)

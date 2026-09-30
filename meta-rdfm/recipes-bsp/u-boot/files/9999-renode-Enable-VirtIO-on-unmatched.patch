@@ -3,6 +3,7 @@ From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
 Date: Mon, 17 Jul 2023 14:16:13 +0200
 Subject: [PATCH] [DEV] Enable virtio on Hifive Unmatched
 
+Upstream-Status: Inappropriate
 ---
  arch/riscv/dts/hifive-unmatched-a00.dts |  6 ++++++
  board/sifive/unmatched/Kconfig          |  2 ++

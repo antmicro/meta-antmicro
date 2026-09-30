@@ -9,8 +9,6 @@ SRC_URI = " \
 "
 SRC_URI[sha256sum] = "ea4c6f327741fbdf7f15df77b077f519a07800da301031deeb58c4c342964a9d"
 
-S = "${WORKDIR}/git"
-
 inherit cuda cmake pkgconfig
 
 DEPENDS += " \
@@ -28,5 +26,5 @@ FILES:${PN} += " \
     ${datadir}/darknet-demo/* \
 "
 
-EXTRA_OECMAKE = "-DLIBDARKNET_PATH=${WORKDIR}/recipe-sysroot/usr/lib/libdarknet.so"
-TARGET_CXXFLAGS += " -I${WORKDIR}/recipe-sysroot/usr/include/darknet -pthread "
+EXTRA_OECMAKE = "-DLIBDARKNET_PATH=${UNPACKDIR}/recipe-sysroot/usr/lib/libdarknet.so"
+TARGET_CXXFLAGS += " -I${UNPACKDIR}/recipe-sysroot/usr/include/darknet -pthread "

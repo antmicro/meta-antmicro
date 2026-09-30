@@ -7,6 +7,7 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+Upstream-Status: Inappropriate
 ---
  Makefile | 52 ++++++++++++++++++++++------------------------------
  1 file changed, 22 insertions(+), 30 deletions(-)

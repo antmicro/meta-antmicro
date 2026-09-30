@@ -6,16 +6,16 @@ SRC_URI += " \
 "
 
 do_compile:append() {
-    sed -e 's:@BINDIR@:${bindir}:' ${WORKDIR}/monitor-hotplug.rules.in > ${WORKDIR}/99-monitor-hotplug.rules
+    sed -e 's:@BINDIR@:${bindir}:' ${UNPACKDIR}/monitor-hotplug.rules.in > ${UNPACKDIR}/99-monitor-hotplug.rules
 }
 
 do_install:append() {
     install -d ${D}${sysconfdir}/modprobe.d/
-    install -m 0644 ${WORKDIR}/nvidia-drm.conf ${D}/${sysconfdir}/modprobe.d
+    install -m 0644 ${UNPACKDIR}/nvidia-drm.conf ${D}/${sysconfdir}/modprobe.d
     install -d ${D}${sysconfdir}/udev/rules.d/
-    install -m 0644 ${WORKDIR}/99-monitor-hotplug.rules ${D}/${sysconfdir}/udev/rules.d
+    install -m 0644 ${UNPACKDIR}/99-monitor-hotplug.rules ${D}/${sysconfdir}/udev/rules.d
     install -d ${D}${bindir}/
-    install -m 0755 ${WORKDIR}/monitor-hotplug.sh ${D}/${bindir}/monitor-hotplug
+    install -m 0755 ${UNPACKDIR}/monitor-hotplug.sh ${D}/${bindir}/monitor-hotplug
 }
 
 FILES:${PN} += " \

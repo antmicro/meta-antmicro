@@ -8,7 +8,7 @@ inherit update-rc.d
 
 do_install:append() {
     install -d ${D}${sysconfdir}/init.d
-    install -m 0755 ${WORKDIR}/jtop.init ${D}${sysconfdir}/init.d/jtop
+    install -m 0755 ${UNPACKDIR}/jtop.init ${D}${sysconfdir}/init.d/jtop
 }
 
 INITSCRIPT_NAME = "jtop"

@@ -3,6 +3,7 @@ From: Krzysztof Sychla <ksychla@antmicro.com>
 Date: Mon, 9 Dec 2024 13:22:12 +0100
 Subject: [PATCH] Add support for boot scripts
 
+Upstream-Status: Inappropriate
 ---
  include/config_distro_bootcmd.h |  6 ++----
  include/env_mender.h            | 11 ++++++++---

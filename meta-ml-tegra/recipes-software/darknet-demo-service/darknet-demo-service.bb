@@ -6,8 +6,6 @@ SRC_URI = "\
     file://darknet-demo.desktop \
 "
 
-S = "${WORKDIR}"
-
 do_install() {
     install -d ${D}/home/root/.config/autostart
     install ${S}/darknet-demo.desktop ${D}/home/root/.config/autostart/darknet-demo.desktop

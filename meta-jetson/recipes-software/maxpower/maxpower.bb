@@ -6,8 +6,6 @@ SRC_URI = "\
     file://maxpower.init \
 "
 
-S = "${WORKDIR}"
-
 do_install() {
     install -d ${D}${sysconfdir}/init.d
     install -m 0755 ${S}/maxpower.init ${D}${sysconfdir}/init.d/maxpower

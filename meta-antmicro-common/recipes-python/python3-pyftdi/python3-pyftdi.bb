@@ -8,8 +8,6 @@ SRC_URI = " \
 "
 SRCREV = "${AUTOREV}"
 
-S = "${WORKDIR}/git"
-
 RDEPENDS:${PN} = " \
     python3-pyusb \
     python3-pyserial \

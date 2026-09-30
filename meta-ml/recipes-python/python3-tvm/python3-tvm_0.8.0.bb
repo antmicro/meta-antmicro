@@ -13,8 +13,6 @@ SRC_URI += " \
             file://0001-Removes-all-requirements.patch \
 "
 
-S = "${WORKDIR}/git"
-
 inherit cmake python3native
 
 EXTRA_OECMAKE += " \

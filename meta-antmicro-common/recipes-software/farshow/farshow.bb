@@ -25,8 +25,6 @@ RDEPENDS:${PN} += " \
     glew \
 "
 
-S = "${WORKDIR}/git"
-
 FILES:${PN} += " \
     ${libdir}/libfarshow-imgui.so \
 "

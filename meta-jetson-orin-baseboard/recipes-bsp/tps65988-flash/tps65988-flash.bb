@@ -5,9 +5,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=2b42edef8fa55315f34f2370b4715ca9"
 
 SRC_URI = "git://github.com/antmicro/antmicro-jetson-orin-baseboard-tps65988-config.git;protocol=https;branch=main"
 
-SRCREV="${AUTOREV}"
-
-S = "${WORKDIR}/git"
+SRCREV = "${AUTOREV}"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}:"
 
@@ -18,7 +16,7 @@ RDEPENDS:${PN} = " \
 
 do_install() {
     install -d ${D}/opt/antmicro/TPS65988-flash
-    cp -r ${WORKDIR}/git/* ${D}/opt/antmicro/TPS65988-flash/
+    cp -r ${UNPACKDIR}/* ${D}/opt/antmicro/TPS65988-flash/
 }
 
 FILES:${PN} += "/opt/antmicro/TPS65988-flash/"

@@ -8,8 +8,6 @@ SRC_URI = " \
 "
 SRCREV = "${AUTOREV}"
 
-S = "${WORKDIR}/git"
-
 RDEPENDS:${PN} += "${PYTHON_PN}-mmap"
 
 inherit setuptools3

@@ -16,8 +16,6 @@ COMPATIBLE_MACHINE = "(tegra)"
 
 inherit cuda
 
-S = "${WORKDIR}/git"
-
 EXTRA_OEMAKE = " \
     COMPARE_KERNEL=${datadir}/gpu-burn/compare.ptx \
     COMPUTE=${TEGRA_CUDA_ARCHITECTURE} \

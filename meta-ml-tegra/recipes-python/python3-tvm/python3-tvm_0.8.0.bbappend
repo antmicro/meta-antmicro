@@ -1,6 +1,6 @@
 inherit cuda
 
-STAGING_LOCALDIR = "${WORKDIR}/recipe-sysroot/usr/local"
+STAGING_LOCALDIR = "${UNPACKDIR}/recipe-sysroot/usr/local"
 
 EXTRA_OECMAKE += " \
     -DUSE_CUDA=${STAGING_LOCALDIR}/cuda-${CUDA_VERSION}/ \

@@ -3,6 +3,7 @@ From: =?UTF-8?q?=C5=81ukasz=20K=C4=99dziora?= <lkedziora@antmicro.com>
 Date: Tue, 18 Jul 2023 11:26:59 +0200
 Subject: [PATCH] env: Add generic block device environment loader
 
+Upstream-Status: Inappropriate
 ---
  env/Kconfig            |  40 ++++++++++++
  env/Makefile           |   1 +

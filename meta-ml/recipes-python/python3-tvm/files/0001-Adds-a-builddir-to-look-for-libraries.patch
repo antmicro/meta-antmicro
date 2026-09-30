@@ -3,6 +3,7 @@ From: Illia Vysochyn <ivysochyn@internships.antmicro.com>
 Date: Tue, 19 Apr 2022 17:10:18 +0200
 Subject: [PATCH] Adds a builddir to look for libraries
 
+Upstream-Status: Inappropriate
 ---
  python/setup.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

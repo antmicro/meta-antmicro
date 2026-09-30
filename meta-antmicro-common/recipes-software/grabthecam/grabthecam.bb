@@ -24,5 +24,3 @@ RDEPENDS:${PN} += " \
     rapidjson \
     v4l-utils \
 "
-
-S = "${WORKDIR}/git"

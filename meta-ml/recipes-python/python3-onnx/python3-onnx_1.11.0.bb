@@ -40,7 +40,6 @@ RDEPENDS:${PN} += " \
     python3-core \
 "
 
-S = "${WORKDIR}/git"
 FILES:${PN} += " \
     ${libdir}/* \
     ${bindir}/* \

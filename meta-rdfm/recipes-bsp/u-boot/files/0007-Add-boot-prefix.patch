@@ -3,6 +3,7 @@ From: Krzysztof Sychla <ksychla@antmicro.com>
 Date: Mon, 2 Dec 2024 15:27:21 +0100
 Subject: [PATCH] Add boot prefix
 
+Upstream-Status: Inappropriate
 ---
  include/env_mender.h | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)

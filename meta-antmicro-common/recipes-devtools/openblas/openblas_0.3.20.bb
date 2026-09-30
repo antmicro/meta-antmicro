@@ -9,8 +9,6 @@ SRC_URI += "git://github.com/xianyi/OpenBLAS.git;protocol=https;branch=develop;"
 SRC_URI[sha256sum] = "5fca91b22762ecfa1f43de1b0c6fad5a50305c72e3cca54c2d84767d3bf76ffc"
 SRCREV = "0b678b19dc03f2a999d6e038814c4c50b9640a4e"
 
-S = "${WORKDIR}/git"
-
 inherit cmake
 
 def get_target(d):

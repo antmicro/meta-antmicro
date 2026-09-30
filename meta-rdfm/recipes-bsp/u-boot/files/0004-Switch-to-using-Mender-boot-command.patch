@@ -3,6 +3,7 @@ From: Krzysztof Sychla <ksychla@antmicro.com>
 Date: Tue, 19 Nov 2024 10:22:29 +0100
 Subject: [PATCH] Switch to using Mender boot command
 
+Upstream-Status: Inappropriate
 ---
  include/env_default.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
