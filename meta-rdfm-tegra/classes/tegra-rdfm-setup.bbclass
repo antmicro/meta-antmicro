@@ -2,14 +2,11 @@ inherit rdfm-image-setup
 inherit rdfm-artifactimg
 
 MACHINE_EXTRA_RDEPENDS:append = "\
-    tegra-nvphs \
-    tegra-nvs-service \
     tegra-nvsciipc \
-    tegra-nvstartup \
+    tegra-configs-sysctl \
     tegra-nvfancontrol \
     tegra-configs-udev \
     tegra-redundant-boot \
-    tegra-redundant-boot-update-engine \
     watchdog-keepalive \
 "
 

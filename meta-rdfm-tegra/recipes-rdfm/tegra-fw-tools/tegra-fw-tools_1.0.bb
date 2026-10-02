@@ -10,6 +10,6 @@ SRC_URI:append = " \
 
 do_install() {
     install -d ${D}${sbindir}/
-    install -m 755 ${WORKDIR}/tegra-fw-tools.py ${D}${sbindir}/rdfm-tegra-printenv
-    install -m 755 ${WORKDIR}/tegra-fw-tools.py ${D}${sbindir}/rdfm-tegra-setenv
+    install -m 755 ${UNPACKDIR}/tegra-fw-tools.py ${D}${sbindir}/rdfm-tegra-printenv
+    install -m 755 ${UNPACKDIR}/tegra-fw-tools.py ${D}${sbindir}/rdfm-tegra-setenv
 }

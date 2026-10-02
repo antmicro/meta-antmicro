@@ -29,7 +29,7 @@ IMAGE_CMD:rootfsimg() {
 	# mkfs does not support excluding certain folders. We need
 	# to copy the prepared rootfs to a writable location, then
 	# remove data/ from it.
-	cleandir=$(mktemp -d "${WORKDIR}/clean-rootfs.XXXXXX")
+	cleandir=$(mktemp -d "${UNPACKDIR}/clean-rootfs.XXXXXX")
 	if [ -z "$cleandir" ]; then
 		bbfatal "Creating temporary rootfs directory failed"
 	fi

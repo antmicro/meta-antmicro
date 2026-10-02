@@ -7,7 +7,6 @@ inherit go native
 SRC_URI = "git://github.com/protocolbuffers/protobuf-go.git;branch=master;protocol=https;destsuffix=git"
 SRCREV = "c33baa8f3a0d35fd5a39e43c22a50a050f707d34"
 
-S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 
 do_compile () {
@@ -15,7 +14,7 @@ do_compile () {
     export GOPATH
     PATH="${B}/bin:$PATH"
     export PATH
-    cd ${S}/cmd/protoc-gen-go
+    cd ${UNPACKDIR}/git/cmd/protoc-gen-go
     ${GO} install
 }
 do_compile[network] = "1"

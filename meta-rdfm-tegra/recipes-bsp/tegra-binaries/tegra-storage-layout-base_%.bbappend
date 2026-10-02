@@ -58,6 +58,7 @@ EOF
         --delete "/partition_layout/device/partition[@name='reserved']" \
     | xml transform move-uda-before-secondary-gpt.xml \
     > ${D}${datadir}/l4t-storage-layout/$file
+    chown root:root ${D}${datadir}/l4t-storage-layout/$file
 }
 
 do_install:append() {

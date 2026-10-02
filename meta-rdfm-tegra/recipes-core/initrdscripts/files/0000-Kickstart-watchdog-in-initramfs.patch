@@ -1,3 +1,12 @@
+Kickstart the watchdog in the initramfs
+
+The initramfs can wedge trying to mount a corrupted rootfs, which leaves the
+board hanging forever instead of falling back to a bootable slot. Start the
+hardware watchdog as soon as the driver is loaded so an unmountable rootfs
+resets the device into the recovery chain.
+
+Upstream-Status: Inappropriate [embedded specific]
+
 --- a/init-boot.sh	2025-03-25 12:29:30.049843574 +0100
 +++ b/init-boot.sh	2025-03-25 12:29:21.393169964 +0100
 @@ -12,6 +12,12 @@
