@@ -29,11 +29,21 @@ IMAGE_CMD:rootfsimg() {
 	# mkfs does not support excluding certain folders. We need
 	# to copy the prepared rootfs to a writable location, then
 	# remove data/ from it.
-	cleandir=$(mktemp -d "${UNPACKDIR}/clean-rootfs.XXXXXX")
+	install -d "${WORKDIR}/image"
+	cleandir=$(mktemp -d "${WORKDIR}/image/clean-rootfs.XXXXXX")
 	if [ -z "$cleandir" ]; then
 		bbfatal "Creating temporary rootfs directory failed"
 	fi
-	rsync -avz ${IMAGE_ROOTFS}/ $cleandir --exclude "data/*"
+	# -rlptDvz instead of -avz: no ownership preservation, so no chown(2) is attempted and mode bits are not perturbed.
+	rsync -rlptDvz ${IMAGE_ROOTFS}/ $cleandir --exclude "data/*"
+
+	# Restore root:root ownership only for root builds; fails silently for non-root builds.
+	id
+	chown -Rv 0:0 "$cleandir"
+
+	# Add the owner read/search bit only where the mode denies it, so files the build user cannot read still land in the image.
+	find $cleandir -type f ! -perm -0400 -exec chmod u+r {} + 2>/dev/null || true
+	find $cleandir -type d ! -perm -0100 -exec chmod u+x {} + 2>/dev/null || true
 
 	# root dir argument for btrfs is under -r flag while ext filesystem uses -d flag for this purpose
 	if [ ${RDFM_ROOTFSIMG_TYPE} = "btrfs" ]; then
@@ -49,6 +59,12 @@ IMAGE_CMD:rootfsimg() {
 	fsck.${RDFM_ROOTFSIMG_TYPE} -pvfD ${IMGDEPLOYDIR}/${IMAGE_NAME}.${RDFM_ROOTFSIMG_EXT} || [ $? -le 3 ]
 
 	ln -sfn "${IMAGE_NAME}.${RDFM_ROOTFSIMG_EXT}" "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.${RDFM_ROOTFSIMG_EXT}"
+}
+
+# Redirect the rdfm-artifact packaging TMPDIR to a disk-backed dir under WORKDIR so the tar temp is not bounded by the /tmp tmpfs quota.
+rdfm_artifactimg_do_package:prepend() {
+	export TMPDIR="${WORKDIR}/rdfm-tmp"
+	mkdir -p "$TMPDIR"
 }
 
 do_image_rootfsimg[depends] += " \
