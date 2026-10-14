@@ -1,0 +1,11 @@
+--- a/Silicon/NVIDIA/Tegra/DeviceTree/L4TConfiguration.dts
++++ b/Silicon/NVIDIA/Tegra/DeviceTree/L4TConfiguration.dts
+@@ -60,7 +60,7 @@
+ 
+ 						gNVIDIATokenSpaceGuid {
+ 							DefaultBootPriority {
+-								data = "usb,nvme,emmc,sd,ufs";
++								data = "nvme,usb,emmc,sd,ufs";
+ 								locked;
+ 							};
+ 						};
