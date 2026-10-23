@@ -1,0 +1,13 @@
+/dts-v1/;
+
+#include "tegra264-mb2-bct-misc-p3834-xxxx-p4071-0000.dts"
+
+/ {
+	mb2-misc {
+		eeprom {
+			cvb_eeprom_i2c_instance = <0x0>;
+			cvb_eeprom_i2c_slave_address = <0xa0>;
+			cvb_eeprom_read_size = <0x0>;
+		};
+	};
+};
