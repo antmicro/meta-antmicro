@@ -5,16 +5,16 @@
     <remote fetch="https://github.com/openembedded/" name="meta-openembedded"/>
     <remote fetch="https://github.com/OE4T/" name="meta-tegra"/>
 
-    <project name="meta-antmicro" remote="antmicro" revision="31f6f5905fe392f833934463c37e0b7ebde5adc8" path="sources/meta-antmicro">
+    <project name="meta-antmicro.git" remote="antmicro" revision="wrynose" path="sources/meta-antmicro">
       <linkfile dest="build/conf/bblayers.conf" src="demos/nvidia-jetson-orin-baseboard-demo/bblayers.conf"/>
       <linkfile dest="build/conf/local.conf" src="demos/nvidia-jetson-orin-baseboard-demo/local.conf"/>
     </project>
-    <project name="antmicro-jetson-orin-baseboard-nvidia-kernel-oot" remote="antmicro" revision="antmicro-r36.4.4" path="sources/nvidia-kernel-oot" sync-s="true" />
-    <project name="antmicro-jetson-orin-baseboard-kernel" remote="antmicro" revision="antmicro-r36.4.4" path="sources/linux-jammy-nvidia-tegra"/>
 
-    <!-- Current Yocto version: scarthgap-5.0.7. Please use exact commits or tags when setting revisions, do NOT use branch names! -->
-    <project name="poky.git" remote="yoctoproject" revision="7dad83c7e5e9637c0ff5d5712409611fd4a14946" path="sources/poky"/>
-    <project name="meta-openembedded.git" remote="meta-openembedded" revision="4f11a12b2352bbdfafb6b7d956bf424af4992977" path="sources/meta-openembedded"/>
-    <project name="meta-tegra.git" remote="meta-tegra" revision="ddd28164f4c1475694e7404f361e8b15c0c6d345" path="sources/meta-tegra" />
-    <project name="meta-tegra-community.git" remote="meta-tegra" revision="241d1073ba8e610ef8da3fe8470b0a4d0567521f" path="sources/meta-tegra-community" />
+    <!-- Current Yocto version: wrynose-6.0.4. Please use exact commits or tags when setting revisions, do NOT use branch names! -->
+    <project name="openembedded-core" remote="meta-openembedded" revision="0f03c732a0a2d0506b41b1abe60b3f368b2300dc" path="sources/poky"/>
+    <project name="bitbake.git" remote="meta-openembedded" revision="046a90b0e9b7b914b7a95aec579cdc3fc9c7617a" path="sources/bitbake"/>
+    <project name="meta-virtualization.git" remote="yoctoproject" revision="a07bf78dab0d46099a7e6ca8b2aadb07535efc13" path="sources/meta-virtualization"/>
+    <project name="meta-openembedded.git" remote="meta-openembedded" revision="47d7dbdd10890bbd429bc0cccbe14435c37e5af1" path="sources/meta-openembedded"/>
+    <project name="meta-tegra.git" remote="meta-tegra" revision="2e37d1673d25fb92440bcf6db8dcf1076e822037" path="sources/meta-tegra" />
+    <project name="meta-tegra-community.git" remote="meta-tegra" revision="e8fcbd636b65d051de96563de8d28f534cefac26" path="sources/meta-tegra-community" />
 </manifest>
