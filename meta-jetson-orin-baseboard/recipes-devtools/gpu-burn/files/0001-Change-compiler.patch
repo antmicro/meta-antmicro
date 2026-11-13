@@ -1,0 +1,30 @@
+From 13eb270f59f972704aa6144f58717ddf02748687 Mon Sep 17 00:00:00 2001
+From: Krzysztof Sychla <ksychla@antmicro.com>
+Date: Thu, 29 Aug 2024 14:25:37 +0200
+Subject: [PATCH] Change compiler
+
+Upstream-Status: Inappropriate [Yocto specific]
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 8880583..7aae5d2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -39,10 +39,10 @@ IMAGE_NAME ?= gpu-burn
+ .PHONY: clean
+ 
+ gpu_burn: gpu_burn-drv.o compare.ptx
+-	g++ -o $@ $< -O3 ${LDFLAGS}
++	${CXX} -o $@ $< -O3 ${LDFLAGS}
+ 
+ %.o: %.cpp
+-	g++ ${CFLAGS} -c $<
++	${CXX} ${CFLAGS} -c $<
+ 
+ %.ptx: %.cu
+ 	PATH="${PATH}:${CCPATH}:." ${NVCC} ${NVCCFLAGS} -ptx $< -o $@
+-- 
+2.46.0
+

@@ -1,0 +1,30 @@
+From 7a678bed83f97ba78f33778f941f37ba10b881cd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miko=C5=82aj=20Rosowski?= <mrosowski@antmicro.com>
+Date: Tue, 3 Sep 2024 14:47:30 +0200
+Subject: [PATCH] Fix static rpaths
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+Upstream-Status: Inappropriate [Yocto specific]
+---
+ Makefile | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 8880583..11292f6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -21,8 +21,6 @@ override LDFLAGS  += -L${CUDAPATH}/lib64
+ override LDFLAGS  += -L${CUDAPATH}/lib64/stubs
+ override LDFLAGS  += -L${CUDAPATH}/lib
+ override LDFLAGS  += -L${CUDAPATH}/lib/stubs
+-override LDFLAGS  += -Wl,-rpath=${CUDAPATH}/lib64
+-override LDFLAGS  += -Wl,-rpath=${CUDAPATH}/lib
+ override LDFLAGS  += -lcublas
+ override LDFLAGS  += -lcudart
+ 
+-- 
+2.46.0
+

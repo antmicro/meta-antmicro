@@ -1,0 +1,42 @@
+From 65e3c4f6ab011b81277e791e313c4e888dfcf253 Mon Sep 17 00:00:00 2001
+From: Jan Bylicki <jbylicki@antmicro.com>
+Date: Mon, 12 Oct 2026 13:22:32 +0200
+Subject: [PATCH] Fix build with CUDA 13
+
+Two breakages against the CUDA 13.2 / GCC 15 toolchain:
+
+- cuda.h now maps cuCtxCreate to cuCtxCreate_v4, which takes a
+  CUctxCreateParams pointer between the context and flags, NULL is fine
+- std::stringstream was included indirectly in older libstdc++, new
+  requires to include <sstream> explicitly.
+
+Signed-off-by: Jan Bylicki <jbylicki@antmicro.com>
+Upstream-Status: Inappropriate [Yocto specific]
+---
+ gpu_burn-drv.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/gpu_burn-drv.cpp b/gpu_burn-drv.cpp
+index f29410b..7fa3cb4 100644
+--- a/gpu_burn-drv.cpp
++++ b/gpu_burn-drv.cpp
+@@ -47,6 +47,7 @@
+ #include <map>
+ #include <signal.h>
+ #include <stdexcept>
++#include <sstream>
+ #include <string.h>
+ #include <string>
+ #include <sys/time.h>
+@@ -110,7 +111,7 @@ template <class T> class GPU_Test {
+     GPU_Test(int dev, bool doubles, bool tensors, const char *kernelFile)
+         : d_devNumber(dev), d_doubles(doubles), d_tensors(tensors), d_kernelFile(kernelFile){
+         checkError(cuDeviceGet(&d_dev, d_devNumber));
+-        checkError(cuCtxCreate(&d_ctx, 0, d_dev));
++        checkError(cuCtxCreate(&d_ctx, NULL, 0, d_dev));
+
+         bind();
+
+--
+2.55.0
+

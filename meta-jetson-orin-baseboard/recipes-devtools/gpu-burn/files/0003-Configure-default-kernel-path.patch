@@ -1,0 +1,55 @@
+From 425fe61c9a38bbc00919b6a9a013cccef1def476 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miko=C5=82aj=20Rosowski?= <mrosowski@antmicro.com>
+Date: Thu, 5 Sep 2024 10:58:51 +0200
+Subject: [PATCH] Configure default kernel path
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Mikołaj Rosowski <mrosowski@antmicro.com>
+Upstream-Status: Inappropriate [Yocto specific]
+---
+ Makefile         | 4 +++-
+ gpu_burn-drv.cpp | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 23b256d..fab4ca9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -5,7 +5,8 @@ CUDAPATH ?= /usr/local/cuda
+ endif
+ 
+ IS_JETSON   ?= $(shell if grep -Fwq "Jetson" /proc/device-tree/model 2>/dev/null; then echo true; else echo false; fi)
+-NVCC        :=  ${CUDAPATH}/bin/nvcc
++KERNEL      ?= compare.ptx
++NVCC        := ${CUDAPATH}/bin/nvcc
+ CCPATH      ?=
+ 
+ override CFLAGS   ?=
+@@ -14,6 +15,7 @@ override CFLAGS   += -Wno-unused-result
+ override CFLAGS   += -I${CUDAPATH}/include
+ override CFLAGS   += -std=c++11
+ override CFLAGS   += -DIS_JETSON=${IS_JETSON}
++override CFLAGS   += -DCOMPARE_KERNEL=\"${KERNEL}\"
+ 
+ override LDFLAGS  ?=
+ override LDFLAGS  += -lcuda
+diff --git a/gpu_burn-drv.cpp b/gpu_burn-drv.cpp
+index f29410b..4884c22 100644
+--- a/gpu_burn-drv.cpp
++++ b/gpu_burn-drv.cpp
+@@ -30,7 +30,10 @@
+ // Matrices are SIZE*SIZE..  POT should be efficiently implemented in CUBLAS
+ #define SIZE 8192ul
+ #define USEMEM 0.9 // Try to allocate 90% of memory
++
++#ifndef COMPARE_KERNEL
+ #define COMPARE_KERNEL "compare.ptx"
++#endif
+ 
+ // Used to report op/s, measured through Visual Profiler, CUBLAS from CUDA 7.5
+ // (Seems that they indeed take the naive dim^3 approach)
+-- 
+2.46.0
+
