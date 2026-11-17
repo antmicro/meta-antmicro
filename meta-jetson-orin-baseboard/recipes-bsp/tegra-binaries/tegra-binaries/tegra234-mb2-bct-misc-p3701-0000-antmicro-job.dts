@@ -1,0 +1,16 @@
+/dts-v1/;
+
+#include "tegra234-mb2-bct-common.dtsi"
+
+// Antmicro Jetson Orin Baseboard has no I2C EEPROM to store board ID, so we set size to 0 as described here:
+// https://docs.nvidia.com/jetson/archives/r35.2.1/DeveloperGuide/text/HR/JetsonModuleAdaptationAndBringUp/JetsonOrinNxSeries.html#eeprom-modifications 
+
+/ {
+	mb2-misc {
+		eeprom {
+			cvb_eeprom_i2c_instance = <0x0>;
+			cvb_eeprom_i2c_slave_address = <0xa0>;
+			cvb_eeprom_read_size = <0x0>;
+		};
+	};
+};
