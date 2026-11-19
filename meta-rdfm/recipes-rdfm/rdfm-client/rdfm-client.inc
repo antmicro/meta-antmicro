@@ -68,7 +68,7 @@ do_configure:append () {
         rm ${B}/src
     fi
     mkdir -p $(dirname ${B}/src/)
-    cp --archive ${UNPACKDIR}/git ${B}/src/
+    cp --archive ${S} ${B}/src/
 }
 
 do_compile() {

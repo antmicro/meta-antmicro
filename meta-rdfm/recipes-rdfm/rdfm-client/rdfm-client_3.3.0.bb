@@ -5,14 +5,14 @@ require rdfm-client.inc
 inherit systemd update-rc.d
 
 SRC_URI = " \
-    git://github.com/antmicro/rdfm.git;protocol=https;branch=main;destsuffix=git \
+    git://github.com/antmicro/rdfm.git;protocol=https;branch=main \
     file://rdfm-daemon.service \
     file://rdfm-daemon \
 "
 SRCREV = "cb6d7428fe97496ca7e63c96cfea2fe69ee71eb0"
 
 LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT & OLDAP-2.8 & OpenSSL"
-LIC_FILES_CHKSUM = "file://${UNPACKDIR}/git/LICENSE;md5=2a944942e1496af1886903d274dedb13"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=2a944942e1496af1886903d274dedb13"
 
 INITSCRIPT_PACKAGES = "${PN}"
 INITSCRIPT_NAME = "rdfm"
