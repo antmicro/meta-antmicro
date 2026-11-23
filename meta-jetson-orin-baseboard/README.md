@@ -13,8 +13,12 @@ The `meta-jetson-orin-baseboard` Yocto layer contains settings and kernel to sup
 
 There are demos available for each of the configurations. Refer to the [Demos](../README.md#demos) section for more information.
 
-The kernel used by this layer is based on [OE4T Linux Tegra 5.10](https://github.com/OE4T/linux-tegra-5.10) from branch `oe4t-patches-l4t-r35.2.1`.
-It is provided in single-repo form and is [available on GitHub](https://github.com/antmicro/antmicro-jetson-orin-baseboard-kernel-5-10).
+The kernel used by this layer is based on [Nvidia Linux Tegra 6.8](https://gitlab.com/nvidia/nv-tegra/3rdparty/canonical/linux-noble) from branch `l4t/l4t-r39.2.1-Ubuntu-nvidia-tegra-6.8.0-1021.21`.
+Kernel sources are available on GitHub:
+
+* [Kernel](https://github.com/antmicro/antmicro-jetson-orin-baseboard-kernel)
+* [Out-of-tree kernel modules](https://github.com/antmicro/antmicro-jetson-orin-baseboard-nvidia-linux-oot)
+* [T23X devicetree](https://github.com/antmicro/antmicro-jetson-orin-baseboard-nvidia-t23x-public-dts)
 
 ## Layer dependencies
 
